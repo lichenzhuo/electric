@@ -3,7 +3,7 @@
     <section class="form_container">
       <!-- <div class="manage_tip">
         <span class="title">直流后台监测系统</span>
-      </div> -->
+      </div>-->
       <el-form
         :model="registerUser"
         :rules="rules"
@@ -23,7 +23,7 @@
         <el-form-item label="确认密码" prop="password2">
           <el-input v-model="registerUser.password2" placeholder="请确认密码" type="password"></el-input>
         </el-form-item>
-        <el-form-item label="选择身份">
+        <el-form-item label="选择身份" prop="identity">
           <el-select v-model="registerUser.identity" placeholder="请选择身份">
             <el-option label="管理员" value="manager"></el-option>
             <el-option label="员工" value="employee"></el-option>
@@ -71,41 +71,45 @@ export default {
         // ],
         password: [
           { required: true, message: "密码不能为空", trigger: "blur" },
-          { min: 6, max: 30, message: "长度在 6 到 30 个字符", trigger: "blur" }
+          { min: 4, max: 30, message: "长度在 6 到 30 个字符", trigger: "blur" }
         ],
         password2: [
           { required: true, message: "确认密码不能为空", trigger: "blur" },
           {
-            min: 6,
+            min: 4,
             max: 30,
             message: "长度在 6 到 30 个字符",
             trigger: "blur"
           },
-          { validator: validatePass2, trigger: "blur" }
+          { validator: validatePass2, trigger: "blur" }         //validator是自定义校验规则，定义的validatePass2在上面写出来了
+        ],
+        identity:[
+          { required: true, message: "职务不能为空", trigger: "blur" },
         ]
       }
     };
   },
   methods: {
-    submitForm(registerForm) {
-        console.log(this.registerUser,'111111')
-    //   this.$refs[formName].validate(valid => {
-    //     if (valid) {
-    //       this.$axios
-    //         .post("/api/users/register", this.registerUser)
-    //         .then(res => {
-    //           // 注册成功
-    //           this.$message({
-    //             message: "注册成功！",
-    //             type: "success"
-    //           });
-    //           // this.$router.push("/login");
-    //         });
-    //     } else {
-    //       console.log("error submit!!");
-    //       return false;
-    //     }
-    //   });
+    submitForm(formName) {
+      console.log(this.registerUser, "111111");
+        this.$refs[formName].validate(valid => {
+          if (valid) {
+            // this.$axios
+            //   .post("/api/users/register", this.registerUser)
+            //   .then(res => {
+            //     // 注册成功
+            //     this.$message({
+            //       message: "注册成功！",
+            //       type: "success"
+            //     });
+            //     // this.$router.push("/login");
+            //   });
+            console.log('00000')
+          } else {
+            console.log("error submit!!");
+            // return false;
+          }
+        });
     }
   }
 };
@@ -121,7 +125,7 @@ export default {
 }
 
 .form_container {
-  width :400px;
+  width: 400px;
   position: absolute;
   top: 50%;
   left: 50%;

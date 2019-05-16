@@ -3,7 +3,7 @@
     <section class="form_container">
       <!-- <div class="manage_tip">
         <span class="title">直流后台监测系统</span>
-      </div> -->
+      </div>-->
       <el-form
         :model="registerUser"
         :rules="rules"
@@ -20,7 +20,7 @@
         <el-form-item label="密码" prop="password">
           <el-input v-model="registerUser.password" placeholder="请输入密码" type="password"></el-input>
         </el-form-item>
-        <el-form-item label="确认密码" prop="password2">
+        <!-- <el-form-item label="确认密码" prop="password2">
           <el-input v-model="registerUser.password2" placeholder="请确认密码" type="password"></el-input>
         </el-form-item>
         <el-form-item label="选择身份">
@@ -28,10 +28,11 @@
             <el-option label="管理员" value="manager"></el-option>
             <el-option label="员工" value="employee"></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item>
-          <el-button type="primary" class="submit_btn" @click="submitForm('registerForm')">登  录</el-button>
+          <el-button type="primary" class="submit_btn" @click="submitForm('registerForm')">登 录</el-button>
         </el-form-item>
+        <el-tag @click="gotoregister" class="tip">没有账号？去注册</el-tag>
       </el-form>
     </section>
   </div>
@@ -41,71 +42,48 @@
 export default {
   name: "register",
   data() {
-    var validatePass2 = (rule, value, callback) => {
-      if (value !== this.registerUser.password) {
-        callback(new Error("两次输入密码不一致!"));
-      } else {
-        callback();
-      }
-    };
     return {
       registerUser: {
         name: "",
-        // email: "",
-        password: "",
-        password2: "",
-        identity: ""
+        password: ""
       },
       rules: {
         name: [
           { required: true, message: "用户名不能为空", trigger: "change" },
           { min: 2, max: 30, message: "长度在 2 到 30 个字符", trigger: "blur" }
         ],
-        // email: [
-        //   {
-        //     type: "email",
-        //     required: true,
-        //     message: "邮箱格式不正确",
-        //     trigger: "blur"
-        //   }
-        // ],
         password: [
           { required: true, message: "密码不能为空", trigger: "blur" },
           { min: 6, max: 30, message: "长度在 6 到 30 个字符", trigger: "blur" }
-        ],
-        password2: [
-          { required: true, message: "确认密码不能为空", trigger: "blur" },
-          {
-            min: 6,
-            max: 30,
-            message: "长度在 6 到 30 个字符",
-            trigger: "blur"
-          },
-          { validator: validatePass2, trigger: "blur" }
         ]
       }
     };
   },
   methods: {
-    submitForm(registerForm) {
-        console.log(this.registerUser,'111111')
-    //   this.$refs[formName].validate(valid => {
-    //     if (valid) {
-    //       this.$axios
-    //         .post("/api/users/register", this.registerUser)
-    //         .then(res => {
-    //           // 注册成功
-    //           this.$message({
-    //             message: "注册成功！",
-    //             type: "success"
-    //           });
-    //           // this.$router.push("/login");
-    //         });
-    //     } else {
-    //       console.log("error submit!!");
-    //       return false;
-    //     }
-    //   });
+    submitForm(formName) {
+      console.log(this.registerUser, "111111");
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          // this.$axios
+          //   .post("/api/users/register", this.registerUser)
+          //   .then(res => {
+          //     // 注册成功
+          //     this.$message({
+          //       message: "注册成功！",
+          //       type: "success"
+          //     });
+          //     // this.$router.push("/login");
+          //   });
+          console.log("000");
+        } else {
+          console.log("error submit!!");
+          // return false;
+        }
+      });
+    },
+    gotoregister(){
+      console.log('33333')
+      this.$router.push({path:'/register'})
     }
   }
 };
@@ -121,7 +99,7 @@ export default {
 }
 
 .form_container {
-  width :400px;
+  width: 400px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -148,6 +126,9 @@ export default {
 
 .submit_btn {
   width: 100%;
+}
+.tip{
+  margin-left 75px;
 }
 </style>
 
