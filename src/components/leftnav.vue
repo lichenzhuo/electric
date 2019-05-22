@@ -5,8 +5,7 @@
         :default-active="this.$router.path"
         router
         class="el-menu-vertical-demo"
-        @open="handleOpen"
-        @close="handleClose"
+     
         @select="theselect"
       >
         <el-submenu index="1">
