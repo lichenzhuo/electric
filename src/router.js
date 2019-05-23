@@ -9,9 +9,11 @@ import singalwarn from "./components//singalwarn";
 import singalwarning from "./components//singalwarning";
 import singalsite from "./components/singalsite";
 import personinfo from "./components/personinfo";
+import warnlog from "./components/warnlog";
 Vue.use(Router)
 
 export default new Router({
+  mode:'history',
   routes: [
     {
       path: '/',
@@ -19,7 +21,7 @@ export default new Router({
     },
     {
       path: '/index',
-      name: 'index',
+      // name: 'index',
       component: Index,
       children:[
         { path: '', component: defaulthome },
@@ -28,6 +30,7 @@ export default new Router({
         { path: '/singalwarning', name: 'singalwarning', component: singalwarning },
         { path: '/singalsite', name: 'singalsite', component: singalsite },
         { path: '/personinfo', name: 'personinfo', component: personinfo },
+        { path: '/warnlog', name: 'warnlog', component: warnlog },
       ]
        
     },

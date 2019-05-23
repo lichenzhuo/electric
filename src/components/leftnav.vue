@@ -8,22 +8,26 @@
      
         @select="theselect"
       >
-        <el-submenu index="1">
+        <!-- <el-submenu index="1">
           <template slot="title">
             <i class="el-icon-location"></i>
             <span>首页</span>
           </template>
-          <!-- <el-menu-item index="/defaulthome">默认</el-menu-item> -->
+          <el-menu-item index="/defaulthome">默认</el-menu-item>
           <el-menu-item index="/singalwarn">单个预警</el-menu-item>
           <el-menu-item index="/singalwarning">单个报警</el-menu-item>
           <el-menu-item index="/singalsite">单个站点</el-menu-item>
           <el-menu-item index="/personinfo">相关人员资料</el-menu-item>
-        </el-submenu>
+        </el-submenu> -->
+         <el-menu-item index="/">
+          <i class="el-icon-location"></i>
+          <span slot="title">首页</span>
+        </el-menu-item>
         <el-menu-item index="2">
           <i class="el-icon-menu"></i>
           <span slot="title">数据图表</span>
         </el-menu-item>
-        <el-menu-item index="3">
+        <el-menu-item index="/warnlog">
           <i class="el-icon-document"></i>
           <span slot="title">预警日志</span>
         </el-menu-item>

@@ -19,19 +19,6 @@
         ></el-date-picker>
       </div>
        <div class="con">
-        <span class="tip">预警类型</span>
-        <el-select v-model="value3" placeholder="请选择">
-          <el-option
-            v-for="item in seldata"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-      </div>
-    </div>
-    <div class="header">
-      <div class="con">
         <span class="tip">监测类型</span>
         <el-select v-model="value" placeholder="请选择">
           <el-option
@@ -42,22 +29,11 @@
           ></el-option>
         </el-select>
       </div>
-      <div class="con">
-        <span class="tip">设备编号</span>
-        <el-select v-model="value" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-      </div>
-     
-      <el-button type="primary" round style="margin-left:140px">搜索</el-button>
+      <el-button type="primary" round style="margin-left:70px">搜索</el-button>
     </div>
+    
     <el-divider></el-divider>
-    <div class="machineName">
+    <!-- <div class="machineName">
       <span class="box">
         <span class="note">设备编号：</span>
         <span class="name">xj-102</span>
@@ -75,7 +51,7 @@
         <span class="name">张三</span>
       </span>
     </div>
-    <el-divider></el-divider>
+    <el-divider></el-divider> -->
     <div class="table">
       <el-table
         :data="table.slice((currentPage-1)*pagesize,currentPage*pagesize)"
@@ -113,7 +89,7 @@
 
 <script>
 export default {
-  name: "singalwarn",
+  name: "warnlog",
   created(){
    this.getRouterData()
   },
@@ -349,7 +325,7 @@ export default {
           9: "22v"
         },
         {
-          0: "2045654262419-05-21",
+          0: "20456542fgdf1",
           one: "22v",
           2: "122v",
           3: "-50v",
@@ -361,7 +337,7 @@ export default {
           9: "22v"
         },
         {
-          0: "201456456429-05-21",
+          0: "20145asasdasdsa",
           one: "22v",
           2: "122v",
           3: "-50v",
@@ -373,7 +349,7 @@ export default {
           9: "22v"
         },
         {
-          0: "201768976899-05-21",
+          0: "20176897fdgdf",
           one: "22v",
           2: "122v",
           3: "-50v",
@@ -464,7 +440,6 @@ export default {
           }
         ]
       },
-      value1: "",
       value2: "",
       options: [
         {
@@ -734,23 +709,7 @@ export default {
           ]
         }
       ],
-      selectedOptions: [],
       selectedOptions2: [],
-      seldata: [
-        {
-          value: "yujing1",
-          label: "预警1"
-        },
-        {
-          value: "yujing2",
-          label: "预警2"
-        },
-        {
-          value: "yujing3",
-          label: "预警3"
-        }
-      ],
-      value3: "",
       value: ""
     };
   }
