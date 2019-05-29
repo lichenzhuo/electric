@@ -29,8 +29,7 @@
           ></el-option>
         </el-select>
       </div>
-      <el-button type="primary" round style="margin-left:20px">清空</el-button>
-      <el-button type="primary" round style="margin-left:20px">搜索</el-button>
+      <el-button type="primary" round style="margin-left:70px">搜索</el-button>
     </div>
     <el-divider></el-divider>
     <div class="table">
@@ -134,7 +133,7 @@
 
 <script>
 export default {
-  name: "warnlog",
+  name: "warninglog",
   created() {
     this.getRouterData();
   },

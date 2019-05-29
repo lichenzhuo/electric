@@ -10,6 +10,9 @@ import singalwarning from "./components//singalwarning";
 import singalsite from "./components/singalsite";
 import personinfo from "./components/personinfo";
 import warnlog from "./components/warnlog";
+import warninglog from "./components/warninglog";
+import machinemanage from "./components/machinemanage";
+import sitemanage from "./components/sitemanage";
 Vue.use(Router)
 
 export default new Router({
@@ -31,6 +34,9 @@ export default new Router({
         { path: '/singalsite', name: 'singalsite', component: singalsite },
         { path: '/personinfo', name: 'personinfo', component: personinfo },
         { path: '/warnlog', name: 'warnlog', component: warnlog },
+        { path: '/warninglog', name: 'warninglog', component: warninglog },
+        { path: '/machinemanage', name: 'machinemanage', component: machinemanage },
+        { path: '/sitemanage', name: 'sitemanage', component: sitemanage },
       ]
        
     },
