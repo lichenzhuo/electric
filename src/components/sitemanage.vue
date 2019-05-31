@@ -3,12 +3,14 @@
     <div class="top">
       <div class="block con">
         <span class="tip">站点名称</span>
+        <!-- expand-trigger="hover" -->
         <el-cascader
-          expand-trigger="hover"
           placeholder="请输入站点名称"
-          :options="options"
+          :options="optionone"
+          v-model="selectedOptions"
           filterable
           change-on-select
+          @change="addressChange"
         ></el-cascader>
       </div>
       <div class="block con">
@@ -18,7 +20,7 @@
       <el-button type="primary" round style="margin-left:20px" @click="query">查询</el-button>
       <el-button type="primary" round style="margin-left:20px" @click="dialogVisible = true">添加</el-button>
       <el-dialog :visible.sync="dialogVisible" width="25%" :show-close="false" center>
-        <div slot="title">新增设备</div>
+        <div slot="title">新增站点</div>
         <span>
           <el-form
             label-position="right"
@@ -26,26 +28,25 @@
             :model="formLabelAlign"
             style="padding-left:40px"
           >
-            <el-form-item label="设备编号">
-              <el-input style="width:217px" v-model="formLabelAlign.name" placeholder="请输入内容"></el-input>
-            </el-form-item>
-            <el-form-item label="设备类型">
-              <el-select v-model="formLabelAlign.region" placeholder="请选择">
-                <el-option
-                  v-for="item in machinetypes"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
+            <el-form-item label="站点编号">
+              <el-input
+                style="width:217px"
+                v-model="formLabelAlign.name"
+                placeholder
+                :disabled="true"
+              ></el-input>
             </el-form-item>
             <el-form-item label="站点名称">
+              <el-input style="width:217px" v-model="formLabelAlign.name" placeholder="请输入内容"></el-input>
+            </el-form-item>
+            
+            <el-form-item label="站点所在区域">
               <el-cascader
-                expand-trigger="hover"
-                placeholder="请选择"
-                :options="options"
+                :options="optionone"
+                v-model="selectedOptions"
                 filterable
                 change-on-select
+                @change="addressChange"
               ></el-cascader>
             </el-form-item>
             <el-form-item label="详细地址">
@@ -56,11 +57,23 @@
                 placeholder="请输入内容"
               ></el-input>
             </el-form-item>
-            <el-form-item label="设备人员编号">
-              <el-input style="width:217px" v-model="formLabelAlign.name" placeholder="请输入内容"></el-input>
+            <el-form-item label="所有设备">
+              <el-select v-model="formLabelAlign.region" placeholder="请选择">
+                <el-option
+                  v-for="item in machinetypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
             </el-form-item>
-            <el-form-item label="管理人员名称">
-              <el-input style="width:217px" v-model="formLabelAlign.name" placeholder="请输入内容"></el-input>
+             <el-form-item label="相关人员">
+              <el-input
+                style="width:217px"
+                v-model="formLabelAlign.name"
+                placeholder
+                :disabled="true"
+              ></el-input>
             </el-form-item>
           </el-form>
         </span>
@@ -104,6 +117,7 @@
 </template>
 
 <script>
+import { regionData, CodeToText } from "element-china-area-data";
 export default {
   name: "sitemanage",
   created() {
@@ -132,10 +146,18 @@ export default {
     },
     rowclick(e) {
       console.log(e.id);
+    },
+    addressChange(arr) {
+      console.log(arr, "地址");
+      console.log(
+        CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
+      );
     }
   },
   data() {
     return {
+      optionone: regionData,
+      selectedOptions: [],
       dialogVisible: false,
       formLabelAlign: {
         name: "",

@@ -13,6 +13,10 @@ import warnlog from "./components/warnlog";
 import warninglog from "./components/warninglog";
 import machinemanage from "./components/machinemanage";
 import sitemanage from "./components/sitemanage";
+import companyinfo from "./components/companyinfo";
+import machineinfo from "./components/machineinfo";
+import message from "./components/message";
+import morefunction from "./components/morefunction";
 Vue.use(Router)
 
 export default new Router({
@@ -37,6 +41,10 @@ export default new Router({
         { path: '/warninglog', name: 'warninglog', component: warninglog },
         { path: '/machinemanage', name: 'machinemanage', component: machinemanage },
         { path: '/sitemanage', name: 'sitemanage', component: sitemanage },
+        { path: '/companyinfo', name: 'companyinfo', component: companyinfo },
+        { path: '/machineinfo', name: 'machineinfo', component: machineinfo },
+        { path: '/message', name: 'message', component: message },
+        { path: '/morefunction', name: 'morefunction', component: morefunction },
       ]
        
     },

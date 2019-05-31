@@ -81,6 +81,7 @@
         :data="table.slice((currentPage-1)*pagesize,currentPage*pagesize)"
         border
         style="width: 100%"
+        header-cell-class-name='tablebg'
       >
         <el-table-column align="center" prop="0" label="预警时间" width="160"></el-table-column>
         <el-table-column align="center" prop="one" label="母线电压">
@@ -816,6 +817,11 @@ export default {
   }
   .indent{
     padding left 2em
+  }
+  .tablebg{
+    background-color #409EFF
+    color #ffffff
+    font-size 18px
   }
 }
 </style>

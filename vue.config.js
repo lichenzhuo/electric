@@ -44,7 +44,7 @@ module.exports = {
         hotOnly: false,
         proxy: { // 配置跨域
             '/api': {
-                target: 'http://localhost:5001/api/',
+                target: 'http://api.map.baidu.com/',
                 ws: true,
                 changOrigin: true,
                 pathRewrite: {
@@ -52,6 +52,6 @@ module.exports = {
                 }
             }
         },
-        before: app => { }
+        before: app => {}
     }
 }

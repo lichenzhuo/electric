@@ -3,34 +3,112 @@
     <div class="top">
       <div class="block con">
         <span class="tip">站点名称</span>
-        <el-cascader expand-trigger="hover" :options="options" v-model="selectedOptions2"></el-cascader>
+        <!-- expand-trigger="hover" -->
+        <el-cascader
+          placeholder="请输入站点名称"
+          :options="optionone"
+          v-model="selectedOptions"
+          filterable
+          change-on-select
+          @change="addressChange"
+        ></el-cascader>
       </div>
       <div class="block con">
-        <span class="tip" style="padding-left:2em">时间</span>
-        <el-date-picker
-          v-model="value2"
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :picker-options="pickerOptions"
-        ></el-date-picker>
+        <span class="tip">单位编号</span>
+        <el-input style="width:auto" v-model="machinenumber" placeholder="请输入内容"></el-input>
       </div>
-      <div class="con">
-        <span class="tip">监测类型</span>
-        <el-select v-model="value" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-      </div>
-       <el-button type="primary" round style="margin-left:20px">清空</el-button>
-      <el-button type="primary" round style="margin-left:20px">搜索</el-button>
+      <el-button type="primary" round style="margin-left:20px" @click="query">查询</el-button>
+      <el-button type="primary" round style="margin-left:20px" @click="dialogVisible = true">添加</el-button>
+      <el-dialog :visible.sync="dialogVisible" width="25%" :show-close="false" center>
+        <div slot="title">新增单位</div>
+        <span>
+          <el-form
+            label-position="right"
+            label-width="100px"
+            :model="formLabelAlign"
+            style="padding-left:40px"
+          >
+            <el-form-item label="单位编号">
+              <el-input
+                style="width:217px"
+                v-model="formLabelAlign.name"
+                placeholder
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="单位类别">
+              <el-select v-model="formLabelAlign.region" placeholder="请选择">
+                <el-option
+                  v-for="item in machinetypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="单位名称">
+              <el-select v-model="formLabelAlign.region" placeholder="请选择">
+                <el-option
+                  v-for="item in machinetypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="地址">
+              <el-input
+                style="width:217px"
+                type="textarea"
+                v-model="formLabelAlign.address"
+                placeholder="请输入内容"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="联系人">
+              <el-input style="width:217px" v-model="formLabelAlign.name" placeholder="请输入内容"></el-input>
+            </el-form-item>
+            <el-form-item label="部门">
+              <el-select v-model="formLabelAlign.region" placeholder="请选择部门">
+                <el-option
+                  v-for="item in machinetypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="职位">
+              <el-select v-model="formLabelAlign.region" placeholder="请选择职位">
+                <el-option
+                  v-for="item in machinetypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="联系电话">
+              <el-input style="width:217px" v-model="formLabelAlign.name" placeholder="请输入联系电话"></el-input>
+            </el-form-item>
+            <el-form-item label="微信">
+              <el-input style="width:217px" v-model="formLabelAlign.name" placeholder="请输入微信"></el-input>
+            </el-form-item>
+            <el-form-item label="所有站点">
+              <el-select v-model="formLabelAlign.region" placeholder="请选择">
+                <el-option
+                  v-for="item in machinetypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
+        </span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
     <el-divider></el-divider>
     <div class="table">
@@ -38,87 +116,23 @@
         :data="table.slice((currentPage-1)*pagesize,currentPage*pagesize)"
         border
         style="width: 100%"
-        header-cell-class-name='tablebg'
+        @row-click="rowclick"
+        header-cell-class-name="tablebg"
       >
-        <el-table-column align="center" prop="0" label="预警时间" width="160"></el-table-column>
-        <el-table-column align="center" prop="one" label="地区">
+        <el-table-column align="center" prop="0" label="单位编号"></el-table-column>
+        <el-table-column align="center" prop="one" label="单位名称"></el-table-column>
+        <el-table-column align="center" prop="2" label="地址"></el-table-column>
+        <el-table-column align="center" prop="3" label="类别"></el-table-column>
+        <el-table-column align="center" prop="5" label="联系人">
           <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
+            <el-tag>{{scope.row.five}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="2" label="地点">
-          <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" prop="3" label="机器编号">
-          <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" prop="4" label="母线电压">
-          <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" prop="5" label="正极电压">
-          <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" prop="6" label="负极电压">
-          <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" prop="7" label="正负压差">
-          <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" prop="8" label="交流电压">
-          <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" prop="9" label="纹波电压">
-          <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" prop="10" label="正极绝缘">
-          <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" prop="11" label="负极绝缘">
-          <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" prop="12" label="母联绝缘">
-          <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" prop="13" label="支路绝缘">
-          <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
-          </template>
-        </el-table-column>
+        <el-table-column align="center" prop="6" label="部门"></el-table-column>
+        <el-table-column align="center" prop="7" label="职位"></el-table-column>
+        <el-table-column align="center" prop="8" label="联系电话"></el-table-column>
+        <el-table-column align="center" prop="9" label="微信"></el-table-column>
+        <el-table-column align="center" prop="10" label="相关站点"></el-table-column>
       </el-table>
       <div class="page">
         <el-pagination
@@ -134,10 +148,12 @@
 </template>
 
 <script>
+import { regionData, CodeToText } from "element-china-area-data";
 export default {
-  name: "warninglog",
+  name: "companyinfo",
   created() {
     this.getRouterData();
+    console.log("这是site");
   },
   methods: {
     handleCurrentChange(currentPage) {
@@ -146,309 +162,363 @@ export default {
     getRouterData() {
       this.id = this.$route.params.id;
       console.log(this.id, "这是新路由接收的");
+    },
+    query() {
+      this.$message({
+        message: "点击查询成功",
+        type: "success"
+      });
+    },
+    insert() {
+      this.$message({
+        message: "点击添加成功",
+        type: "success"
+      });
+    },
+    rowclick(e) {
+      console.log(e.id);
+    },
+    addressChange(arr) {
+      console.log(arr, "地址");
+      console.log(
+        CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
+      );
     }
   },
   data() {
     return {
+      optionone: regionData,
+      selectedOptions: [],
+      dialogVisible: false,
+      formLabelAlign: {
+        name: "",
+        region: "",
+        type: ""
+      },
       total: 0,
       currentPage: 1,
-      pagesize: 10,
+      pagesize: 5,
       table: [
         {
+          id: "0",
           0: "2019-05-21",
           one: "122v",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "张三",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "1",
           0: "2019-05-21",
           one: "22v",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "李四",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "2",
           0: "2019-05-21",
           one: "21v",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "220v",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "3",
           0: "saa2019-05-21",
           one: "22v",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "220v",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "4",
           0: "2fg019-05-21",
           one: "22v",
           2: "122v",
           3: "-fg50v",
           4: "200",
-          5: "220v",
+          five: "220v",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "5",
           0: "2019-05-21",
           one: "22v",
           2: "12df2v",
           3: "-50v",
           4: "200",
-          5: "22dfgdf0v",
+          five: "22dfgdf0v",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "2dfgdf2v"
         },
         {
+          id: "6",
           0: "2019-05-21",
           one: "22v",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "220v",
           6: "dgdf9v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "7",
           0: "2019-05-21",
           one: "22v",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "220v",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "8",
           0: "2019-05-21",
           one: "22v",
           2: "122v",
           3: "hdfg0v",
           4: "200",
-          5: "220v",
+          five: "220v",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "9",
           0: "201f-05-21",
           one: "22v",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "220v",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "10",
           0: "2019-05-21",
           one: "22v",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "张三",
           6: "229v",
           7: "22fhfgv",
           8: "22v",
           9: "22v"
         },
         {
+          id: "11",
           0: "2019-05-21",
           one: "22v",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "张三",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "12",
           0: "2019-05-21",
           one: "22fgv",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "张三",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "13",
           0: "2019-05-21",
           one: "22v",
           2: "hfghf2v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "张三",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "14",
           0: "2019-05-21",
           one: "22gv",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "张三",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "15",
           0: "2019-05-21",
           one: "hfgh2v",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "张三",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "16",
           0: "2019-05-21",
           one: "25432v",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "张三",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "17",
           0: "2069-05-21",
           one: "22v",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "张三",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "18",
           0: "20456542fgdf1",
           one: "22v",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "张三",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "19",
           0: "20145dasdsa",
           one: "22v",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "张三",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "20",
           0: "20176dgdf",
           one: "22v",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "张三",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "21",
           0: "2019-05-21",
           one: "22v",
           2: "122kv",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "张三",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "22",
           0: "2019-05-21",
           one: "22v",
           2: "1hj22v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "张三",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "23",
           0: "2019-05-21",
           one: "23442v",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "张三",
           6: "229v",
           7: "22v",
           8: "22v",
           9: "22v"
         },
         {
+          id: "24",
           0: "2019-05-21",
           one: "2a642v",
           2: "122v",
           3: "-50v",
           4: "200",
-          5: "220v",
+          five: "张三",
           6: "229v",
           7: "22v",
           8: "22v",
@@ -755,14 +825,25 @@ export default {
           ]
         }
       ],
-      selectedOptions2: [],
-      value: ""
+      value: "",
+      machinetype: "",
+      machinetypes: [
+        {
+          value: "typeone",
+          label: "直流绝缘监测"
+        },
+        {
+          value: "typetwo",
+          label: "交流绝缘监测"
+        }
+      ],
+      machinenumber: ""
     };
   }
 };
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus">
 .singalwarn {
   width: 1600px;
   background-color: #ffffff;
@@ -823,10 +904,18 @@ export default {
   .indent {
     padding: left 2em;
   }
-  .tablebg{
-    background-color #409EFF
-    color #ffffff
-    font-size 18px
+
+  .tablebg {
+    background-color: #409EFF;
+    color: #ffffff;
+    font-size: 18px;
   }
+}
+
+.el-dialog__header {
+  background-color: #409EFF;
+  text-align: center;
+  color: #ffffff;
+  font-size: 22px;
 }
 </style>

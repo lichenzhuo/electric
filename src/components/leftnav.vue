@@ -29,25 +29,25 @@
               <i class="el-icon-location"></i>
               <span>站点管理</span>
             </template>
-            <el-menu-item index="1-4-1">
+            <el-menu-item index="/companyinfo">
               <template slot="title">
                 <i class="el-icon-info"></i>
                 <span>单位信息</span>
               </template>
             </el-menu-item>
           </el-submenu>
-          <el-menu-item index="/singalwarn">
+          <el-menu-item index="/machineinfo">
             <template slot="title">
               <i class="el-icon-monitor"></i>
               <span>设备查看</span>
             </template>
           </el-menu-item>
         </el-submenu>
-        <el-menu-item index="4">
+        <el-menu-item index="/message">
           <i class="el-icon-s-comment"></i>
           <span slot="title">消息反馈</span>
         </el-menu-item>
-        <el-menu-item index="4">
+        <el-menu-item index="/morefunction">
           <i class="el-icon-s-grid"></i>
           <span slot="title">高级功能</span>
         </el-menu-item>

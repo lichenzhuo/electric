@@ -7,13 +7,10 @@
       <el-aside style="width:190px">
         <leftnav/>
       </el-aside>
-      <el-main style="background-color:#f8f8f8">
-        <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-          <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-          <el-breadcrumb-item>活动详情</el-breadcrumb-item>
-        </el-breadcrumb>
+      <el-main style="background-color:#f8f8f8;">
+        <!-- <div id="crumbs">
+          <span class="mianbao">首页</span>
+        </div> -->
         <router-view></router-view>
         <!-- <defaulthome/> -->
       </el-main>
@@ -33,5 +30,14 @@ export default {
   }
 };
 </script>
-<style lang="stylus"></style>
+<style lang="stylus">
+.mianbao{
+  margin-left 20px
+}
+.tablebg {
+  background-color: #409EFF !important 
+  color: #ffffff;
+  font-size: 18px;
+}
+</style>
 
