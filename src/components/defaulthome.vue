@@ -1,6 +1,8 @@
 <template>
   <div class="home">
-    <div id="map"></div>
+    <div id="map">
+      <baidumap></baidumap>
+    </div>
     <div class="table">
       <el-table :data="tableData" border style="width: 100%" header-cell-class-name="tablebg">
         <el-table-column align="center" prop="0" label="地区" width="60"></el-table-column>
@@ -41,8 +43,12 @@
 <script>
 import https from "../http.js";
 import Axios from "axios";
+import baidumap from "./map";
 export default {
   name: "defaulthome",
+  components:{
+    baidumap
+  },
   data() {
     return {
       tableData: [
@@ -147,9 +153,9 @@ export default {
     };
   },
   mounted() {
-    this.getdata();
-    this.readymap();
-    this.getlocation();
+    // this.getdata();
+    // this.readymap();
+    // this.getlocation();
   },
   methods: {
     readymap() {
@@ -173,7 +179,7 @@ export default {
     },
     getdata() {
       https.Get("/warnlist").then(res => {
-        console.log(res.data.Data.tableData, "这是res");
+        console.log(res.data.Data.tableData, "这是res"); 
         this.tableData = res.data.Data.tableData;
       });
     },

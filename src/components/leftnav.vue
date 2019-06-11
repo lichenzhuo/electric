@@ -6,11 +6,38 @@
         router
         class="el-menu-vertical-demo"
         @open="theselect"
+        @close="close"
       >
-        <el-menu-item index="/">
-          <i class="el-icon-s-home"></i>
-          <span slot="title">首页</span>
-        </el-menu-item>
+        <el-submenu index="/">
+          <template slot="title">
+            <i class="el-icon-s-home"></i>
+            <span>首页</span>
+          </template>
+          <el-menu-item index="/singalwarn">
+            <template slot="title">
+              <i class="el-icon-message-solid"></i>
+              <span>单个预警</span>
+            </template>
+          </el-menu-item>
+          <el-menu-item index="/singalwarning">
+            <template slot="title">
+              <i class="el-icon-warning"></i>
+              <span>单个报警</span>
+            </template>
+          </el-menu-item>
+          <el-menu-item index="/singalsite">
+            <template slot="title">
+              <i class="el-icon-location"></i>
+              <span>单个站点</span>
+            </template>
+          </el-menu-item>
+          <el-menu-item index="/personinfo">
+            <template slot="title">
+              <i class="el-icon-user-solid"></i>
+              <span>相关人员资料</span>
+            </template>
+          </el-menu-item>
+        </el-submenu>
         <el-menu-item index="/warnlog">
           <i class="el-icon-message-solid"></i>
           <span slot="title">预警日志</span>
@@ -19,12 +46,12 @@
           <i class="el-icon-warning"></i>
           <span slot="title">报警日志</span>
         </el-menu-item>
-        <el-submenu index="/machinemanage" @open="theselectone">
+        <el-submenu index="/machinemanage">
           <template slot="title">
-            <i @click="gotomachinemanage" class="el-icon-s-tools"></i>
-            <span @click="gotomachinemanage">设备管理</span>
+            <i class="el-icon-s-tools"></i>
+            <span>设备管理</span>
           </template>
-          <el-submenu index="/sitemanage" @open="theselecttwo">
+          <el-submenu index="/sitemanage">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>站点管理</span>
@@ -60,31 +87,13 @@
 export default {
   name: "leftnav",
   methods: {
-    theselect(index, indexPath) {
-      console.log(index);
-      console.log(indexPath);
-    },
-    gotomachinemanage() {
-      this.$router.push({ path: "machinemanage" });
-      console.log("777");
+    close(index, indexPath) {
+      console.log(index, "111");
+      this.$router.push({ path: index });
     },
     theselect(index) {
-      console.log(index);
-      if (index === "/machinemanage") {
-        this.$router.push({ path: "machinemanage" });
-      }else if(index === "/sitemanage") {
-        this.$router.push({ path: "sitemanage" });
-      }
-    },
-    theselectone(index) {
-      console.log(index,'0000');
-      if (index === "/sitemanage") {
-        this.$router.push({ path: "sitemanage" });
-      }
-    },
-    theselecttwo(index, indexPath) {
-      console.log(index);
-      console.log(indexPath);
+      console.log(index, "222");
+      this.$router.push({ path: index });
     }
   }
 };

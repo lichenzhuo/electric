@@ -1,8 +1,7 @@
 <template>
   <div class="head">
-    <div class="title">
-      <router-link to="index">监测管理后台</router-link>
-    </div>
+    <img src="../assets/logo.jpg" alt="星炬科技">
+    <p class="title">监测管理系统</p>
     <div class="user">
       <el-dropdown>
         <span class="el-dropdown-link">
@@ -26,18 +25,14 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-
-
 .head {
-  
   height: 60px;
-  
 
   .title {
-    float: left;
-    margin-left: 30px;
     font-size: 26px;
-    padding-top: 14px;
+    float: left;
+    margin-left: 50px;
+    margin-top: 14px;
   }
 
   .user {
@@ -57,6 +52,12 @@ export default {
 
 a {
   text-decoration: none;
-  color black 
+  color: black;
+}
+
+img {
+  height: 60px;
+  float: left;
+  margin-left: 30px;
 }
 </style>

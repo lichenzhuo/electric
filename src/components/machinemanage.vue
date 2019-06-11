@@ -2,19 +2,8 @@
   <div class="singalwarn">
     <div class="top">
       <div class="block con">
-        <span class="tip">站点名称</span>
-        <!-- <el-select v-model="value" filterable placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select> -->
-        <el-cascader expand-trigger="hover" placeholder="请选择" :options="options" filterable change-on-select></el-cascader>
+         <sitethreeselect></sitethreeselect>
       </div>
-    </div>
-    <div class="top">
       <div class="block con">
         <span class="tip">设备类型</span>
         <el-select v-model="machinetype" placeholder="请选择">
@@ -32,6 +21,7 @@
       </div>
       <el-button type="primary" round style="margin-left:20px" @click="query">查询</el-button>
       <el-button type="primary" round style="margin-left:20px" @click="dialogVisible = true">添加</el-button>
+    </div>
       <el-dialog :visible.sync="dialogVisible" width="25%" :show-close="false" center>
         <div slot="title">新增设备</div>
         <span>
@@ -49,8 +39,14 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="站点名称">
-              <el-cascader expand-trigger="hover" placeholder="请选择" :options="options" filterable change-on-select></el-cascader>
+            <el-form-item label="站点所在区域">
+              <el-cascader
+                :options="optionone"
+                v-model="selectedOptions"
+                filterable
+                change-on-select
+                @change="addressChange"
+              ></el-cascader>
             </el-form-item>
             <el-form-item label="详细地址">
               <el-input style="width:217px" type="textarea" v-model="formLabelAlign.address" placeholder="请输入内容"></el-input>
@@ -68,7 +64,6 @@
           <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
         </span>
       </el-dialog>
-    </div>
     <el-divider></el-divider>
     <div class="table">
       <el-table
@@ -104,8 +99,13 @@
 </template>
 
 <script>
+import sitethreeselect from "./sitethreeselect";
+import { regionData, CodeToText } from "element-china-area-data";
 export default {
   name: "machinemanage",
+   components:{
+    sitethreeselect
+  },
   created() {
     this.getRouterData();
   },
@@ -115,7 +115,7 @@ export default {
     },
     getRouterData() {
       this.id = this.$route.params.id;
-      console.log(this.id, "这是新路由接收的");
+      // console.log(this.id, "这是新路由接收的");
     },
     query() {
       this.$message({
@@ -131,10 +131,18 @@ export default {
     },
     rowclick(e) {
       console.log(e.id);
+    },
+    addressChange(arr) {
+      console.log(arr, "地址");
+      console.log(
+        CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
+      );
     }
   },
   data() {
     return {
+      optionone: regionData,
+      selectedOptions: [],
       dialogVisible: false,
       formLabelAlign: {
         name: "",
@@ -799,7 +807,6 @@ export default {
   box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px;
 
   .top {
-    padding-top: 30px;
     padding-left: 80px;
   }
 

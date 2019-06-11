@@ -2,8 +2,9 @@
   <div class="singalwarn">
     <div class="top">
       <div class="block con">
-        <span class="tip">站点名称</span>
-        <el-cascader expand-trigger="hover" :options="options" v-model="selectedOptions2"></el-cascader>
+        <!-- <span class="tip">站点名称</span>
+        <el-cascader expand-trigger="hover" :options="options" v-model="selectedOptions2"></el-cascader> -->
+         <sitethreeselect></sitethreeselect>
       </div>
       <div class="block con">
         <span class="tip" style="padding-left:2em">时间</span>
@@ -134,8 +135,12 @@
 </template>
 
 <script>
+import sitethreeselect from "./sitethreeselect";
 export default {
   name: "warninglog",
+   components:{
+    sitethreeselect
+  },
   created() {
     this.getRouterData();
   },
@@ -145,7 +150,7 @@ export default {
     },
     getRouterData() {
       this.id = this.$route.params.id;
-      console.log(this.id, "这是新路由接收的");
+      // console.log(this.id, "这是新路由接收的");
     }
   },
   data() {

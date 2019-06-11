@@ -59,7 +59,7 @@ export default {
     },
     getRouterData() {
       this.id = this.$route.params.id;
-      console.log(this.id, "这是新路由接收的");
+      // console.log(this.id, "这是新路由接收的");
     },
     query() {
       this.$message({
