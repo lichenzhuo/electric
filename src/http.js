@@ -30,7 +30,7 @@ axios.interceptors.response.use((res) =>{
 });
 
 //返回一个Promise(发送post请求)
-export function Post(url, params) {
+export function post(url, params) {
     return new Promise((resolve, reject) => {
         axios.post(url, params)
             .then(response => {
@@ -44,7 +44,7 @@ export function Post(url, params) {
     })
 }
 ////返回一个Promise(发送get请求)
-export function Get(url, param) {
+export function get(url, param) {
     return new Promise((resolve, reject) => {
         axios.get(url, {params: param})
             .then(response => {
@@ -58,6 +58,6 @@ export function Get(url, param) {
     })
 }
 export default {
-    Post,
-    Get,
+    post,
+    get,
 }

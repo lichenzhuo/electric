@@ -178,7 +178,7 @@ export default {
       });
     },
     getdata() {
-      https.Get("/warnlist").then(res => {
+      https.get("/warnlist").then(res => {
         console.log(res.data.Data.tableData, "这是res"); 
         this.tableData = res.data.Data.tableData;
       });
