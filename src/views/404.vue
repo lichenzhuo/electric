@@ -1,6 +1,7 @@
 <template>
   <div class="index">
     <!-- <img src="../assets/404.gif" alt srcset> -->
+    <h2>404</h2>
   </div>
 </template>
 <script>

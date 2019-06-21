@@ -8,10 +8,10 @@
       <el-option v-for="item in shi1" :key="item.id" :label="item.value" :value="item.id"></el-option>
     </el-select>
     <el-select class="sel" v-model="qu" @change="choseBlock" placeholder="区级地区">
-      <el-option v-for="item in qu1" :key="item.id" :label="item.value" :value="item.value"></el-option>
+      <el-option v-for="item in qu1" :key="item.id" :label="item.value" :value="item.id"></el-option>
     </el-select>
     <el-select class="sel" v-model="sitename" @change="choseSite" placeholder="站点名称">
-      <el-option v-for="item in sitelist" :key="item.id" :label="item.value" :value="item.value"></el-option>
+      <el-option v-for="item in sitelist" :key="item.SiteId" :label="item.SiteName" :value="item.SiteId"></el-option>
     </el-select>
   </div>
 </template>
@@ -21,6 +21,17 @@ import mapdata from "../mapdata";
 export default {
   name: "sitethreeselect",
   methods: {
+    //清空所有数据
+    cleardata(){
+      this.sheng=''
+      this.$store.state.sheng=''
+      this.shi=''
+      this.$store.state.shi=''
+      this.qu=''
+      this.$store.state.qu=''
+      this.sitename=''
+      this.$store.state.sitename=''
+    },
     // 加载china地点数据，三级
     getCityData: function() {
       var that = this;
@@ -74,9 +85,11 @@ export default {
     choseProvince: function(e) {
       for (var index2 in this.province) {
         if (e === this.province[index2].id) {
-        //   console.log(this.province[index2].id); //你选择的省级编码
-        //   console.log(this.province[index2].value); //省级编码 对应的汉字
-        //     console.log(this.sheng)
+          //   console.log(this.province[index2].id); //你选择的省级编码
+          //   console.log(this.province[index2].value); //省级编码 对应的汉字
+          // console.log(this.sheng)
+          console.log(mapdata[this.sheng]);
+          this.$store.state.sheng=mapdata[this.sheng]
           this.shi1 = this.province[index2].children;
           //   this.shi = this.province[index2].children[0].value;
           //   this.qu1 = this.province[index2].children[0].children;
@@ -89,9 +102,11 @@ export default {
     choseCity: function(e) {
       for (var index3 in this.city) {
         if (e === this.city[index3].id) {
-        //   console.log(this.city[index3].id);
-        //   console.log(this.city[index3].value);
-        //   console.log(this.shi)
+          //   console.log(this.city[index3].id);
+          //   console.log(this.city[index3].value);
+          console.log(this.shi);
+          console.log(mapdata[this.shi]);
+          this.$store.state.shi=mapdata[this.shi]
           this.qu1 = this.city[index3].children;
           //   this.qu = this.city[index3].children[0].value;
           //   this.E = this.qu1[0].id;
@@ -101,13 +116,22 @@ export default {
     },
     // 选区
     choseBlock: function(e) {
-    //   this.E = e;
-    //   console.log(e);
-      console.log(this.qu);
-      this.sitelist=this.namelist
+      //   this.E = e;
+      //   console.log(e);
+      // console.log(this.qu);
+      console.log(mapdata[this.qu]);
+      this.$store.state.qu=mapdata[this.qu]
+      this.$axios
+        .post("SiteManage/GetSiteName", { Area: mapdata[this.qu] })
+        .then(res => {
+          console.log(res.data.Data, "这是地址联动");
+          this.sitelist = res.data.Data;
+        });
     },
-    choseSite: function() {
-        console.log(this.sitename)
+    choseSite: function(e) {
+      console.log(e);
+      console.log(this.sitename,'sitename');
+      this.$store.state.sitename=this.sitename
     }
   },
   created: function() {
@@ -124,19 +148,20 @@ export default {
       qu1: [],
       city: "",
       block: "",
-      sitename:'',
-      sitelist: [],
-      namelist:[{id:0,value:'德邦'},{id:1,value:'盖伦'},]
+      sitename: "",
+      sitelist: []
+      // namelist:[{id:0,value:'德邦'},{id:1,value:'盖伦'},]
     };
   }
 };
 </script>
 <style lang="stylus" scoped>
-.sitethreeselect{
-    margin-bottom 30px
-    display inline-block
-    margin-right 80px
+.sitethreeselect {
+  margin-bottom: 30px;
+  display: inline-block;
+  margin-right: 80px;
 }
+
 .name {
   margin-right: 10px;
 }

@@ -21,6 +21,7 @@
     @moving="syncCenterAndZoom"
     @moveend="syncCenterAndZoom"
     @zoomend="syncCenterAndZoom"
+    ak="z7TojHQEi0GxfxXkhKtTUzjlKYXrOdbP"
   >
     <div class="content">
       <div
@@ -42,11 +43,11 @@
     <!-- 比例尺 -->
     <bm-scale anchor="BMAP_ANCHOR_TOP_LEFT"/>
     <!-- 点击定位 -->
-    <bm-geolocation
+    <!-- <bm-geolocation
       :show-address-bar="true"
       :auto-location="true"
       anchor="BMAP_ANCHOR_BOTTOM_RIGHT"
-    />
+    /> -->
 
     <!-- 检索地址 -->
     <bm-local-search
@@ -54,7 +55,7 @@
       :auto-viewport="true"
       :panel="false"
       :location="location"
-      :select-first-result="true"
+      :select-first-result="false"
       :page-capacity="1"
     />
     <!-- </bm-marker> -->
@@ -62,22 +63,24 @@
 </template>
 
 <script>
-// import BaiduMap from "vue-baidu-map/components/map/Map.vue";
-// import BmPointCollection from "vue-baidu-map/components/overlays/PointCollection.vue";
-// import BmNavigation from "vue-baidu-map/components/controls//Navigation.vue";
-// import BmMarker from "vue-baidu-map/components/overlays/Marker.vue";
-// import BmGeolocation from "vue-baidu-map/components/controls/Geolocation.vue";
-// import BmScale from "vue-baidu-map/components/controls/Scale";
+import BaiduMap from "vue-baidu-map/components/map/Map.vue";
+import BmPointCollection from "vue-baidu-map/components/overlays/PointCollection.vue";
+import BmNavigation from "vue-baidu-map/components/controls//Navigation.vue";
+import BmMarker from "vue-baidu-map/components/overlays/Marker.vue";
+import BmGeolocation from "vue-baidu-map/components/controls/Geolocation.vue";
+import BmScale from "vue-baidu-map/components/controls/Scale";
+import BmLocalSearch from "vue-baidu-map/components/search/LocalSearch";
 export default {
   name: "baidumap",
-  // components: {
-  //   BaiduMap,
-  //   BmPointCollection,
-  //   BmNavigation,
-  //   BmMarker,
-  //   BmGeolocation,
-  //   BmScale,
-  // },
+  components: {
+    BaiduMap,
+    BmPointCollection,
+    BmNavigation,
+    BmMarker,
+    BmGeolocation,
+    BmScale,
+    BmLocalSearch
+  },
   // data() {
   //   return {
   //     center: { lng: 116.404, lat: 39.915 },
@@ -94,14 +97,16 @@ export default {
     locationData: {
       type: String,
       default: "浙江省杭州市上城区太和广场"
-    }
+    },
+    msg:'',
+    keyword:''
   },
   data() {
     return {
       center: { lng: 116.404, lat: 39.915 },
-      location: "杭州",
-      keyword: "上城区太和广场",
+      location: "",
       zoom: 15,
+      // keyword:,
       loclist: [
         {id:0, location: "杭州", keyword: "滨江区宝龙城" },
         {id:1, location: "上海", keyword: "东方明珠" },
@@ -110,15 +115,17 @@ export default {
       ]
     };
   },
+  mounted(){
+    // console.log(this.keyword,'地图组件')
+  },
   methods: {
     handler({ BMap, map }) {
       // console.log('定位数据bmap', BMap, 'map-------->', map.Oe)
     },
     changemark(e) {
       console.log(e.currentTarget.id);
-      this.location=this.loclist[e.currentTarget.id].location
-      this.keyword=this.loclist[e.currentTarget.id].keyword
-      // console.log(this.location+this.keyword)
+      // this.location=this.loclist[e.currentTarget.id].location
+      // this.keyword=this.loclist[e.currentTarget.id].keyword
     },
     getClickInfo(e) {
       this.center.lng = e.point.lng;

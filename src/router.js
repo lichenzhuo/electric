@@ -17,10 +17,32 @@ import companyinfo from "./components/companyinfo";
 import machineinfo from "./components/machineinfo";
 import message from "./components/message";
 import morefunction from "./components/morefunction";
+import usermanage  from "./components/usermanage";
+import positionmanage from "./components/positionmanage";
+// const Vue = () => import('vue')
+// const Router = () => import('vue-router')
+// const Index = () => import('./views/index.vue')
+// const Register = () => import('./views/Register')
+// const Login = () => import('./views/login')
+// const NotFound = () => import('./views/404.vue')
+// const defaulthome = () => import('./components/defaulthome')
+// const singalwarn = () => import('./components/singalwarn')
+// const singalwarning = () => import('./components/singalwarning')
+// const singalsite = () => import('./components/singalsite')
+// const personinfo = () => import('./components/personinfo')
+// const warnlog = () => import('./components/warnlog')
+// const warninglog = () => import('./components/warninglog')
+// const machinemanage = () => import('./components/machinemanage')
+// const sitemanage = () => import('./components/sitemanage')
+// const companyinfo = () => import('./components/companyinfo')
+// const machineinfo = () => import('./components/machineinfo')
+// const message = () => import('./components/message')
+// const morefunction = () => import('./components/morefunction')
+// const usermanage = () => import('./components/usermanage')
+// const positionmanage = () => import('./components/positionmanage')
 Vue.use(Router)
-
 export default new Router({
-  mode:'history',
+  mode:'hash',
   routes: [
     {
       path: '/',
@@ -45,6 +67,8 @@ export default new Router({
         { path: '/machineinfo', name: 'machineinfo', component: machineinfo },
         { path: '/message', name: 'message', component: message },
         { path: '/morefunction', name: 'morefunction', component: morefunction },
+        { path: '/usermanage', name: 'usermanage', component: usermanage },
+        { path: '/positionmanage', name: 'positionmanage', component: positionmanage },
       ]
        
     },
@@ -65,3 +89,4 @@ export default new Router({
     },
   ]
 })
+ 

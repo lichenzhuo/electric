@@ -70,6 +70,14 @@
             </template>
           </el-menu-item>
         </el-submenu>
+        <el-menu-item index="/usermanage">
+          <i class="el-icon-user-solid"></i>
+          <span slot="title">用户管理</span>
+        </el-menu-item>
+        <el-menu-item index="/positionmanage">
+          <i class="el-icon-s-custom"></i>
+          <span slot="title">职务管理</span>
+        </el-menu-item>
         <el-menu-item index="/message">
           <i class="el-icon-s-comment"></i>
           <span slot="title">消息反馈</span>

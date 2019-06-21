@@ -1,15 +1,11 @@
 <template>
   <div class="singalwarn">
     <div class="top">
-      <div class="block con">
-        <!-- <span class="tip">站点名称</span>
-        <el-cascader expand-trigger="hover" :options="options" v-model="selectedOptions2"></el-cascader> -->
-         <sitethreeselect></sitethreeselect>
-      </div>
+      <sitethreeselect ref="threeselect"></sitethreeselect>
       <div class="block con">
         <span class="tip" style="padding-left:2em">时间</span>
         <el-date-picker
-          v-model="value2"
+          v-model="timevalue"
           type="daterange"
           align="right"
           unlink-panels
@@ -17,107 +13,110 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :picker-options="pickerOptions"
+          value-format="yyyy-MM-dd"
         ></el-date-picker>
       </div>
       <div class="con">
         <span class="tip">监测类型</span>
-        <el-select v-model="value" placeholder="请选择">
+        <el-select v-model="jcvalue" placeholder="请选择" @change="selchange">
           <el-option
             v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            :key="item.JCTypeName"
+            :label="item.JCTypeName"
+            :value="item.Id"
           ></el-option>
         </el-select>
       </div>
-       <el-button type="primary" round style="margin-left:20px">清空</el-button>
-      <el-button type="primary" round style="margin-left:20px">搜索</el-button>
+      <el-button type="primary" round style="margin-left:20px" @click="clearData">清空</el-button>
+      <el-button type="primary" round style="margin-left:20px" @click="search">搜索</el-button>
     </div>
     <el-divider></el-divider>
     <div class="table">
-      <el-table
-        :data="table.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-        border
-        style="width: 100%"
-        header-cell-class-name='tablebg'
-      >
-        <el-table-column align="center" prop="0" label="预警时间" width="160"></el-table-column>
-        <el-table-column align="center" prop="one" label="地区">
+      <el-table :data="tableData" border style="width: 100%" header-cell-class-name="tablebg">
+        <el-table-column align="center" prop="Area" label="地区"></el-table-column>
+        <el-table-column align="center" prop="Address" label="具体地点"></el-table-column>
+        <el-table-column align="center" prop="SiteName" label="站点"></el-table-column>
+        <el-table-column align="center" prop="MachinaryId" label="机器编号"></el-table-column>
+        <el-table-column align="center" prop="One_Bus_Voltage" label="一段母线电压">
           <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
+            <span>{{scope.row.One_Bus_Voltage}}V</span>
+            <!-- <span v-if="scope.row.One_Bus_Voltage=='220'">{{scope.row.One_Bus_Voltage}}V</span>
+            <span v-else style="color: red">{{scope.row.One_Bus_Voltage}}V</span>-->
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="2" label="地点">
+        <el-table-column align="center" prop="One_Positive_Voltage" label="一段正对地电压">
           <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
+            <span>{{scope.row.One_Positive_Voltage}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="3" label="机器编号">
+        <el-table-column align="center" prop="One_Negative_Voltage" label="一段负对地电压">
           <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
+            <span>{{scope.row.One_Positive_Voltage}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="4" label="母线电压">
+        <el-table-column align="center" prop="One_Positive_Resistance" label="一段正对地电阻">
           <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
+            <span>{{scope.row.One_Positive_Resistance}}kΩ</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="5" label="正极电压">
+        <el-table-column align="center" prop="One_Negative_Resistance" label="一段负对地电阻">
           <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
+            <span>{{scope.row.One_Negative_Resistance}}kΩ</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="6" label="负极电压">
+        <el-table-column align="center" prop="One_AC_Voltage" label="一段对地交流电压">
           <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
+            <span>{{scope.row.One_AC_Voltage}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="7" label="正负压差">
+        <el-table-column align="center" prop="Two_Bus_Voltage" label="二段母线电压">
           <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
+            <span>{{scope.row.Two_Bus_Voltage}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="8" label="交流电压">
+        <el-table-column align="center" prop="Two_Positive_Voltage" label="二段正对地电压">
           <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
+            <span>{{scope.row.Two_Positive_Voltage}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="9" label="纹波电压">
+        <el-table-column align="center" prop="Two_Negative_Voltage" label="二段负对地电压">
           <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
+            <span>{{scope.row.Two_Negative_Voltage}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="10" label="正极绝缘">
+        <el-table-column align="center" prop="Two_Positive_Resistance" label="二段正对地电阻">
           <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
+            <span>{{scope.row.Two_Positive_Resistance}}kΩ</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="11" label="负极绝缘">
+        <el-table-column align="center" prop="Two_Negative_Resistance" label="二段负对地电阻">
           <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
+            <span>{{scope.row.Two_Negative_Resistance}}kΩ</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="12" label="母联绝缘">
+        <el-table-column align="center" prop="Two_AC_Voltage" label="二段对地交流电压">
           <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
+            <span>{{scope.row.Two_AC_Voltage}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="13" label="支路绝缘">
+        <el-table-column align="center" prop="BranchNum" label="支路号">
           <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}</span>
-            <span v-else style="color: red">{{scope.row.one}}</span>
+            <span>{{scope.row.BranchNum}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" prop="Positive_Insulation" label="支路正绝缘">
+          <template scope="scope">
+            <span>{{scope.row.Positive_Insulation}}kΩ</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" prop="Negative_Insulation" label="支路负绝缘">
+          <template scope="scope">
+            <span>{{scope.row.Negative_Insulation}}kΩ</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" prop="Capacitance" label="支路电容">
+          <template scope="scope">
+            <span>{{scope.row.Capacitance}}uF</span>
           </template>
         </el-table-column>
       </el-table>
@@ -127,7 +126,7 @@
           background
           :page-size="pagesize"
           layout="prev, pager, next, jumper"
-          :total="table.length"
+          :total="10"
         ></el-pagination>
       </div>
     </div>
@@ -136,21 +135,68 @@
 
 <script>
 import sitethreeselect from "./sitethreeselect";
+// import axios from "../http.js";
 export default {
   name: "warninglog",
-   components:{
+  components: {
     sitethreeselect
   },
   created() {
-    this.getRouterData();
+    this.getTableData();
+  },
+  mounted() {
+    this.GetJCType();
   },
   methods: {
+    oncli(e) {
+      console.log(e);
+      console.log(this.timevalue);
+    },
+    GetJCType() {
+      this.$axios.get("Types/GetJCType").then(res => {
+        this.$store.state.jclist = res.data.Data;
+        console.log(this.$store.state.jclist, "111");
+        this.options = this.$store.state.jclist;
+      });
+    },
+    selchange(e) {
+      console.log(e);
+    },
+    clearData(e) {
+      this.$refs.threeselect.cleardata();
+      this.timevalue=''
+      this.jcvalue=''
+    },
+    search() {
+      console.log(
+        this.$store.state.sheng +
+          "+" +
+          this.$store.state.shi +
+          "+" +
+          this.$store.state.qu +
+          "+" +
+          this.$store.state.sitename
+      );
+      console.log(this.timevalue, "时间");
+      console.log(this.jcvalue,'监测类型');
+      this.$axios
+        .post("MachineData/GetAlarmLogPageList", { AlarmSize: 5, PageIndex: 1,SiteId:this.$store.state.sitename,StartTime:this.timevalue[0],EndTime:this.timevalue[1]})
+        .then(res => {
+          console.log(res.data.Data);
+          this.tableData=res.data.Data
+        });
+    },
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
     },
-    getRouterData() {
-      this.id = this.$route.params.id;
-      // console.log(this.id, "这是新路由接收的");
+    getTableData() {
+      this.$axios
+        .post("MachineData/GetAlarmLogPageList", { AlarmSize: 5, PageIndex: 1 })
+        .then(res => {
+          console.log(res.data.Data);
+          this.tableData=res.data.Data
+        });
+      // this.id = this.$route.params.id;
     }
   },
   data() {
@@ -158,308 +204,7 @@ export default {
       total: 0,
       currentPage: 1,
       pagesize: 10,
-      table: [
-        {
-          0: "2019-05-21",
-          one: "122v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "21v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "saa2019-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2fg019-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-fg50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "12df2v",
-          3: "-50v",
-          4: "200",
-          5: "22dfgdf0v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "2dfgdf2v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "dgdf9v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "122v",
-          3: "hdfg0v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "201f-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22fhfgv",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22fgv",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "hfghf2v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22gv",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "hfgh2v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "25432v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2069-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "20456542fgdf1",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "20145dasdsa",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "20176dgdf",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "122kv",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "1hj22v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "23442v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "2a642v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        }
-      ],
+      tableData: [],
       pickerOptions: {
         shortcuts: [
           {
@@ -491,277 +236,10 @@ export default {
           }
         ]
       },
-      value2: "",
-      options: [
-        {
-          value: "zhinan",
-          label: "指南",
-          children: [
-            {
-              value: "shejiyuanze",
-              label: "设计原则",
-              children: [
-                {
-                  value: "yizhi",
-                  label: "一致"
-                },
-                {
-                  value: "fankui",
-                  label: "反馈"
-                },
-                {
-                  value: "xiaolv",
-                  label: "效率"
-                },
-                {
-                  value: "kekong",
-                  label: "可控"
-                }
-              ]
-            },
-            {
-              value: "daohang",
-              label: "导航",
-              children: [
-                {
-                  value: "cexiangdaohang",
-                  label: "侧向导航"
-                },
-                {
-                  value: "dingbudaohang",
-                  label: "顶部导航"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          value: "zujian",
-          label: "组件",
-          children: [
-            {
-              value: "basic",
-              label: "Basic",
-              children: [
-                {
-                  value: "layout",
-                  label: "Layout 布局"
-                },
-                {
-                  value: "color",
-                  label: "Color 色彩"
-                },
-                {
-                  value: "typography",
-                  label: "Typography 字体"
-                },
-                {
-                  value: "icon",
-                  label: "Icon 图标"
-                },
-                {
-                  value: "button",
-                  label: "Button 按钮"
-                }
-              ]
-            },
-            {
-              value: "form",
-              label: "Form",
-              children: [
-                {
-                  value: "radio",
-                  label: "Radio 单选框"
-                },
-                {
-                  value: "checkbox",
-                  label: "Checkbox 多选框"
-                },
-                {
-                  value: "input",
-                  label: "Input 输入框"
-                },
-                {
-                  value: "input-number",
-                  label: "InputNumber 计数器"
-                },
-                {
-                  value: "select",
-                  label: "Select 选择器"
-                },
-                {
-                  value: "cascader",
-                  label: "Cascader 级联选择器"
-                },
-                {
-                  value: "switch",
-                  label: "Switch 开关"
-                },
-                {
-                  value: "slider",
-                  label: "Slider 滑块"
-                },
-                {
-                  value: "time-picker",
-                  label: "TimePicker 时间选择器"
-                },
-                {
-                  value: "date-picker",
-                  label: "DatePicker 日期选择器"
-                },
-                {
-                  value: "datetime-picker",
-                  label: "DateTimePicker 日期时间选择器"
-                },
-                {
-                  value: "upload",
-                  label: "Upload 上传"
-                },
-                {
-                  value: "rate",
-                  label: "Rate 评分"
-                },
-                {
-                  value: "form",
-                  label: "Form 表单"
-                }
-              ]
-            },
-            {
-              value: "data",
-              label: "Data",
-              children: [
-                {
-                  value: "table",
-                  label: "Table 表格"
-                },
-                {
-                  value: "tag",
-                  label: "Tag 标签"
-                },
-                {
-                  value: "progress",
-                  label: "Progress 进度条"
-                },
-                {
-                  value: "tree",
-                  label: "Tree 树形控件"
-                },
-                {
-                  value: "pagination",
-                  label: "Pagination 分页"
-                },
-                {
-                  value: "badge",
-                  label: "Badge 标记"
-                }
-              ]
-            },
-            {
-              value: "notice",
-              label: "Notice",
-              children: [
-                {
-                  value: "alert",
-                  label: "Alert 警告"
-                },
-                {
-                  value: "loading",
-                  label: "Loading 加载"
-                },
-                {
-                  value: "message",
-                  label: "Message 消息提示"
-                },
-                {
-                  value: "message-box",
-                  label: "MessageBox 弹框"
-                },
-                {
-                  value: "notification",
-                  label: "Notification 通知"
-                }
-              ]
-            },
-            {
-              value: "navigation",
-              label: "Navigation",
-              children: [
-                {
-                  value: "menu",
-                  label: "NavMenu 导航菜单"
-                },
-                {
-                  value: "tabs",
-                  label: "Tabs 标签页"
-                },
-                {
-                  value: "breadcrumb",
-                  label: "Breadcrumb 面包屑"
-                },
-                {
-                  value: "dropdown",
-                  label: "Dropdown 下拉菜单"
-                },
-                {
-                  value: "steps",
-                  label: "Steps 步骤条"
-                }
-              ]
-            },
-            {
-              value: "others",
-              label: "Others",
-              children: [
-                {
-                  value: "dialog",
-                  label: "Dialog 对话框"
-                },
-                {
-                  value: "tooltip",
-                  label: "Tooltip 文字提示"
-                },
-                {
-                  value: "popover",
-                  label: "Popover 弹出框"
-                },
-                {
-                  value: "card",
-                  label: "Card 卡片"
-                },
-                {
-                  value: "carousel",
-                  label: "Carousel 走马灯"
-                },
-                {
-                  value: "collapse",
-                  label: "Collapse 折叠面板"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          value: "ziyuan",
-          label: "资源",
-          children: [
-            {
-              value: "axure",
-              label: "Axure Components"
-            },
-            {
-              value: "sketch",
-              label: "Sketch Templates"
-            },
-            {
-              value: "jiaohu",
-              label: "组件交互文档"
-            }
-          ]
-        }
-      ],
+      timevalue: "",
+      options: [],
       selectedOptions2: [],
-      value: ""
+      jcvalue: ""
     };
   }
 };
@@ -796,19 +274,11 @@ export default {
     margin-right: 10px;
   }
 
-  .machineName {
-    padding: 0 78px;
-    margin-bottom: 20px;
-    font-size: 18px;
-
-    .box {
-      margin-right: 58px;
-    }
-  }
-
   .table {
     margin-top: 50px;
-    padding: 0 78px;
+    text-align: center;
+    padding: 0;
+    width: 1601px;
   }
 
   .color {
@@ -828,10 +298,11 @@ export default {
   .indent {
     padding: left 2em;
   }
-  .tablebg{
-    background-color #409EFF
-    color #ffffff
-    font-size 18px
+
+  .tablebg {
+    background-color: #409EFF;
+    color: #ffffff;
+    font-size: 18px;
   }
 }
 </style>
