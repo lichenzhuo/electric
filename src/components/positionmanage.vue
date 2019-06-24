@@ -4,28 +4,28 @@
       <!-- <div class="block con">
          <sitethreeselect></sitethreeselect>
       </div>-->
-    
+
       <div class="con">
         <span class="tip">职务编号</span>
-        <el-input style="width:auto" v-model="machinenumber" placeholder="请输入内容"></el-input>
+        <el-input style="width:auto" v-model="PositionId" placeholder="请输入内容"></el-input>
       </div>
       <div class="block con">
         <span class="tip" style="padding-left:2em">部门</span>
-        <el-select v-model="bumen" placeholder="请选择">
+        <el-select v-model="DepartmentId" placeholder="请选择">
           <el-option
-            v-for="item in bumentype"
+            v-for="item in DepartmentType"
             :key="item.value"
             :label="item.label"
             :value="item.value"
           ></el-option>
         </el-select>
       </div>
-     
+
       <div class="block con">
         <span class="tip">职务名称</span>
-        <el-select v-model="role" placeholder="请选择">
+        <el-select v-model="PositionName" placeholder="请选择">
           <el-option
-            v-for="item in roletype"
+            v-for="item in PositionType"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -45,9 +45,9 @@
           style="padding-left:40px"
         >
           <el-form-item label="职务名称">
-            <el-select v-model="formLabelAlign.role" placeholder="请选择">
+            <el-select v-model="formLabelAlign.PositionName" placeholder="请选择">
               <el-option
-                v-for="item in roletype"
+                v-for="item in PositionType"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -55,9 +55,9 @@
             </el-select>
           </el-form-item>
           <el-form-item label="部门">
-            <el-select v-model="formLabelAlign.bumen" placeholder="请选择">
+            <el-select v-model="formLabelAlign.DepartmentId" placeholder="请选择">
               <el-option
-                v-for="item in bumentype"
+                v-for="item in DepartmentType"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -74,29 +74,28 @@
         <el-button type="primary" @click="sureForm">确 定</el-button>
       </span>
     </el-dialog>
-    
+
     <el-divider></el-divider>
     <div class="table">
       <el-table
-        :data="table.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+        :data="table"
         border
         style="width: 100%"
         @row-click="rowclick"
         header-cell-class-name="tablebg"
       >
-        <el-table-column align="center" prop="0" label="职务编号" width="160"></el-table-column>
-        <el-table-column align="center" prop="1" label="职务名称"></el-table-column>
-        <el-table-column align="center" prop="2" label="部门"></el-table-column>
-        <el-table-column align="center" prop="3" label="备注">
-        </el-table-column>
+        <el-table-column align="center" prop="PositionId" label="职务编号" width="160"></el-table-column>
+        <el-table-column align="center" prop="PositionName" label="职务名称"></el-table-column>
+        <el-table-column align="center" prop="DepartmentId" label="部门"></el-table-column>
+        <el-table-column align="center" prop="Remarks" label="备注"></el-table-column>
       </el-table>
       <div class="page">
-        <el-pagination
-          @current-change="handleCurrentChange"
+       <el-pagination
           background
-          :page-size="pagesize"
-          layout="prev, pager, next, jumper"
-          :total="table.length"
+          layout="prev, pager, next"
+          :total="10"
+          :page-size="10"
+          @current-change="handleSizeChange"
         ></el-pagination>
       </div>
     </div>
@@ -107,14 +106,75 @@
 // import sitethreeselect from "./sitethreeselect";
 // import { regionData, CodeToText } from "element-china-area-data";
 export default {
+   data() {
+    return {
+      PositionId:'',
+      DepartmentId:'',
+      DepartmentType:'',
+      PositionName:'',
+      PositionType:'',
+      table: [],
+      total: "" || 10,
+      //   optionone: regionData,
+      selectedOptions: [],
+      dialogVisible: false,
+      formLabelAlign: {
+        name: "",
+        region: "",
+        type: "",
+        company: "",
+        type: []
+      },
+      
+    };
+  },
   name: "positionmanage",
   //    components:{
   //     sitethreeselect
   //   },
   created() {
-    // this.getRouterData();
+    this.getTypeList();
+    this.getAllCount();
   },
   methods: {
+    getTypeList() {
+      //用户列表
+      this.$axios
+        .post("PositionManager/GetPositionPagerList", {
+          PageSize: 10,
+          PageIndex: "1",
+          PositionId: "",
+          PositionName: "",
+          DepartmentId: ""
+        })
+        .then(res => {
+          // console.log(res.data.Data);
+          this.table = res.data.Data;
+        });
+      //部门
+      this.$axios.get("Types/GetDepartmentType").then(res => {
+        // console.log(res.data.Data,'部门');
+        this.DepartmentNametype = res.data.Data;
+      });
+      //职务
+      this.$axios.get("PositionManager/GetPositionNameList").then(res => {
+        // console.log(res.data.Data,'职务');
+        this.PositionNametype = res.data.Data;
+      });
+    },
+    getAllCount() {
+      this.$axios
+        .post("PositionManager/GetALLCount", {
+          PositionId: "",
+          PositionName: "",
+          DepartmentId: ""
+        })
+        .then(res => {
+          console.log(typeof res.data.Data, "总条数");
+          this.total = res.data.Data;
+          console.log(this.total);
+        });
+    },
     sureForm() {
       this.dialogVisible = false;
       console.log(this.formLabelAlign.type);
@@ -122,13 +182,8 @@ export default {
     surePosition() {
       this.positiondialog = false;
     },
-    handleCurrentChange(currentPage) {
-      this.currentPage = currentPage;
-    },
-    getRouterData() {
-      this.id = this.$route.params.id;
-      // console.log(this.id, "这是新路由接收的");
-    },
+    
+   
     query() {
       this.$message({
         message: "点击查询成功",
@@ -150,100 +205,9 @@ export default {
         CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
       );
     },
-    positionEdit(row) {
-      console.log(row.id);
-      this.positiondialog = true;
-    }
+    handleSizeChange(){},
   },
-  data() {
-    return {
-      position: "",
-      //   optionone: regionData,
-      selectedOptions: [],
-      dialogVisible: false,
-      positiondialog: false,
-      formLabelAlign: {
-        name: "",
-        region: "",
-        type: "",
-        company: "",
-        type: []
-      },
-      total: 0,
-      currentPage: 1,
-      pagesize: 5,
-      table: [
-        {
-          id: "0",
-          0: "0102051",
-          1: "张三",
-          2: "管理员"
-        },
-        {
-          id: "1",
-          0: "0102052",
-          1: "李四",
-          2: "运行人员"
-        },
-        {
-          id: "2",
-          0: "0102053",
-          1: "王二",
-          2: "维护人员"
-        },
-        {
-          id: "3",
-          0: "0102054",
-          1: "张记",
-          2: "厂家人员"
-        }
-      ],
-      value: "",
-      machinenumber: "",
-      sextype: [
-        {
-          value: "man",
-          label: "男"
-        },
-        {
-          value: "woman",
-          label: "女"
-        }
-      ],
-      sex: "",
-      roletype: [
-        {
-          value: "0",
-          label: "管理员"
-        },
-        {
-          value: "1",
-          label: "运行人员"
-        },
-        {
-          value: "2",
-          label: "维护人员"
-        },
-        {
-          value: "3",
-          label: "厂家人员"
-        }
-      ],
-      role: "",
-      bumentype: [
-        {
-          value: "0",
-          label: "生产部门"
-        },
-        {
-          value: "1",
-          label: "维护部门"
-        }
-      ],
-      bumen: "",
-      company: ""
-    };
-  }
+ 
 };
 </script>
 

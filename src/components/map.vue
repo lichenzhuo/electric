@@ -11,7 +11,7 @@
   </baidu-map>-->
   <baidu-map
     :zoom="zoom"
-    :scroll-wheel-zoom="false"
+    :scroll-wheel-zoom="true"
     :inertial-dragging="true"
     :continuous-zoom="true"
     :center="locationData"
@@ -24,13 +24,15 @@
     ak="z7TojHQEi0GxfxXkhKtTUzjlKYXrOdbP"
   >
     <div class="content">
+      <div class="number" style="text-align:center" @click="lookwhole">总览</div>
       <div
         class="number"
-        v-for="item in loclist"
-        v-bind:key="item.index"
-        v-bind:id="item.id"
-        @click="changemark"
-      >{{item.location}}+{{item.keyword}}</div>
+        v-for="(item,index) in listData"
+        v-bind:key="index"
+        v-bind:index="index"
+        v-bind:id="item.Id"
+        @click="changemark(item,index)"
+      >{{item.local}}</div>
     </div>
     <!-- 拖拽点 -->
     <!-- <bm-marker
@@ -47,14 +49,13 @@
       :show-address-bar="true"
       :auto-location="true"
       anchor="BMAP_ANCHOR_BOTTOM_RIGHT"
-    /> -->
+    />-->
 
     <!-- 检索地址 -->
     <bm-local-search
-      :keyword="keyword"
+      :keyword="locallist"
       :auto-viewport="true"
       :panel="false"
-      :location="location"
       :select-first-result="false"
       :page-capacity="1"
     />
@@ -98,8 +99,9 @@ export default {
       type: String,
       default: "浙江省杭州市上城区太和广场"
     },
-    msg:'',
-    keyword:''
+    msg: "",
+    locallist: "",
+    listData: ""
   },
   data() {
     return {
@@ -108,24 +110,31 @@ export default {
       zoom: 15,
       // keyword:,
       loclist: [
-        {id:0, location: "杭州", keyword: "滨江区宝龙城" },
-        {id:1, location: "上海", keyword: "东方明珠" },
-        {id:2, location: "北京", keyword: "天安门" },
-        {id:3, location: "杭州", keyword: "太和广场" },
+        { id: 0, location: "杭州", keyword: "滨江区宝龙城" },
+        { id: 1, location: "上海", keyword: "东方明珠" },
+        { id: 2, location: "北京", keyword: "天安门" },
+        { id: 3, location: "杭州", keyword: "太和广场" }
       ]
     };
   },
-  mounted(){
+  mounted() {
     // console.log(this.keyword,'地图组件')
   },
   methods: {
     handler({ BMap, map }) {
       // console.log('定位数据bmap', BMap, 'map-------->', map.Oe)
     },
-    changemark(e) {
-      console.log(e.currentTarget.id);
+    changemark(item, index) {
+      console.log(item.Id);
+      console.log(index);
+      // this.locallist=this.listData[index].local
+      this.$emit("changemake", index);
       // this.location=this.loclist[e.currentTarget.id].location
       // this.keyword=this.loclist[e.currentTarget.id].keyword
+    },
+    lookwhole() {
+      // this.locallist=this.listData
+      this.$emit("lookwhole");
     },
     getClickInfo(e) {
       this.center.lng = e.point.lng;
@@ -153,7 +162,7 @@ export default {
 .content {
   position: absolute;
   top: 20px;
-  right: 50px;
+  right: 20px;
   background-color: #ffffff;
   padding: 20px;
 }
