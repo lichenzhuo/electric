@@ -122,11 +122,11 @@
       </el-table>
       <div class="page">
         <el-pagination
-          @current-change="handleCurrentChange"
           background
-          :page-size="pagesize"
-          layout="prev, pager, next, jumper"
-          :total="10"
+          layout="prev, pager, next"
+          :total="total"
+          :page-size="5"
+          @current-change="handleSizeChange"
         ></el-pagination>
       </div>
     </div>
@@ -149,10 +149,6 @@ export default {
     this.GetJCType();
   },
   methods: {
-    oncli(e) {
-      console.log(e);
-      console.log(this.timevalue);
-    },
     GetJCType() {
       this.$axios.get("Types/GetJCType").then(res => {
         this.$store.state.jclist = res.data.Data;
@@ -208,10 +204,23 @@ export default {
     getDataNumber() {
       this.$axios.post("MachineData/GetAlertLogAllCount",{SiteId:'',StartTime:'',EndTime:''}).then(res => {
         console.log(res.data.Data);
+        this.total=res.data.Data
       });
-       this.$axios.post("MachineData/GetErrorAllCount").then(res => {
-        console.log(res.data.Data);
-      });
+    },
+    handleSizeChange(e) {
+      console.log(e)
+       this.$axios
+        .post("MachineData/GetAlertLogPageList", {
+          PageSize: 5,
+          PageIndex: e,
+          SiteName: "",
+          StartTime: "",
+          EndTime: ""
+        })
+        .then(res => {
+          // console.log(res.data.Data);
+          this.table = res.data.Data;
+        });
     }
   },
   data() {
@@ -254,7 +263,8 @@ export default {
       timevalue: "",
       options: [],
       selectedOptions2: [],
-      jcvalue: ""
+      jcvalue: "",
+      total:''||5,
     };
   }
 };

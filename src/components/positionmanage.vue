@@ -13,10 +13,10 @@
         <span class="tip" style="padding-left:2em">部门</span>
         <el-select v-model="DepartmentId" placeholder="请选择">
           <el-option
-            v-for="item in DepartmentType"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in DepartmentNametype"
+            :key="item.Id"
+            :label="item.DepartmentName"
+            :value="item.Id"
           ></el-option>
         </el-select>
       </div>
@@ -25,18 +25,19 @@
         <span class="tip">职务名称</span>
         <el-select v-model="PositionName" placeholder="请选择">
           <el-option
-            v-for="item in PositionType"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in PositionNametype"
+            :key="item.PositionId"
+            :label="item.PositionName"
+            :value="item.PositionName"
           ></el-option>
         </el-select>
       </div>
       <el-button type="primary" round style="margin-left:20px" @click="query">查询</el-button>
-      <el-button type="primary" round style="margin-left:20px" @click="dialogVisible = true">新增用户</el-button>
+      <el-button type="primary" round style="margin-left:20px" @click="clear">清空</el-button>
+      <el-button type="primary" round style="margin-left:20px" @click="dialogVisible = true">新增职务</el-button>
     </div>
     <el-dialog :visible.sync="dialogVisible" width="25%" :show-close="false" center>
-      <div slot="title">新增用户</div>
+      <div slot="title">新增职务</div>
       <span>
         <el-form
           label-position="right"
@@ -44,28 +45,31 @@
           :model="formLabelAlign"
           style="padding-left:40px"
         >
+         <el-form-item label="职务编号">
+            <el-input style="width:217px" v-model="formLabelAlign.PositionId" placeholder="请输入内容"></el-input>
+          </el-form-item>
           <el-form-item label="职务名称">
             <el-select v-model="formLabelAlign.PositionName" placeholder="请选择">
               <el-option
-                v-for="item in PositionType"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in PositionNametype"
+                :key="item.PositionId"
+                :label="item.PositionName"
+                :value="item.PositionName"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="部门">
             <el-select v-model="formLabelAlign.DepartmentId" placeholder="请选择">
               <el-option
-                v-for="item in DepartmentType"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in DepartmentNametype"
+                :key="item.Id"
+                :label="item.DepartmentName"
+                :value="item.Id"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="备注">
-            <el-input style="width:217px" v-model="formLabelAlign.name" placeholder="请输入内容"></el-input>
+            <el-input style="width:217px" v-model="formLabelAlign.Remarks" placeholder="请输入内容"></el-input>
           </el-form-item>
         </el-form>
       </span>
@@ -90,10 +94,10 @@
         <el-table-column align="center" prop="Remarks" label="备注"></el-table-column>
       </el-table>
       <div class="page">
-       <el-pagination
+        <el-pagination
           background
           layout="prev, pager, next"
-          :total="10"
+          :total="total"
           :page-size="10"
           @current-change="handleSizeChange"
         ></el-pagination>
@@ -106,26 +110,24 @@
 // import sitethreeselect from "./sitethreeselect";
 // import { regionData, CodeToText } from "element-china-area-data";
 export default {
-   data() {
+  data() {
     return {
-      PositionId:'',
-      DepartmentId:'',
-      DepartmentType:'',
-      PositionName:'',
-      PositionType:'',
+      PositionId: "",
+      DepartmentId: "",
+      DepartmentNametype: "",
+      PositionName: "",
+      PositionNametype: "",
       table: [],
       total: "" || 10,
       //   optionone: regionData,
       selectedOptions: [],
       dialogVisible: false,
       formLabelAlign: {
-        name: "",
-        region: "",
-        type: "",
-        company: "",
-        type: []
-      },
-      
+        Remarks: "",
+        DepartmentId: "",
+        PositionName: "",
+        PositionId:"",
+      }
     };
   },
   name: "positionmanage",
@@ -142,7 +144,7 @@ export default {
       this.$axios
         .post("PositionManager/GetPositionPagerList", {
           PageSize: 10,
-          PageIndex: "1",
+          PageIndex: 1,
           PositionId: "",
           PositionName: "",
           DepartmentId: ""
@@ -155,6 +157,7 @@ export default {
       this.$axios.get("Types/GetDepartmentType").then(res => {
         // console.log(res.data.Data,'部门');
         this.DepartmentNametype = res.data.Data;
+        console.log(this.DepartmentNametype);
       });
       //职务
       this.$axios.get("PositionManager/GetPositionNameList").then(res => {
@@ -176,25 +179,51 @@ export default {
         });
     },
     sureForm() {
-      this.dialogVisible = false;
-      console.log(this.formLabelAlign.type);
+      this.$axios
+        .post("PositionManager/PositionInsert", {
+          PositionId: this.formLabelAlign.PositionId,
+          PositionName: this.formLabelAlign.PositionName,
+          DepartmentId: this.formLabelAlign.DepartmentId,
+          Remarks: this.formLabelAlign.Remarks,
+        })
+        .then(res => {
+          console.log(res.data.Data, "新增");
+          // if (res.data.Msg == "成功") {
+          //   this.$message({
+          //     message: "新增用户成功",
+          //     type: "success"
+          //   });
+          //   this.formLabelAlign = "";
+          //   this.query();
+          // } else {
+          //   this.$message.error("新增用户失败");
+          // }
+        });
+      // this.dialogVisible = false;
     },
     surePosition() {
       this.positiondialog = false;
     },
-    
-   
+
     query() {
-      this.$message({
-        message: "点击查询成功",
-        type: "success"
-      });
+      this.$axios
+        .post("PositionManager/GetPositionPagerList", {
+          PageSize: 10,
+          PageIndex: 1,
+          PositionId: this.PositionId,
+          PositionName: this.PositionName,
+          DepartmentId: this.DepartmentId,
+        })
+        .then(res => {
+          console.log(res.data.Data, "查询");
+          this.table = res.data.Data;
+        });
     },
-    insert() {
-      this.$message({
-        message: "点击添加成功",
-        type: "success"
-      });
+    //清空
+    clear() {
+      this.PositionId = "";
+      this.PositionName = "";
+      this.DepartmentId = "";
     },
     rowclick(e) {
       //   console.log(e.id);
@@ -205,9 +234,22 @@ export default {
         CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
       );
     },
-    handleSizeChange(){},
-  },
- 
+    handleSizeChange(e) {
+      console.log(e)
+       this.$axios
+        .post("PositionManager/GetPositionPagerList", {
+          PageSize: 10,
+          PageIndex: e,
+          PositionId: "",
+          PositionName: "",
+          DepartmentId: ""
+        })
+        .then(res => {
+          // console.log(res.data.Data);
+          this.table = res.data.Data;
+        });
+    }
+  }
 };
 </script>
 

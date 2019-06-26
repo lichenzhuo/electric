@@ -35,7 +35,7 @@ export default {
     // 加载china地点数据，三级
     getCityData: function() {
       var that = this;
-      console.log(mapdata, "数据");
+      // console.log(mapdata, "数据");
       var data = mapdata;
       that.province = [];
       that.city = [];
@@ -131,7 +131,15 @@ export default {
     choseSite: function(e) {
       console.log(e);
       console.log(this.sitename,'sitename');
-      this.$store.state.sitename=this.sitename
+      this.$store.state.siteid=this.sitename
+      for (let i = 0; i < this.sitelist.length; i++) {
+        if (this.sitelist[i].SiteId==e) {
+          this.$store.state.sitename=this.sitelist[i].SiteName 
+          this.$store.state.UserName=this.sitelist[i].UserName 
+        }
+        
+        
+      }
     }
   },
   created: function() {

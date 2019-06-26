@@ -321,11 +321,6 @@ export default {
     },
     //条件查询
     query() {
-      // this.$message({
-      //   message: "点击查询成功",
-      //   type: "success"
-      // });
-      // console.log(this.UserIdQuery)
       this.$axios
         .post("UserInfos/GetUserInfosList", {
           PageSize: 10,
