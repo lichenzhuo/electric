@@ -136,10 +136,10 @@ export default {
         if (this.sitelist[i].SiteId==e) {
           this.$store.state.sitename=this.sitelist[i].SiteName 
           this.$store.state.UserName=this.sitelist[i].UserName 
+          this.$parent.getChartData()
         }
-        
-        
       }
+
     }
   },
   created: function() {

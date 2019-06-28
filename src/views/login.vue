@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     submitForm(formName) {
-      console.log(this.registerUser, "111111");
+      // console.log(this.registerUser, "111111");
       this.$refs[formName].validate(valid => {
         if (valid) {
           // this.$axios
@@ -74,16 +74,51 @@ export default {
           //     });
           //     // this.$router.push("/login");
           //   });
-          console.log("000");
+
+          this.$axios
+            .post("Login/Login", {
+              LoginName: this.registerUser.name,
+              Password: this.registerUser.password
+            })
+            .then(res => {
+              console.log(res.data.Data, "登录");
+              if (res.data.Data.Data == null) {
+                //账号密码错误
+                console.log("null");
+              } else {
+                localStorage.setItem(
+                  "CharacterId",
+                  res.data.Data.Data.CharacterId
+                );
+                localStorage.setItem(
+                  "LoginData",
+                  JSON.stringify(res.data.Data.Data)
+                );
+                console.log(JSON.parse(localStorage.getItem("LoginData")));
+                
+                if (
+                  res.data.Data.Data.CharacterId == 1 ||
+                  res.data.Data.Data.CharacterId == 2 ||
+                  res.data.Data.Data.CharacterId == 3
+                ) {
+                  console.log("123");
+                  this.$router.push({ path: "/index" });
+                } else if (res.data.Data.Data.CharacterId == 4) {
+                  console.log("444");
+                  this.$router.push({ path: "/manufacturerindex" });
+                }
+              }
+            });
+          // console.log("000");
         } else {
           console.log("error submit!!");
           // return false;
         }
       });
     },
-    gotoregister(){
-      console.log('33333')
-      this.$router.push({path:'/register'})
+    gotoregister() {
+      console.log("33333");
+      this.$router.push({ path: "/register" });
     }
   }
 };
@@ -127,8 +162,9 @@ export default {
 .submit_btn {
   width: 100%;
 }
-.tip{
-  margin-left 75px;
+
+.tip {
+  margin-left: 75px;
 }
 </style>
 

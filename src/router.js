@@ -19,6 +19,11 @@ import message from "./components/message";
 import morefunction from "./components/morefunction";
 import usermanage  from "./components/usermanage";
 import positionmanage from "./components/positionmanage";
+import manufacturerindex from "./components/manufacturerindex";
+import personaldata from "./components/personaldata";
+import changepassword from "./components/changepassword";
+import infocomplete from "./components/infocomplete";
+import manufacturermachine from "./components/manufacturermachine";
 // const Vue = () => import('vue')
 // const Router = () => import('vue-router')
 // const Index = () => import('./views/index.vue')
@@ -69,6 +74,11 @@ export default new Router({
         { path: '/morefunction', name: 'morefunction', component: morefunction },
         { path: '/usermanage', name: 'usermanage', component: usermanage },
         { path: '/positionmanage', name: 'positionmanage', component: positionmanage },
+        { path: '/manufacturerindex', name: 'manufacturerindex', component: manufacturerindex },
+        { path: '/personaldata', name: 'personaldata', component: personaldata },
+        { path: '/changepassword', name: 'changepassword', component: changepassword },
+        { path: '/infocomplete', name: 'infocomplete', component: infocomplete },
+        { path: '/manufacturermachine', name: 'manufacturermachine', component: manufacturermachine },
       ]
        
     },

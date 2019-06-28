@@ -2,6 +2,7 @@
   <el-row class="tac">
     <el-col :span="12" class="aaa">
       <el-menu
+        v-if="show"
         :default-active="this.$router.path"
         router
         class="el-menu-vertical-demo"
@@ -87,6 +88,41 @@
           <span slot="title">高级功能</span>
         </el-menu-item>
       </el-menu>
+      <el-menu
+        v-if="orshow"
+        :default-active="this.$router.path"
+        router
+        class="el-menu-vertical-demo"
+        @open="theselect"
+        @close="close"
+      >
+        <el-menu-item index="/manufacturerindex">
+          <i class="el-icon-s-home"></i>
+          <span slot="title">首页</span>
+        </el-menu-item>
+        <el-submenu index="/personaldata">
+          <template slot="title">
+            <i class="el-icon-user-solid"></i>
+            <span>个人资料</span>
+          </template>
+          <el-menu-item index="/changepassword">
+            <template slot="title">
+              <i class="el-icon-bank-card"></i>
+              <span>修改密码</span>
+            </template>
+          </el-menu-item>
+          <el-menu-item index="/infocomplete">
+            <template slot="title">
+              <i class="el-icon-info"></i>
+              <span>信息完善</span>
+            </template>
+          </el-menu-item>
+        </el-submenu>
+        <el-menu-item index="/manufacturermachine">
+          <i class="el-icon-s-tools"></i>
+          <span slot="title">设备管理</span>
+        </el-menu-item>
+      </el-menu>
     </el-col>
   </el-row>
 </template>
@@ -94,6 +130,19 @@
 <script>
 export default {
   name: "leftnav",
+  data() {
+    return {
+      show: "",
+      orshow: ""
+    };
+  },
+  beforeCreate() {},
+  created() {
+    this.showMenu();
+  },
+  mounted() {
+    this.showMenu();
+  },
   methods: {
     close(index, indexPath) {
       console.log(index, "111");
@@ -102,6 +151,18 @@ export default {
     theselect(index) {
       console.log(index, "222");
       this.$router.push({ path: index });
+    },
+    showMenu() {
+      var Id = localStorage.getItem("CharacterId");
+      if (Id == 1 || Id == 2 || Id == 3) {
+        console.log(Id, "正常列表");
+        this.show = true;
+        this.orshow = false;
+      } else {
+        console.log(Id, "厂家");
+        this.show = false;
+        this.orshow = true;
+      }
     }
   }
 };

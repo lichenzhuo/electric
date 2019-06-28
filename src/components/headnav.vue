@@ -5,7 +5,7 @@
     <div class="user">
       <el-dropdown>
         <span class="el-dropdown-link">
-          欢迎你：测试账号
+          欢迎你：{{UserName}}/{{CharacterName}}
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
@@ -20,7 +20,21 @@
 <script>
 export default {
   name: "headnav",
-  methods: {}
+  data(){
+    return{
+      UserName:"",
+      CharacterName:"",
+    }
+  },
+  mounted(){
+     this.GetJCType();
+  },
+  methods: {
+    GetJCType() {
+      this.UserName = JSON.parse(localStorage.getItem("LoginData")).UserName;
+      this.CharacterName = JSON.parse(localStorage.getItem("LoginData")).CharacterName;
+    },
+  }
 };
 </script>
 

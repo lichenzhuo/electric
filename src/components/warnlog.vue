@@ -51,7 +51,7 @@
         </el-table-column>
         <el-table-column align="center" prop="One_Negative_Voltage" label="一段负对地电压">
           <template scope="scope">
-            <span>{{scope.row.One_Positive_Voltage}}V</span>
+            <span>{{scope.row.One_Negative_Voltage}}V</span>
           </template>
         </el-table-column>
         <el-table-column align="center" prop="One_Positive_Resistance" label="一段正对地电阻">
@@ -189,9 +189,7 @@ export default {
           this.tableData = res.data.Data;
         });
     },
-    handleCurrentChange(currentPage) {
-      this.currentPage = currentPage;
-    },
+  
     getTableData() {
       this.$axios
         .post("MachineData/GetAlertLogPageList", { PageSize: 10, PageIndex: 1 })
