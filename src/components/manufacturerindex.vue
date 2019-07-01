@@ -27,6 +27,7 @@ export default {
   },
   mounted() {
     this.GetJCType();
+    this.requireAuth()
   },
   methods: {
     GetJCType() {
@@ -38,7 +39,10 @@ export default {
          this.SiteNews=res.data.Data
         console.log(res.data.Data, "222");
       });
-    }
+    },
+    requireAuth(){
+      this.$store.state
+    },
   }
 };
 </script>

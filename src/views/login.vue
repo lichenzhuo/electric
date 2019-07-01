@@ -11,7 +11,7 @@
         ref="registerForm"
         label-width="80px"
       >
-        <el-form-item label="用户名" prop="name">
+        <el-form-item label="登录账号" prop="name">
           <el-input v-model="registerUser.name" placeholder="请输入用户名"></el-input>
         </el-form-item>
         <!-- <el-form-item label="邮箱" prop="email">
@@ -54,7 +54,7 @@ export default {
         ],
         password: [
           { required: true, message: "密码不能为空", trigger: "blur" },
-          { min: 6, max: 30, message: "长度在 6 到 30 个字符", trigger: "blur" }
+          { min: 3, max: 20, message: "长度在 6 到 30 个字符", trigger: "blur" }
         ]
       }
     };

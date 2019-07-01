@@ -9,7 +9,7 @@
         <span class="tip">职务编号</span>
         <el-input style="width:auto" v-model="PositionId" placeholder="请输入内容"></el-input>
       </div>
-      <div class="block con">
+      <div class="con">
         <span class="tip" style="padding-left:2em">部门</span>
         <el-select v-model="DepartmentId" placeholder="请选择">
           <el-option
@@ -21,7 +21,7 @@
         </el-select>
       </div>
 
-      <div class="block con">
+      <div class="con">
         <span class="tip">职务名称</span>
         <el-select v-model="PositionName" placeholder="请选择">
           <el-option
@@ -253,7 +253,7 @@ export default {
 };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 .singalwarn {
   width: 1600px;
   background-color: #ffffff;

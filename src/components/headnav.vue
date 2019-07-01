@@ -26,8 +26,11 @@ export default {
       CharacterName:"",
     }
   },
+  created(){
+ this.GetJCType();
+  },
   mounted(){
-     this.GetJCType();
+    
   },
   methods: {
     GetJCType() {

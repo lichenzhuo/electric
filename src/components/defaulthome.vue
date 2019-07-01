@@ -2,7 +2,12 @@
   <div class="home">
     <div id="map">
       <!-- <input type="text" v-model="text" @change="onchange"> -->
-      <baidumap :locallist="listone" :listData="listtwo" @changemake="changemake" @lookwhole="lookwhole"></baidumap>
+      <baidumap
+        :locallist="listone"
+        :listData="listtwo"
+        @changemake="changemake"
+        @lookwhole="lookwhole"
+      ></baidumap>
     </div>
     <div class="table">
       <el-table :data="tableData" border style="width: 100%" header-cell-class-name="tablebg">
@@ -118,23 +123,35 @@ export default {
   data() {
     return {
       text: "",
-      resdata:'',
+      resdata: "",
       tableData: [],
       currentPage: 1,
       pagesize: 10,
       listone: "",
-      listtwo:"",
-      arr:'',//带有id的地址数组
+      listtwo: "",
+      arr: "" //带有id的地址数组
     };
   },
+  beforeCreate() {
+   
+  },
   created() {
-    this.getdata();
+     this.Auther();
+   
   },
   mounted() {
     // this.readymap();
     // this.getlocation();
   },
   methods: {
+    Auther() {
+      var CharacterId = localStorage.getItem("CharacterId");
+      if (CharacterId) {
+         this.getdata();
+      }else{
+        this.$router.push({ path: "/login" });
+      }
+    },
     getdata() {
       this.$axios
         .post("/MachineData/GetErrorPageList", {
@@ -143,31 +160,34 @@ export default {
         })
         .then(res => {
           console.log(res.data.Data, "这是res");
-          this.resdata=res.data.Data
+          this.resdata = res.data.Data;
           this.tableData = res.data.Data;
           var arr = [];
-          var arr1=[];
+          var arr1 = [];
           for (let i = 0; i < res.data.Data.length; i++) {
             arr.push(res.data.Data[i].Area + res.data.Data[i].Address);
           }
           for (let j = 0; j < res.data.Data.length; j++) {
-            arr1.push({'Id':res.data.Data[j].Id,'local':res.data.Data[j].Area + res.data.Data[j].Address});
+            arr1.push({
+              Id: res.data.Data[j].Id,
+              local: res.data.Data[j].Area + res.data.Data[j].Address
+            });
           }
-          this.arr=arr
+          this.arr = arr;
           this.listone = arr;
-          this.listtwo= arr1;
+          this.listtwo = arr1;
           console.log(arr, "处理后的");
           console.log(arr1, "处理后的1");
         });
     },
-    changemake(e){
-      console.log(e,'父')
-      this.listone=this.listtwo[e].local
-      this.tableData=[this.resdata[e]]
+    changemake(e) {
+      console.log(e, "父");
+      this.listone = this.listtwo[e].local;
+      this.tableData = [this.resdata[e]];
     },
-    lookwhole(e){
-      this.listone=this.arr
-      this.tableData=this.resdata
+    lookwhole(e) {
+      this.listone = this.arr;
+      this.tableData = this.resdata;
     },
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;

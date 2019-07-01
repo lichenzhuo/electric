@@ -1,22 +1,22 @@
 <template>
   <div class="singalwarn">
     <div class="top">
-        <sitethreeselect></sitethreeselect>
-        <div class="con">
-          <span class="tip">设备编号</span>
-          <el-select v-model="value" placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </div>
+      <sitethreeselect ref="threeselect"></sitethreeselect>
+      <div class="con">
+        <span class="tip">设备编号</span>
+        <el-select v-model="machineNumber" placeholder="请选择" @change="machineNumberchange">
+          <el-option
+            v-for="item in machineNumberList"
+            :key="item.MachinaryId"
+            :label="item.MachinaryId"
+            :value="item.MachinaryId"
+          ></el-option>
+        </el-select>
+      </div>
       <div class="con">
         <span class="tip">起止时间</span>
         <el-date-picker
-          v-model="value2"
+          v-model="timevalue"
           type="daterange"
           align="right"
           unlink-panels
@@ -24,82 +24,80 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :picker-options="pickerOptions"
+          value-format="yyyy-MM-dd"
         ></el-date-picker>
       </div>
-      <div class="con">
+      <!-- <div class="con">
         <span class="tip">监测类型</span>
-        <el-select v-model="value" placeholder="请选择">
+        <el-select v-model="jcvalue" placeholder="请选择" @change="selchange">
           <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in jcvalueList"
+            :key="item.JCTypeName"
+            :label="item.JCTypeName"
+            :value="item.Id"
           ></el-option>
         </el-select>
       </div>
       <div class="con">
         <span class="tip">预警类型</span>
-        <el-select v-model="value" placeholder="请选择">
+        <el-select v-model="warmType" placeholder="请选择">
           <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in warmTypeList"
+            :key="item.Id"
+            :label="item.AlertType"
+            :value="item.Id"
           ></el-option>
         </el-select>
-      </div>
-       <el-button type="primary" round style="margin-left:30px">搜索</el-button>
+      </div> -->
+      <el-button type="primary" round style="margin-left:30px" @click="search">搜索</el-button>
+      <el-button type="primary" round style="margin-left:30px" @click="clearData">清空</el-button>
     </div>
     <el-divider></el-divider>
     <div class="machineName">
       <span class="box">
         <span class="note">设备编号：</span>
-        <span class="name">xj-102</span>
+        <span class="name">{{selectId}}</span>
       </span>
       <span class="box">
         <span class="note">类型：</span>
-        <span class="name">直流绝缘监测设备</span>
+        <span class="name">{{selectType}}</span>
       </span>
       <span class="box">
         <span class="note">详细地址：</span>
-        <span class="name">xx省xx市xx区xxxx路</span>
+        <span class="name">{{selectAddress}}</span>
       </span>
       <span class="box color">
         <span class="note">管理人：</span>
-        <span class="name">张三</span>
+        <span class="name">{{selectName}}</span>
       </span>
     </div>
     <el-divider></el-divider>
     <div class="table">
-      <el-table
-        :data="table.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-        border
-        style="width: 100%"
-        header-cell-class-name="tablebg"
-      >
-        <el-table-column align="center" prop="0" label="预警时间" width="160"></el-table-column>
-        <el-table-column align="center" prop="one" label="母线电压">
+      <el-table :data="table" border style="width: 100%" header-cell-class-name="tablebg">
+        <el-table-column align="center" prop="Created_At" label="预警时间" width="200"></el-table-column>
+        <el-table-column align="center" label="母线电压">
           <template scope="scope">
-            <span v-if="scope.row.one=='22v'">{{scope.row.one}}+{{scope.$index}}</span>
-            <span v-else style="color: red">{{scope.row.one}}+{{scope.$index}}</span>
+            <span>{{scope.row.One_Bus_Voltage}}V</span>
+            <!-- <span v-if="scope.row.one=='22v'">{{scope.row.one}}+{{scope.$index}}</span>
+            <span v-else style="color: red">{{scope.row.one}}+{{scope.$index}}</span> -->
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="2" label="正极电压"></el-table-column>
-        <el-table-column align="center" prop="3" label="负极电压"></el-table-column>
+        <el-table-column align="center" prop="One_Positive_Voltage" label="正极电压"></el-table-column>
+        <el-table-column align="center" prop="One_Negative_Voltage" label="负极电压"></el-table-column>
         <el-table-column align="center" prop="4" label="正负压差"></el-table-column>
-        <el-table-column align="center" prop="5" label="交流电压"></el-table-column>
+        <el-table-column align="center" prop="One_AC_Voltage" label="交流电压"></el-table-column>
         <el-table-column align="center" prop="6" label="纹波电压"></el-table-column>
-        <el-table-column align="center" prop="7" label="正极绝缘"></el-table-column>
-        <el-table-column align="center" prop="8" label="负极绝缘"></el-table-column>
+        <el-table-column align="center" prop="Positive_Insulation" label="正极绝缘"></el-table-column>
+        <el-table-column align="center" prop="Negative_Insulation" label="负极绝缘"></el-table-column>
         <el-table-column align="center" prop="9" label="母联绝缘"></el-table-column>
       </el-table>
       <div class="page">
         <el-pagination
-          @current-change="handleCurrentChange"
+          @current-change="handleSizeChange"
           background
-          :page-size="pagesize"
-          layout="prev, pager, next, jumper"
-          :total="table.length"
+          :page-size="10"
+          layout="prev, pager, next"
+          :total="total"
         ></el-pagination>
       </div>
     </div>
@@ -113,326 +111,8 @@ export default {
   components: {
     sitethreeselect
   },
-  created() {
-    this.getRouterData();
-  },
-  methods: {
-    handleCurrentChange(currentPage) {
-      this.currentPage = currentPage;
-    },
-    getRouterData() {
-      this.id = this.$route.params.id;
-      // console.log(this.id,'这是新路由接收的')
-    }
-  },
   data() {
     return {
-      total: 0,
-      currentPage: 1,
-      pagesize: 10,
-      table: [
-        {
-          0: "2019-05-21",
-          one: "122v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "21v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "saa2019-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2fg019-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-fgdf50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "12fdgdf2v",
-          3: "-50v",
-          4: "200",
-          5: "22dfgdf0v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "2dfgdf2v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "22fdgdf9v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-5dfghdfg0v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "201fgjfjfg9-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22fhfghfgv",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22fhfghfghfgv",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "12fhfghf2v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22fghfghfghv",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "2fghfghfgh2v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "254352v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "201146169-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2045654262419-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "201456456429-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "201768976899-05-21",
-          one: "22v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "122kjhkv",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "22v",
-          2: "1hjkjh22v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "23445ae2v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        },
-        {
-          0: "2019-05-21",
-          one: "2a6342v",
-          2: "122v",
-          3: "-50v",
-          4: "200",
-          5: "220v",
-          6: "229v",
-          7: "22v",
-          8: "22v",
-          9: "22v"
-        }
-      ],
-      options:[],
       pickerOptions: {
         shortcuts: [
           {
@@ -464,28 +144,129 @@ export default {
           }
         ]
       },
-      value1: "",
-      value2: "",
-
-      selectedOptions: [],
-      selectedOptions2: [],
-      seldata: [
-        {
-          value: "yujing1",
-          label: "预警1"
-        },
-        {
-          value: "yujing2",
-          label: "预警2"
-        },
-        {
-          value: "yujing3",
-          label: "预警3"
-        }
-      ],
-      value3: "",
-      value: ""
+      machineNumber: "",
+      machineNumberList: [],
+      timevalue: "",
+      jcvalueList: [],
+      jcvalue: "",
+      warmTypeList: [],
+      warmType: "",
+      total: "" || 10,
+      table: [],
+      selectId:"",
+      selectType:"",
+      selectAddress:"",
+      selectName:""
     };
+  },
+  created() {
+  
+  },
+  mounted() {
+    this.GetType();
+  },
+  methods: {
+    GetType() {
+      this.$axios.get("Types/GetJCType").then(res => {
+        this.jcvalueList = res.data.Data;
+      });
+      this.$axios.get("Types/GetYJType").then(res => {
+        this.warmTypeList = res.data.Data;
+      });
+      this.$axios.post("SiteManage/GetMachinaryIdList").then(res => {
+        this.machineNumberList = res.data.Data;
+      });
+      this.$axios
+        .post("MachineData/GetAlertLogByMachineIdAllCount", {
+          MachinaryId: "",
+          PageSize: "10",
+          PageIndex: "1"
+        })
+        .then(res => {
+          this.total = res.data.Data;
+        });
+      this.$axios
+        .post("MachineData/GetAlertLogByMachineId", {
+          PageSize: "10",
+          PageIndex: "1",
+          MachinaryId: "",
+          StartTime: "",
+          EndTime: ""
+        })
+        .then(res => {
+          this.table = res.data.Data;
+        });
+    },
+    selchange(e) {
+      console.log(e);
+    },
+    machineNumberchange(e){
+      console.log(e)   //MachinaryId  
+      // selectId:"",
+      // selectType:"",
+      // selectAddress:"",
+      // selectName:""
+      this.machineNumberList
+      for (let i = 0; i < this.machineNumberList.length; i++) {
+        const element = this.machineNumberList[i];
+        if (this.machineNumberList[i].MachinaryId==e) {
+          this.selectId=e
+          this.selectType=this.machineNumberList[i].EquipType,
+          this.selectAddress=this.machineNumberList[i].Province+this.machineNumberList[i].City+this.machineNumberList[i].Area,
+          this.selectName=this.machineNumberList[i].UserName
+        }
+        
+      }
+    },
+    clearData(e) {
+      this.$refs.threeselect.cleardata()
+      this.timevalue = ""
+      this.jcvalue = ""
+      this.machineNumber=""
+      this.warmType=""
+    },
+    search() {
+      console.log(
+        this.$store.state.sheng +
+          "+" +
+          this.$store.state.shi +
+          "+" +
+          this.$store.state.qu +
+          "+" +
+          this.$store.state.sitename
+      );
+      console.log(this.timevalue, "时间");
+      console.log(this.jcvalue, "监测类型");
+      this.$axios
+        .post("MachineData/GetAlertLogByMachineId", {
+          PageSize: 10,
+          PageIndex: 1,
+          MachinaryId: this.machineNumber,
+          StartTime: this.timevalue[0],
+          EndTime: this.timevalue[1]
+        })
+        .then(res => {
+          console.log(res.data.Data);
+          this.table=res.data.Data
+        });
+    },
+
+    
+    handleSizeChange(e) {
+      console.log(e);
+      this.$axios
+        .post("MachineData/GetAlertLogByMachineId", {
+          PageSize: 5,
+          PageIndex: e,
+          MachinaryId: "",
+          StartTime: "",
+          EndTime: ""
+        })
+        .then(res => {
+          // console.log(res.data.Data);
+          this.table = res.data.Data;
+        });
+    }
   }
 };
 </script>

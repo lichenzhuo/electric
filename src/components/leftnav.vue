@@ -158,10 +158,12 @@ export default {
         console.log(Id, "正常列表");
         this.show = true;
         this.orshow = false;
-      } else {
+      } else if(Id == 4) {
         console.log(Id, "厂家");
         this.show = false;
         this.orshow = true;
+      }else{
+        this.$router.push({ path: "/login" });
       }
     }
   }

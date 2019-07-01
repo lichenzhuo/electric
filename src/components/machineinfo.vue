@@ -1,7 +1,7 @@
 <template>
   <div class="singalwarn">
     <div class="top">
-      <div class="block con">
+      <div class="con">
         <sitethreeselect ref="threeselect"></sitethreeselect>
       </div>
       <div class="con">
@@ -15,7 +15,7 @@
           ></el-option>
         </el-select>
       </div>
-      <div class="block con">
+      <div class="con">
         <span class="tip">设备编号</span>
         <el-select v-model="MachinaryId" placeholder="请选择" @change="MachinaryIdChange">
           <el-option
@@ -45,7 +45,7 @@
         <span class="note">详细地址：</span>
         <span class="name">{{Address}}</span>
       </span>
-      <span class="box">
+      <span class="box" style="background-color:#ffffff">
         <el-button type="primary" round @click="UpdateData">参数调整</el-button>
       </span>
       <span class="box color">

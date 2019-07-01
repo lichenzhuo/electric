@@ -4,11 +4,11 @@
       <div>
         <sitethreeselect ref="threeselect"></sitethreeselect>
       </div>
-      <div class="block con">
+      <div class="con">
         <span class="tip">站点编号</span>
         <el-input style="width:auto" v-model="SiteId" placeholder="请输入内容"></el-input>
       </div>
-      <div class="block con">
+      <div class="con">
         <span class="tip">设备编号</span>
         <el-input style="width:auto" v-model="MachinaryId" placeholder="请输入内容"></el-input>
       </div>

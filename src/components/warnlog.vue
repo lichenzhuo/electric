@@ -2,7 +2,7 @@
   <div class="singalwarn">
     <div class="top">
       <sitethreeselect ref="threeselect"></sitethreeselect>
-      <div class="block con">
+      <div class="con">
         <span class="tip" style="padding-left:2em">时间</span>
         <el-date-picker
           v-model="timevalue"

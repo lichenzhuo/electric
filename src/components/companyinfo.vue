@@ -4,7 +4,7 @@
       <div>
         <sitethreeselect ref="threeselect"></sitethreeselect>
       </div>
-      <div class="block con">
+      <div class="con">
         <span class="tip">单位编号</span>
         <el-input style="width:auto" v-model="UnitNumber" placeholder="请输入内容"></el-input>
       </div>

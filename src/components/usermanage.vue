@@ -5,19 +5,19 @@
          <sitethreeselect></sitethreeselect>
       </div>-->
       <div class="rowOne">
-        <div class="con">
+        <div class="conone">
           <span class="tip">用户编号</span>
           <el-input style="width:auto" v-model="UserIdQuery" placeholder="请输入内容"></el-input>
         </div>
-        <div class="con">
+        <div class="block conone">
           <span class="tip">用户名称</span>
           <el-input style="width:auto" v-model="UserNameQuery" placeholder="请输入内容"></el-input>
         </div>
-        <div class="con">
+        <div class="block conone">
           <span class="tip">手机号</span>
           <el-input style="width:auto" v-model="PhoneQuery" placeholder="请输入内容"></el-input>
         </div>
-        <div class="block con" style="margin-right:0">
+        <div class="block conone" style="margin-right:0">
           <span class="tip">性别</span>
           <el-select v-model="SexQuery" placeholder="请选择">
             <el-option v-for="item in Sextype" :key="item.id" :label="item.sex" :value="item.id"></el-option>
@@ -27,7 +27,7 @@
         <el-button type="primary" round style="margin-left:20px" @click="clear">清空</el-button>
       </div>
 
-      <div class="con">
+      <div class="conone">
         <span class="tip">单位名称</span>
         <el-select v-model="UnitNameQuery" placeholder="请选择">
           <el-option
@@ -38,7 +38,7 @@
           ></el-option>
         </el-select>
       </div>
-      <div class="block con">
+      <div class="block conone">
         <span class="tip">部门</span>
         <el-select v-model="DepartmentNameQuery" placeholder="请选择">
           <el-option
@@ -49,7 +49,7 @@
           ></el-option>
         </el-select>
       </div>
-      <div class="con">
+      <div class="block conone">
         <span class="tip">职务</span>
         <el-select v-model="PositionNameQuery" placeholder="请选择">
           <el-option
@@ -549,7 +549,7 @@ export default {
 };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 .singalwarn {
   width: 1600px;
   background-color: #ffffff;
@@ -567,9 +567,9 @@ export default {
     padding-left: 80px;
   }
 
-  .con {
+  .conone {
     display: inline-block;
-    margin-right: 80px;
+  
   }
 
   .tip {
