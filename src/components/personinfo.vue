@@ -6,25 +6,30 @@
       </div>
       <el-divider></el-divider>
       <div class="header">
-        <span class="box">用户名：张三</span>
-        <span class="box">性别：男</span>
-        <span class="box">所属单位：浙江星炬电力科技有限公司</span>
-        <span class="box">部门：运行维护</span>
-        <span class="box">职务：一线维护</span>
+        <span class="box">用户名：{{table.UserName}}</span>
+        <span v-if="table.Sex==0" class="box">性别：男</span>
+        <span v-else class="box">性别：女</span>
+        <span class="box">所属单位：{{table.UnitName}}</span>
+        <span class="box">部门：{{table.DepartmentName}}</span>
+        <span class="box">职务：{{table.PositionName}}</span>
       </div>
       <el-divider></el-divider>
       <div class="header">
-        <span class="box">办公室电话：021-58885555</span>
-        <span class="box">手机号：13955558888</span>
-        <span class="box">微信号：13955558888</span>
+        <!-- <span class="box">办公室电话：021-58885555</span> -->
+        <span class="box">手机号：{{table.Phone}}</span>
+        <span class="box">微信号：{{table.VX}}</span>
       </div>
       <el-divider></el-divider>
       <div class="table">
         <el-table :data="table" border style="width: 100%" header-cell-class-name="tablebg">
-          <el-table-column align="center" prop="0" label="维护设备编号"></el-table-column>
+          <el-table-column align="center" prop="MachinaryId" label="维护设备编号"></el-table-column>
           <!-- <el-table-column align="center" prop="one" label="站点名称"></el-table-column> -->
-          <el-table-column align="center" prop="1" label="详细地址"></el-table-column>
-          <el-table-column align="center" prop="2" label="站点编号"></el-table-column>
+          <el-table-column align="center" prop="1" label="详细地址">
+            <template slot-scope="scope">
+              <span>{{scope.row.Province}}{{scope.row.City}}{{scope.row.Area}}{{scope.row.Address}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" prop="SiteName" label="站点编号"></el-table-column>
         </el-table>
       </div>
     </div>
@@ -37,25 +42,31 @@ export default {
 
   created() {
     console.log("这是site");
+    this.getData();
   },
-  methods: {},
+  mounted() {},
+  methods: {
+    getData() {
+      this.$axios
+        .post("UserInfos/GetUserInfosInfoModelByUserId", {
+          UserId: JSON.parse(localStorage.getItem("LoginData")).UserId
+        })
+        .then(res => {
+          this.table = res.data.Data;
+        });
+    }
+  },
   data() {
     return {
-      table: [
-        {
-          id: "0",
-          0: "xj-45613",
-          1: "浙江省温州市苍南县某个镇",
-          2: "cn-002",
-         
-        },
-        {
-        id: "1",
-          0: "xj-45623",
-          1: "浙江省杭州市上城区太和广场",
-          2: "hz-0587",
-        }
-      ]
+      table: [],
+      UserName: "",
+      Sex: "",
+      UnitName: "",
+      DepartmentName: "",
+      PositionName: "",
+      Phone: "",
+      Address: "",
+      SiteName: ""
     };
   }
 };
