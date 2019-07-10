@@ -1,9 +1,16 @@
 <template>
   <div class="singalwarn">
     <div class="top">
-      <sitethreeselect ref="threeselect"></sitethreeselect>
+      <!-- <sitethreeselect ref="threeselect"></sitethreeselect> -->
+      <span class="tip">站点名称</span>
+      <el-cascader
+        v-model="siteId"
+        :options="fourData"
+        :props="{ expandTrigger: 'hover' }"
+        @change="SiteSelect"
+      ></el-cascader>
       <div class="con">
-        <span class="tip">设备编号</span>
+        <span class="tip" style="margin-left: 2em;">设备编号</span>
         <el-select v-model="machineNumber" placeholder="请选择" @change="machineNumberchange">
           <el-option
             v-for="item in machineNumberList"
@@ -156,7 +163,10 @@ export default {
       selectId:"",
       selectType:"",
       selectAddress:"",
-      selectName:""
+      selectName:"",
+      siteId: "",
+      fourData: [],
+      AreaId: ""
     };
   },
   created() {
@@ -175,6 +185,10 @@ export default {
       });
       this.$axios.post("SiteManage/GetMachinaryIdList").then(res => {
         this.machineNumberList = res.data.Data;
+      });
+      this.$axios.post("SiteTree/GetFourLevel", {}).then(res => {
+        console.log(res.data.Data.Data, "4级联动");
+        this.fourData = res.data.Data.Data;
       });
       this.$axios
         .post("MachineData/GetAlertLogByMachineIdAllCount", {
@@ -219,31 +233,21 @@ export default {
       }
     },
     clearData(e) {
-      this.$refs.threeselect.cleardata()
+      // this.$refs.threeselect.cleardata()
       this.timevalue = ""
       this.jcvalue = ""
       this.machineNumber=""
       this.warmType=""
     },
     search() {
-      console.log(
-        this.$store.state.sheng +
-          "+" +
-          this.$store.state.shi +
-          "+" +
-          this.$store.state.qu +
-          "+" +
-          this.$store.state.sitename
-      );
-      console.log(this.timevalue, "时间");
-      console.log(this.jcvalue, "监测类型");
       this.$axios
         .post("MachineData/GetAlertLogByMachineId", {
           PageSize: 10,
           PageIndex: 1,
           MachinaryId: this.machineNumber,
           StartTime: this.timevalue[0],
-          EndTime: this.timevalue[1]
+          EndTime: this.timevalue[1],
+          SiteName:this.siteId
         })
         .then(res => {
           console.log(res.data.Data);
@@ -266,6 +270,11 @@ export default {
           // console.log(res.data.Data);
           this.table = res.data.Data;
         });
+    },
+    SiteSelect(e) {
+      console.log(e);
+      this.siteId = e[3];
+      this.AreaId = e[2];
     }
   }
 };

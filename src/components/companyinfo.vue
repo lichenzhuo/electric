@@ -1,11 +1,18 @@
 <template>
   <div class="singalwarn">
     <div class="top">
-      <div>
+      <!-- <div>
         <sitethreeselect ref="threeselect"></sitethreeselect>
-      </div>
+      </div> -->
+       <span class="tip">站点名称</span>
+      <el-cascader
+        v-model="siteId"
+        :options="fourData"
+        :props="{ expandTrigger: 'hover' }"
+        @change="SiteSelect"
+      ></el-cascader>
       <div class="con">
-        <span class="tip">单位编号</span>
+        <span class="tip" style="margin-left: 2em;">单位编号</span>
         <el-input style="width:auto" v-model="UnitNumber" placeholder="请输入内容"></el-input>
       </div>
       <el-button type="primary" round style="margin-left:20px" @click="query">查询</el-button>
@@ -39,11 +46,19 @@
               </el-select>
             </el-form-item>
             <el-form-item label="站点所在区域">
-              <el-cascader
+              <!-- <el-cascader
                 :options="optionone"
                 v-model="InsertArea"
                 filterable
                 props.checkStrictly
+                @change="addressChange"
+              ></el-cascader> -->
+              <el-cascader
+                :options="threeData"
+                v-model="InsertArea"
+                filterable
+                props.checkStrictly
+                :props="{ expandTrigger: 'hover'}"
                 @change="addressChange"
               ></el-cascader>
             </el-form-item>
@@ -140,6 +155,10 @@ export default {
       UnitTypeIdList:[],
       UnitName:"",
       UnitNameList:[],
+      siteId: "",
+      fourData: [],
+      threeData: [],
+      AreaId: ""
     };
   },
   created() {
@@ -194,13 +213,23 @@ export default {
           });
         }
       });
+      //4级联动
+      this.$axios.post("SiteTree/GetFourLevel", {}).then(res => {
+        console.log(res.data.Data.Data, "4级联动");
+        this.fourData = res.data.Data.Data;
+      });
+      //3级联动
+      this.$axios.post("SiteTree/GetThreeLevel", {}).then(res => {
+        console.log(res.data.Data.Data, "3级联动");
+        this.threeData = res.data.Data.Data;
+      });
     },
     query() {
       this.$axios
         .post("UnitInfo/GetUnitInfoPageList", {
           PageSize: 5,
           PageIndex: 1,
-          SiteName: this.$store.state.sitename,
+          SiteName: this.siteId,
           UnitNumber: this.UnitNumber
         })
         .then(res => {
@@ -248,7 +277,8 @@ export default {
       this.dialogVisible = true;
     },
     clear() {
-      this.$refs.threeselect.cleardata();
+      // this.$refs.threeselect.cleardata();
+      this.siteId="";
       this.UnitNumber = "";
     },
     getDataNumber() {
@@ -286,6 +316,11 @@ export default {
     Selectchangetwo(e) {
       console.log(e, "点击");
     },
+    SiteSelect(e) {
+      console.log(e);
+      this.siteId = e[3];
+      this.AreaId = e[2];
+    }
   }
 };
 </script>

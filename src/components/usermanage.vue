@@ -145,11 +145,17 @@
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="区域管理">
-            <el-cascader
+            <!-- <el-cascader
               :options="AreaList"
               v-model="InsertForm.Area"
               filterable
               props.checkStrictly
+              @change="addressChange"
+            ></el-cascader>-->
+            <el-cascader
+              v-model="InsertForm.Area"
+              :options="threeData"
+              :props="{ expandTrigger: 'hover' }"
               @change="addressChange"
             ></el-cascader>
           </el-form-item>
@@ -174,11 +180,18 @@
         </el-checkbox-group>
 
         <span class="tip" style>区域管理</span>
-        <el-cascader
+        <!-- <el-cascader
           :options="AreaList"
           v-model="editquanxianArea"
           filterable
           props.checkStrictly
+          @change="addressChange"
+          style="margin-left:50px;margin-top:10px;display:block"
+        ></el-cascader> -->
+        <el-cascader
+          v-model="editquanxianArea"
+          :options="threeData"
+          :props="{ expandTrigger: 'hover' }"
           @change="addressChange"
           style="margin-left:50px;margin-top:10px;display:block"
         ></el-cascader>
@@ -277,7 +290,8 @@ export default {
       table: [],
       total: "" || 10,
       placeholder: "",
-      EditId: ""
+      EditId: "",
+      threeData: []
     };
   },
   created() {
@@ -317,6 +331,11 @@ export default {
       this.$axios.get("UserInfos/GetCharacterList").then(res => {
         console.log(res.data.Data, "角色");
         this.CharacterNametype = res.data.Data;
+      });
+      //3级联动
+      this.$axios.post("SiteTree/GetThreeLevel", {}).then(res => {
+        console.log(res.data.Data.Data, "3级联动");
+        this.threeData = res.data.Data.Data;
       });
     },
     //条件查询
@@ -392,9 +411,9 @@ export default {
           AlertLogId: this.AlertLogIdInsert,
           AlarmLogId: this.AlarmLogIdInsert,
           ReAlarmId: this.ReAlarmIdInsert,
-          Province: CodeToText[this.InsertForm.Area[0]],
-          City: CodeToText[this.InsertForm.Area[1]],
-          Area: CodeToText[this.InsertForm.Area[2]]
+          Province: this.InsertForm.Area[0],
+          City: this.InsertForm.Area[1],
+          Area: this.InsertForm.Area[2]
         })
         .then(res => {
           console.log(res.data.Data, "新增");
@@ -467,9 +486,12 @@ export default {
     },
     addressChange(arr) {
       console.log(arr, "地址");
-      console.log(
-        CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
-      );
+      console.log(this.InsertForm.Area[0]);
+      console.log(this.InsertForm.Area[1]);
+      console.log(this.InsertForm.Area[2]);
+      // console.log(
+      //   CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
+      // );
     },
     positionEdit(row) {
       console.log(row);
@@ -527,9 +549,9 @@ export default {
           AlertLogId: this.EditAlertLogIdInsert,
           AlarmLogId: this.EditAlarmLogIdInsert,
           ReAlarmId: this.EditReAlarmIdInsert,
-          Province: CodeToText[this.editquanxianArea[0]],
-          City: CodeToText[this.editquanxianArea[1]],
-          Area: CodeToText[this.editquanxianArea[2]]
+          Province:this.editquanxianArea[0],
+          City: this.editquanxianArea[1],
+          Area: this.editquanxianArea[2]
         })
         .then(res => {
           console.log(res.data.Msg, "更改");
@@ -569,7 +591,6 @@ export default {
 
   .conone {
     display: inline-block;
-  
   }
 
   .tip {

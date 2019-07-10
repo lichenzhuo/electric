@@ -6,18 +6,18 @@
       </div>
       <el-divider></el-divider>
       <div class="header">
-        <span class="box">用户名：{{table.UserName}}</span>
+        <span class="box">用户名：{{UserName}}</span>
         <span v-if="table.Sex==0" class="box">性别：男</span>
         <span v-else class="box">性别：女</span>
-        <span class="box">所属单位：{{table.UnitName}}</span>
-        <span class="box">部门：{{table.DepartmentName}}</span>
-        <span class="box">职务：{{table.PositionName}}</span>
+        <span class="box">所属单位：{{UnitName}}</span>
+        <span class="box">部门：{{DepartmentName}}</span>
+        <span class="box">职务：{{PositionName}}</span>
       </div>
       <el-divider></el-divider>
       <div class="header">
         <!-- <span class="box">办公室电话：021-58885555</span> -->
-        <span class="box">手机号：{{table.Phone}}</span>
-        <span class="box">微信号：{{table.VX}}</span>
+        <span class="box">手机号：{{Phone}}</span>
+        <span class="box">微信号：{{vx}}</span>
       </div>
       <el-divider></el-divider>
       <div class="table">
@@ -53,6 +53,15 @@ export default {
         })
         .then(res => {
           this.table = res.data.Data;
+          this.UserName=res.data.Data[0].UserName,
+          this.Sex=res.data.Data[0].Sex,
+          this.UnitName=res.data.Data[0].UnitName,
+          this.DepartmentName=res.data.Data[0].DepartmentName,
+          this.PositionName=res.data.Data[0].PositionName,
+          this.Phone=res.data.Data[0].Phone,
+          this.Address=res.data.Data[0].Address,
+          this.SiteName=res.data.Data[0].SiteName,
+          this.vx=res.data.Data[0].VX
         });
     }
   },
@@ -66,7 +75,8 @@ export default {
       PositionName: "",
       Phone: "",
       Address: "",
-      SiteName: ""
+      SiteName: "",
+      vx:""
     };
   }
 };

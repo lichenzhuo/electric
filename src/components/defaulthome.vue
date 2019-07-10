@@ -132,12 +132,9 @@ export default {
       arr: "" //带有id的地址数组
     };
   },
-  beforeCreate() {
-   
-  },
+  beforeCreate() {},
   created() {
-     this.Auther();
-   
+    this.Auther();
   },
   mounted() {
     // this.readymap();
@@ -147,8 +144,8 @@ export default {
     Auther() {
       var CharacterId = localStorage.getItem("CharacterId");
       if (CharacterId) {
-         this.getdata();
-      }else{
+        this.getdata();
+      } else {
         this.$router.push({ path: "/login" });
       }
     },
@@ -164,20 +161,22 @@ export default {
           this.tableData = res.data.Data;
           var arr = [];
           var arr1 = [];
-          for (let i = 0; i < res.data.Data.length; i++) {
-            arr.push(res.data.Data[i].Area + res.data.Data[i].Address);
+          if (res.data.Data) {
+            for (let i = 0; i < res.data.Data.length; i++) {
+              arr.push(res.data.Data[i].Area + res.data.Data[i].Address);
+            }
+            for (let j = 0; j < res.data.Data.length; j++) {
+              arr1.push({
+                Id: res.data.Data[j].Id,
+                local: res.data.Data[j].Area + res.data.Data[j].Address
+              });
+            }
+            this.arr = arr;
+            this.listone = arr;
+            this.listtwo = arr1;
+            console.log(arr, "处理后的");
+            console.log(arr1, "处理后的1");
           }
-          for (let j = 0; j < res.data.Data.length; j++) {
-            arr1.push({
-              Id: res.data.Data[j].Id,
-              local: res.data.Data[j].Area + res.data.Data[j].Address
-            });
-          }
-          this.arr = arr;
-          this.listone = arr;
-          this.listtwo = arr1;
-          console.log(arr, "处理后的");
-          console.log(arr1, "处理后的1");
         });
     },
     changemake(e) {

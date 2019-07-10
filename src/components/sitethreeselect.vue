@@ -122,7 +122,7 @@ export default {
       console.log(mapdata[this.qu]);
       this.$store.state.qu=mapdata[this.qu]
       this.$axios
-        .post("SiteManage/GetSiteName", { Area: mapdata[this.qu] })
+        .post("SiteManage/GetSiteNameByArea", { AreaId: mapdata[this.qu] })
         .then(res => {
           console.log(res.data.Data, "这是地址联动");
           this.sitelist = res.data.Data;

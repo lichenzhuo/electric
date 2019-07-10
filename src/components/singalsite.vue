@@ -1,11 +1,18 @@
 <template>
   <div class="singalwarn">
     <div class="top">
-      <div>
+      <!-- <div>
         <sitethreeselect ref="threeselect"></sitethreeselect>
-      </div>
+      </div>-->
+      <span class="tip">站点名称</span>
+      <el-cascader
+        v-model="siteId"
+        :options="fourData"
+        :props="{ expandTrigger: 'hover' }"
+        @change="SiteSelect"
+      ></el-cascader>
       <div class="con">
-        <span class="tip">站点编号</span>
+        <span class="tip" style="margin-left: 2em;">站点编号</span>
         <el-input style="width:auto" v-model="SiteId" placeholder="请输入内容"></el-input>
       </div>
       <div class="con">
@@ -25,10 +32,11 @@
 
             <el-form-item label="站点所在区域">
               <el-cascader
-                :options="optionone"
+                :options="threeData"
                 v-model="InsertArea"
                 filterable
                 props.checkStrictly
+                :props="{ expandTrigger: 'hover'}"
                 @change="addressChange"
               ></el-cascader>
             </el-form-item>
@@ -107,8 +115,11 @@ export default {
       table: [],
       optionone: regionData,
       dialogVisible: false,
-
-      MachinaryIdList: ""
+      MachinaryIdList: "",
+      siteId: "",
+      fourData: [],
+      threeData: [],
+      AreaId: ""
     };
   },
   created() {
@@ -131,7 +142,14 @@ export default {
       //   .then(res => {
       //     this.table = res.data.Data;
       //   });
-
+      this.$axios.post("SiteTree/GetFourLevel", {}).then(res => {
+        console.log(res.data.Data.Data, "4级联动");
+        this.fourData = res.data.Data.Data;
+      });
+      this.$axios.post("SiteTree/GetThreeLevel", {}).then(res => {
+        console.log(res.data.Data.Data, "3级联动");
+        this.threeData = res.data.Data.Data;
+      });
       this.$axios.post("SiteManage/GetMachinaryIdList").then(res => {
         console.log(res.data.Data, "所有设备");
         this.MachinaryIdList = res.data.Data;
@@ -188,7 +206,8 @@ export default {
       this.dialogVisible = true;
     },
     clear() {
-      this.$refs.threeselect.cleardata();
+      // this.$refs.threeselect.cleardata();
+      this.siteId = "";
       this.SiteId = "";
       this.MachinaryId = "";
     },
@@ -209,14 +228,16 @@ export default {
     rowclick(e) {
       console.log(e.id);
     },
-    addressChange(arr) {
+    addressChange(arr, label) {
       console.log(arr, "地址");
-      console.log(
-        CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
-      );
-      this.Province = CodeToText[arr[0]];
-      this.City = CodeToText[arr[1]];
-      this.Area = CodeToText[arr[2]];
+      console.log(this.InsertArea)
+      // console.log(label, "地址");
+      // console.log(
+      //   CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
+      // );
+      this.Province = arr[0];
+      this.City = arr[1];
+      this.Area = arr[2];
     },
     Selectchange(e) {
       console.log(e, "点击");
@@ -227,6 +248,11 @@ export default {
           this.UserName = this.MachinaryIdList[i].UserName;
         }
       }
+    },
+    SiteSelect(e) {
+      console.log(e);
+      this.siteId = e[3];
+      this.AreaId = e[2];
     }
   }
 };

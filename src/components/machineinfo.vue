@@ -1,11 +1,18 @@
 <template>
   <div class="singalwarn">
     <div class="top">
-      <div class="con">
+      <!-- <div class="con">
         <sitethreeselect ref="threeselect"></sitethreeselect>
-      </div>
+      </div> -->
+       <span class="tip">站点名称</span>
+      <el-cascader
+        v-model="siteId"
+        :options="fourData"
+        :props="{ expandTrigger: 'hover' }"
+        @change="SiteSelect"
+      ></el-cascader>
       <div class="con">
-        <span class="tip">设备类型</span>
+        <span class="tip" style="margin-left: 2em;">设备类型</span>
         <el-select v-model="EquipType" placeholder="请选择">
           <el-option
             v-for="item in EquipTypeList"
@@ -321,46 +328,39 @@ export default {
       thirteen: "",
       fourteen: "",
       fifteen: "",
-      sixteen: ""
+      sixteen: "",
+       siteId: "",
+      fourData: [],
+      threeData: [],
+      AreaId: ""
     };
   },
   created() {
     this.getType();
+    // this.getChartData()
   },
   methods: {
     getChartData() {
-      this.$axios
-        .post("MachineData/GetMachinaryIdListBySiteName", {
-          SiteName: this.$store.state.sitename
-        })
-        .then(res => {
-          console.log(res.data.Data);
-          this.MachinaryIdTypeData = res.data.Data;
-          for (let i = 0; i < res.data.Data.length; i++) {
-            this.MachinaryIdType.push({
-              value: res.data.Data[i].MachinaryId,
-              label: res.data.Data[i].MachinaryId
-            });
-          }
-        });
+      
     },
     clearData(e) {
-      this.$refs.threeselect.cleardata();
+      // this.$refs.threeselect.cleardata();
+      this.siteId="";
       this.EquipType = "";
       this.MachinaryId = "";
     },
     search() {
-      console.log(
-        this.$store.state.sheng +
-          "+" +
-          this.$store.state.shi +
-          "+" +
-          this.$store.state.qu +
-          "+" +
-          this.$store.state.sitename
-      );
-      console.log(this.timevalue, "时间");
-      console.log(this.jcvalue, "监测类型");
+      // console.log(
+      //   this.$store.state.sheng +
+      //     "+" +
+      //     this.$store.state.shi +
+      //     "+" +
+      //     this.$store.state.qu +
+      //     "+" +
+      //     this.$store.state.sitename
+      // );
+      // console.log(this.timevalue, "时间");
+      // console.log(this.jcvalue, "监测类型");
       this.$axios
         .post("MachineData/GetEquipPageList", {
           PageSize: 10,
@@ -534,6 +534,11 @@ export default {
           });
         }
       });
+       //4级联动
+      this.$axios.post("SiteTree/GetFourLevel", {}).then(res => {
+        console.log(res.data.Data.Data, "4级联动");
+        this.fourData = res.data.Data.Data;
+      });
     },
     UpdateData() {
       this.positiondialog = true;
@@ -580,6 +585,26 @@ export default {
             message: "已取消"
           });
         });
+    },
+    SiteSelect(e) {
+      console.log(e);
+      this.siteId = e[3];
+      this.AreaId = e[2];
+      this.$axios
+        .post("MachineData/GetMachinaryIdListBySiteName", {
+          SiteName: e[3]
+        })
+        .then(res => {
+          console.log(res.data.Data);
+          this.MachinaryIdTypeData = res.data.Data;
+          for (let i = 0; i < res.data.Data.length; i++) {
+            this.MachinaryIdType.push({
+              value: res.data.Data[i].MachinaryId,
+              label: res.data.Data[i].MachinaryId
+            });
+          }
+        });
+        
     }
   }
 };

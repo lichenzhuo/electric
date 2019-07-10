@@ -1,11 +1,18 @@
 <template>
   <div class="singalwarn">
     <div class="top">
-      <div>
+      <!-- <div>
         <sitethreeselect ref="threeselect"></sitethreeselect>
-      </div>
+      </div> -->
+      <span class="tip">站点名称</span>
+      <el-cascader
+        v-model="siteId"
+        :options="fourData"
+        :props="{ expandTrigger: 'hover' }"
+        @change="SiteSelect"
+      ></el-cascader>
       <div class="con">
-        <span class="tip">站点编号</span>
+        <span class="tip" style="margin-left: 2em;">站点编号</span>
         <el-input style="width:auto" v-model="SiteId" placeholder="请输入内容"></el-input>
       </div>
       <div class="con">
@@ -24,11 +31,19 @@
             </el-form-item>
 
             <el-form-item label="站点所在区域">
-              <el-cascader
+              <!-- <el-cascader
                 :options="optionone"
                 v-model="InsertArea"
                 filterable
                 props.checkStrictly
+                @change="addressChange"
+              ></el-cascader> -->
+              <el-cascader
+                :options="threeData"
+                v-model="InsertArea"
+                filterable
+                props.checkStrictly
+                :props="{ expandTrigger: 'hover'}"
                 @change="addressChange"
               ></el-cascader>
             </el-form-item>
@@ -117,7 +132,11 @@ export default {
       optionone: regionData,
       dialogVisible: false,
       total: "" || 10,
-      MachinaryIdList: ""
+      MachinaryIdList: "",
+       siteId: "",
+      fourData: [],
+      threeData: [],
+      AreaId: ""
     };
   },
   created() {
@@ -155,6 +174,16 @@ export default {
         }
         this.MachinaryTYpes = arr1;
       });
+      //4级联动
+      this.$axios.post("SiteTree/GetFourLevel", {}).then(res => {
+        console.log(res.data.Data.Data, "4级联动");
+        this.fourData = res.data.Data.Data;
+      });
+      //3级联动
+      this.$axios.post("SiteTree/GetThreeLevel", {}).then(res => {
+        console.log(res.data.Data.Data, "3级联动");
+        this.threeData = res.data.Data.Data;
+      });
     },
     query() {
       this.$axios
@@ -162,7 +191,7 @@ export default {
           PageSize: 10,
           PageIndex: "1",
           SiteId: this.SiteId,
-          SiteName: this.$store.state.sitename,
+          SiteName: this.siteId,
           MachinaryId: this.MachinaryId
         })
         .then(res => {
@@ -199,7 +228,8 @@ export default {
       this.dialogVisible = true;
     },
     clear() {
-      this.$refs.threeselect.cleardata();
+      // this.$refs.threeselect.cleardata();
+      this.siteId = "";
       this.SiteId = "";
       this.MachinaryId = "";
     },
@@ -220,14 +250,25 @@ export default {
     rowclick(e) {
       console.log(e.id);
     },
-    addressChange(arr) {
+    // addressChange(arr) {
+    //   console.log(arr, "地址");
+    //   console.log(
+    //     CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
+    //   );
+    //   this.Province=CodeToText[arr[0]]
+    //   this.City=CodeToText[arr[1]]
+    //   this.Area=CodeToText[arr[2]]
+    // },
+    addressChange(arr, label) {
       console.log(arr, "地址");
-      console.log(
-        CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
-      );
-      this.Province=CodeToText[arr[0]]
-      this.City=CodeToText[arr[1]]
-      this.Area=CodeToText[arr[2]]
+      console.log(this.InsertArea)
+      // console.log(label, "地址");
+      // console.log(
+      //   CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
+      // );
+      this.Province = arr[0];
+      this.City = arr[1];
+      this.Area = arr[2];
     },
     Selectchange(e) {
       console.log(e, "点击");
@@ -238,6 +279,12 @@ export default {
           this.UserName = this.MachinaryIdList[i].UserName;
         }
       }
+      console.log(this.UserName )
+    },
+     SiteSelect(e) {
+      console.log(e);
+      this.siteId = e[3];
+      this.AreaId = e[2];
     }
   }
 };

@@ -1,9 +1,16 @@
 <template>
   <div class="singalwarn">
     <div class="top">
-      <div class="block con">
+      <!-- <div class="block con">
         <sitethreeselect ref="threeselect"></sitethreeselect>
-      </div>
+      </div>-->
+      <span class="tip">站点名称</span>
+      <el-cascader
+        v-model="siteId"
+        :options="fourData"
+        :props="{ expandTrigger: 'hover' }"
+        @change="SiteSelect"
+      ></el-cascader>
       <div class="block con">
         <span class="tip">设备类型</span>
         <el-select v-model="machinetype" placeholder="请选择">
@@ -51,17 +58,10 @@
           </el-form-item>
           <el-form-item label="站点所在区域">
             <el-cascader
-              placeholder="选择地址"
-              :options="optionone"
               v-model="InsertForm.Area"
-              @change="addressChangeone"
-            ></el-cascader>
-            <el-cascader
-              placeholder="选择或输入站点"
-              :options="SiteNameList"
-              v-model="InsertForm.SelectSite"
-              filterable
-              @change="addressChangetwo"
+              :options="fourData"
+              :props="{ expandTrigger: 'hover' }"
+              @change="addressChange"
             ></el-cascader>
           </el-form-item>
           <el-form-item label="详细地址">
@@ -70,7 +70,6 @@
               type="textarea"
               v-model="InsertForm.address"
               placeholder="请输入内容"
-              :disabled="true"
             ></el-input>
           </el-form-item>
           <el-form-item label="设备人员编号">
@@ -137,10 +136,10 @@ export default {
       InsertForm: {
         InsertMachinaryId: "",
         InsertEquipTypeId: "",
-        SelectSite:""||'000',
-        address: ""||'未知',
-        UserId: ""||'000',
-        UserName: ""||'张三'
+        SelectSite: "" || "000",
+        address: "",
+        UserId: "" || "000",
+        UserName: "" || "张三"
       },
       total: "" || 10,
       currentPage: 1,
@@ -184,7 +183,10 @@ export default {
       machinetypes: "",
       machinenumber: "",
       SiteNameList: [], //处理后的站点选择框用的数据
-      SiteList: "" //所有站点详细信息列表
+      SiteList: "", //所有站点详细信息列表
+      siteId: "",
+      fourData: [],
+      AreaId: ""
     };
   },
   name: "machinemanage",
@@ -230,6 +232,11 @@ export default {
         console.log(res.data.Data, "角色");
         this.CharacterNametype = res.data.Data;
       });
+      //4级联动
+      this.$axios.post("SiteTree/GetFourLevel", {}).then(res => {
+        console.log(res.data.Data.Data, "4级联动");
+        this.fourData = res.data.Data.Data;
+      });
     },
     //条件查询
     query() {
@@ -248,7 +255,7 @@ export default {
         .post("EquipmentInfo/GetEquipmentPagerList", {
           PageSize: 10,
           PageIndex: 1,
-          SiteId: this.$store.state.sitename,
+          SiteId: '00'+this.siteId,
           EquipTypeId: this.machinetype,
           MachinaryId: this.machinenumber
         })
@@ -261,7 +268,8 @@ export default {
     clear() {
       this.machinetype = "";
       this.machinenumber = "";
-      this.$refs.threeselect.cleardata();
+       this.siteId = "";
+      // this.$refs.threeselect.cleardata();
     },
     //新增用户表单确认
     sureForm() {
@@ -351,7 +359,6 @@ export default {
             this.SiteList[j].Address;
         }
       }
-
       this.$axios
         .post("SiteManage/GetUserId", { SiteName: arr[0] })
         .then(res => {
@@ -359,6 +366,21 @@ export default {
           this.InsertForm.UserId = res.data.Data.UserId;
           this.InsertForm.UserName = res.data.Data.UserName;
         });
+    },
+    addressChange(arr){
+      console.log(arr,'111111111')
+       this.$axios
+        .post("SiteManage/GetUserId", { Area: arr[3] })
+        .then(res => {
+          console.log(res.data.Data, "得到的"); //获取到userId
+          this.InsertForm.UserId = res.data.Data.UserId;
+          this.InsertForm.UserName = res.data.Data.UserName;
+        });
+    },
+    SiteSelect(e) {
+      console.log(e);
+      this.siteId = e[3];
+      this.AreaId = e[2];
     }
   }
 };

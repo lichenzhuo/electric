@@ -1,7 +1,14 @@
 <template>
   <div class="singalwarn">
     <div class="top">
-      <sitethreeselect ref="threeselect"></sitethreeselect>
+      <!-- <sitethreeselect ref="threeselect"></sitethreeselect> -->
+      <span class="tip">站点名称</span>
+      <el-cascader
+        v-model="siteId"
+        :options="fourData"
+        :props="{ expandTrigger: 'hover' }"
+        @change="SiteSelect"
+      ></el-cascader>
       <div class="con">
         <span class="tip" style="padding-left:2em">时间</span>
         <el-date-picker
@@ -51,7 +58,7 @@
         </el-table-column>
         <el-table-column align="center" prop="One_Negative_Voltage" label="一段负对地电压">
           <template scope="scope">
-            <span>{{scope.row.One_Positive_Voltage}}V</span>
+            <span>{{scope.row.One_Negative_Voltage}}V</span>
           </template>
         </el-table-column>
         <el-table-column align="center" prop="One_Positive_Resistance" label="一段正对地电阻">
@@ -122,11 +129,11 @@
       </el-table>
       <div class="page">
         <el-pagination
-          @current-change="handleCurrentChange"
           background
-          :page-size="pagesize"
-          layout="prev, pager, next, jumper"
-          :total="10"
+          layout="prev, pager, next"
+          :total="total"
+          :page-size="5"
+          @current-change="handleSizeChange"
         ></el-pagination>
       </div>
     </div>
@@ -137,66 +144,96 @@
 import sitethreeselect from "./sitethreeselect";
 // import axios from "../http.js";
 export default {
-  name: "warninglog",
+  name: "warnlog",
   components: {
     sitethreeselect
   },
   created() {
     this.getTableData();
+    this.getDataNumber();
   },
   mounted() {
     this.GetJCType();
   },
   methods: {
-    oncli(e) {
-      console.log(e);
-      console.log(this.timevalue);
-    },
     GetJCType() {
       this.$axios.get("Types/GetJCType").then(res => {
         this.$store.state.jclist = res.data.Data;
         console.log(this.$store.state.jclist, "111");
         this.options = this.$store.state.jclist;
       });
+      this.$axios.post("SiteTree/GetFourLevel", {}).then(res => {
+        console.log(res.data.Data.Data, "4级联动");
+        this.fourData = res.data.Data.Data;
+      });
     },
     selchange(e) {
       console.log(e);
     },
     clearData(e) {
-      this.$refs.threeselect.cleardata();
-      this.timevalue=''
-      this.jcvalue=''
+      // this.$refs.threeselect.cleardata();
+      this.siteId="";
+      this.timevalue = "";
+      this.jcvalue = "";
     },
     search() {
-      console.log(
-        this.$store.state.sheng +
-          "+" +
-          this.$store.state.shi +
-          "+" +
-          this.$store.state.qu +
-          "+" +
-          this.$store.state.sitename
-      );
+      console.log(this.siteId,this.AreaId);
       console.log(this.timevalue, "时间");
-      console.log(this.jcvalue,'监测类型');
+      console.log(this.jcvalue, "监测类型");
       this.$axios
-        .post("MachineData/GetAlarmLogPageList", { AlarmSize: 5, PageIndex: 1,SiteId:this.$store.state.sitename,StartTime:this.timevalue[0],EndTime:this.timevalue[1]})
+        .post("MachineData/GetAlarmLogPageList", {
+          AlarmSize: 5,
+          PageIndex: 1,
+          SiteId: this.siteId,
+          StartTime: this.timevalue[0],
+          EndTime: this.timevalue[1]
+        })
         .then(res => {
           console.log(res.data.Data);
-          this.tableData=res.data.Data
+          this.tableData = res.data.Data;
         });
     },
-    handleCurrentChange(currentPage) {
-      this.currentPage = currentPage;
-    },
+
     getTableData() {
       this.$axios
         .post("MachineData/GetAlarmLogPageList", { AlarmSize: 5, PageIndex: 1 })
         .then(res => {
-          console.log(res.data.Data);
-          this.tableData=res.data.Data
+          // console.log(res.data.Data);
+          this.tableData = res.data.Data;
         });
       // this.id = this.$route.params.id;
+    },
+    getDataNumber() {
+      this.$axios
+        .post("MachineData/GetAlertLogAllCount", {
+          SiteId: "",
+          StartTime: "",
+          EndTime: ""
+        })
+        .then(res => {
+          console.log(res.data.Data);
+          this.total = res.data.Data;
+        });
+    },
+    handleSizeChange(e) {
+      console.log(e);
+      this.$axios
+        .post("MachineData/GetAlarmLogPageList", {
+          AlarmSize: 5,
+          PageIndex: e,
+          SiteName: "",
+          StartTime: "",
+          EndTime: ""
+        })
+        .then(res => {
+          // console.log(res.data.Data);
+          this.table = res.data.Data;
+        });
+    },
+    SiteSelect(e) {
+      console.log(e);
+      this.siteId = e[3];
+      this.AreaId = e[2];
     }
   },
   data() {
@@ -239,7 +276,11 @@ export default {
       timevalue: "",
       options: [],
       selectedOptions2: [],
-      jcvalue: ""
+      jcvalue: "",
+      total: "" || 5,
+      siteId: "",
+      fourData: [],
+      AreaId: ""
     };
   }
 };
