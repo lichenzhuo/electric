@@ -4,9 +4,9 @@
       <!-- <sitethreeselect ref="threeselect"></sitethreeselect> -->
       <span class="tip">站点名称</span>
       <el-cascader
-        v-model="siteId"
+        v-model="SiteName"
         :options="fourData"
-        :props="{ expandTrigger: 'hover' }"
+        :props="{ expandTrigger: 'hover',emitPath:true,value:'label' }"
         @change="SiteSelect"
       ></el-cascader>
       <div class="con">
@@ -28,8 +28,8 @@
         <el-select v-model="jcvalue" placeholder="请选择" @change="selchange">
           <el-option
             v-for="item in options"
-            :key="item.JCTypeName"
-            :label="item.JCTypeName"
+            :key="item.Id"
+            :label="item.AlertType"
             :value="item.Id"
           ></el-option>
         </el-select>
@@ -40,100 +40,165 @@
     <el-divider></el-divider>
     <div class="table">
       <el-table :data="tableData" border style="width: 100%" header-cell-class-name="tablebg">
-        <el-table-column align="center" prop="Area" label="地区"></el-table-column>
+        <el-table-column align="center" label="时间">
+          <template slot-scope="scope">
+            <span>{{scope.row.Created_At}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="地区">
+          <template slot-scope="scope">
+            <span>{{scope.row.Province}}{{scope.row.City}}{{scope.row.Area}}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" prop="Address" label="具体地点"></el-table-column>
         <el-table-column align="center" prop="SiteName" label="站点"></el-table-column>
         <el-table-column align="center" prop="MachinaryId" label="机器编号"></el-table-column>
-        <el-table-column align="center" prop="One_Bus_Voltage" label="一段母线电压">
-          <template scope="scope">
-            <span>{{scope.row.One_Bus_Voltage}}V</span>
-            <!-- <span v-if="scope.row.One_Bus_Voltage=='220'">{{scope.row.One_Bus_Voltage}}V</span>
-            <span v-else style="color: red">{{scope.row.One_Bus_Voltage}}V</span>-->
+        <el-table-column align="center" label="I段母线总电压">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.I_VolState!==0,}]">{{scope.row.I_Bus_Voltage}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="One_Positive_Voltage" label="一段正对地电压">
-          <template scope="scope">
-            <span>{{scope.row.One_Positive_Voltage}}V</span>
+        <el-table-column align="center" label="I段母线正对地电压">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.I_Vol_OffsetState!==0,}]">{{scope.row.I_Position_Vol}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="One_Negative_Voltage" label="一段负对地电压">
-          <template scope="scope">
-            <span>{{scope.row.One_Negative_Voltage}}V</span>
+        <el-table-column align="center" label="I段母线负对地电压">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.I_Vol_OffsetState!==0,}]">{{scope.row.I_Negative_Vol}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="One_Positive_Resistance" label="一段正对地电阻">
-          <template scope="scope">
-            <span>{{scope.row.One_Positive_Resistance}}kΩ</span>
+        <el-table-column align="center" label="I段母线纹波">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.I_Bus_RippleState!==0,}]">{{scope.row.I_Bus_Ripple}}mV</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="One_Negative_Resistance" label="一段负对地电阻">
-          <template scope="scope">
-            <span>{{scope.row.One_Negative_Resistance}}kΩ</span>
+        <el-table-column align="center" label="I段母线交流电压">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.I_Bus_ACState!==0,}]">{{scope.row.I_Bus_AC_Vol}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="One_AC_Voltage" label="一段对地交流电压">
-          <template scope="scope">
-            <span>{{scope.row.One_AC_Voltage}}V</span>
+        <el-table-column align="center" label="II段母线总电压">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.II_VolState!==0,}]">{{scope.row.II_Bus_Vol}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="Two_Bus_Voltage" label="二段母线电压">
-          <template scope="scope">
-            <span>{{scope.row.Two_Bus_Voltage}}V</span>
+        <el-table-column align="center" label="II段母线正对地电压">
+          <template slot-scope="scope">
+            <span
+              :class="[{'red':scope.row.II_Vol_OffsetState!==0,}]"
+            >{{scope.row.II_Positive_Vol}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="Two_Positive_Voltage" label="二段正对地电压">
-          <template scope="scope">
-            <span>{{scope.row.Two_Positive_Voltage}}V</span>
+        <el-table-column align="center" label="II段母线负对地电压">
+          <template slot-scope="scope">
+            <span
+              :class="[{'red':scope.row.II_Vol_OffsetState!==0,}]"
+            >{{scope.row.II_Negative_Vol}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="Two_Negative_Voltage" label="二段负对地电压">
-          <template scope="scope">
-            <span>{{scope.row.Two_Negative_Voltage}}V</span>
+        <el-table-column align="center" label="II段母线纹波">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.II_Bus_RippleState!==0,}]">{{scope.row.II_Bus_Ripple}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="Two_Positive_Resistance" label="二段正对地电阻">
-          <template scope="scope">
-            <span>{{scope.row.Two_Positive_Resistance}}kΩ</span>
+        <el-table-column align="center" label="II段母线交流电压">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.II_Bus_ACState!==0,}]">{{scope.row.II_Bus_AC_Vol}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="Two_Negative_Resistance" label="二段负对地电阻">
-          <template scope="scope">
-            <span>{{scope.row.Two_Negative_Resistance}}kΩ</span>
+
+        <!-- 这里判断字段不清楚 ，接口字段文件里面有些。后续需要确定-->
+        <el-table-column align="center" label="I段母线正对地绝缘">
+          <template slot-scope="scope">
+            <span
+              :class="[{'red':scope.row.I_Bus_Ins_Abnormality!==0,}]"
+            >{{scope.row.I_Positive_Ins}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="Two_AC_Voltage" label="二段对地交流电压">
-          <template scope="scope">
-            <span>{{scope.row.Two_AC_Voltage}}V</span>
+        <el-table-column align="center" label="I段母线负对地绝缘">
+          <template slot-scope="scope">
+            <span
+              :class="[{'red':scope.row.I_Bus_Ins_Abnormality!==0,}]"
+            >{{scope.row.I_Negative_Ins}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="BranchNum" label="支路号">
-          <template scope="scope">
-            <span>{{scope.row.BranchNum}}</span>
+        <el-table-column align="center" label="I段蓄电池绝缘">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.I_Battery_Alarm!==0,}]">{{scope.row.I_Battery_Ins}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="Positive_Insulation" label="支路正绝缘">
-          <template scope="scope">
-            <span>{{scope.row.Positive_Insulation}}kΩ</span>
+        <el-table-column align="center" label="I段蓄电接地点">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.I_Battery_Alarm!==0,}]">{{scope.row.I_Grounding_Point}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="Negative_Insulation" label="支路负绝缘">
-          <template scope="scope">
-            <span>{{scope.row.Negative_Insulation}}kΩ</span>
+
+        <el-table-column align="center" label="II段母线正对地绝缘">
+          <template slot-scope="scope">
+            <span
+              :class="[{'red':scope.row.II_Bus_Ins_Abnormality!==0,}]"
+            >{{scope.row.II_Positive_Ins}}V</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="Capacitance" label="支路电容">
-          <template scope="scope">
-            <span>{{scope.row.Capacitance}}uF</span>
+        <el-table-column align="center" label="II段母线负对地绝缘">
+          <template slot-scope="scope">
+            <span
+              :class="[{'red':scope.row.II_Bus_Ins_Abnormality!==0,}]"
+            >{{scope.row.II_Negative_Ins}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="II段蓄电池绝缘">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.II_Battery_Alarm!==0,}]">{{scope.row.II_Battery_Ins}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="II段蓄电接地点">
+          <template slot-scope="scope">
+            <span
+              :class="[{'red':scope.row.II_Battery_Alarm!==0,}]"
+            >{{scope.row.II_Grounding_Point}}V</span>
+          </template>
+        </el-table-column>
+        <!-- 21312323333333333333333 -->
+        <el-table-column align="center" label="母联总绝缘">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.Bus_UnionStates!==0,}]">{{scope.row.Busbar_Total_Ins}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="支路号">
+          <template slot-scope="scope">
+            <span>{{scope.row.BranchNum}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="支路所在母线段">
+          <template slot-scope="scope">
+            <span>{{scope.row.Branch_BusSection}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="支路总绝缘">
+          <template slot-scope="scope">
+            <span>{{scope.row.Branch_Total_Ins}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="支路正绝缘">
+          <template slot-scope="scope">
+            <span>{{scope.row.Branch_Positive_Ins}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="支路负绝缘">
+          <template slot-scope="scope">
+            <span>{{scope.row.Branch_Negative_Ins}}V</span>
           </template>
         </el-table-column>
       </el-table>
       <div class="page">
         <el-pagination
+          @current-change="handleSizeChange"
           background
+          :page-size="10"
           layout="prev, pager, next"
           :total="total"
-          :page-size="5"
-          @current-change="handleSizeChange"
         ></el-pagination>
       </div>
     </div>
@@ -144,96 +209,116 @@
 import sitethreeselect from "./sitethreeselect";
 // import axios from "../http.js";
 export default {
-  name: "warnlog",
+  name: "warninglog",
   components: {
     sitethreeselect
   },
   created() {
-    this.getTableData();
-    this.getDataNumber();
+    this.GetJCType();
   },
   mounted() {
-    this.GetJCType();
+    // this.GetJCType();
   },
   methods: {
     GetJCType() {
-      this.$axios.get("Types/GetJCType").then(res => {
-        this.$store.state.jclist = res.data.Data;
-        console.log(this.$store.state.jclist, "111");
-        this.options = this.$store.state.jclist;
+      this.$axios.get("Types/GetYJType").then(res => {
+       console.log(res.data.Data,'预警类型') 
+        this.options = res.data.Data;
       });
       this.$axios.post("SiteTree/GetFourLevel", {}).then(res => {
         console.log(res.data.Data.Data, "4级联动");
         this.fourData = res.data.Data.Data;
       });
+      // 表格数据
+      this.$axios
+        .post("MachineData/GetAlarmLogPageList", {
+          PageSize: 10,
+          PageIndex: 1,
+          UserId: JSON.parse(localStorage.getItem("LoginData")).UserId,
+          YJType: 0
+        })
+        .then(res => {
+          console.log(res.data.Data, "这是res");
+          this.resdata = res.data.Data;
+          this.tableData = res.data.Data;
+        });
+
+      // 总数据数
+      this.$axios
+        .post("MachineData/GetAlarmLogAllCount", {
+          UserId: JSON.parse(localStorage.getItem("LoginData")).UserId,
+          YJType: "1"
+        })
+        .then(res => {
+          console.log(res.data.Data, "这是总数");
+          this.total = res.data.Data;
+        });
     },
     selchange(e) {
       console.log(e);
     },
     clearData(e) {
       // this.$refs.threeselect.cleardata();
-      this.siteId="";
+      this.SiteName = "";
       this.timevalue = "";
       this.jcvalue = "";
     },
     search() {
-      console.log(this.siteId,this.AreaId);
       console.log(this.timevalue, "时间");
       console.log(this.jcvalue, "监测类型");
-      this.$axios
-        .post("MachineData/GetAlarmLogPageList", {
-          AlarmSize: 5,
-          PageIndex: 1,
-          SiteId: this.siteId,
-          StartTime: this.timevalue[0],
-          EndTime: this.timevalue[1]
-        })
-        .then(res => {
-          console.log(res.data.Data);
-          this.tableData = res.data.Data;
-        });
-    },
-
-    getTableData() {
-      this.$axios
-        .post("MachineData/GetAlarmLogPageList", { AlarmSize: 5, PageIndex: 1 })
-        .then(res => {
-          // console.log(res.data.Data);
-          this.tableData = res.data.Data;
-        });
-      // this.id = this.$route.params.id;
-    },
-    getDataNumber() {
-      this.$axios
-        .post("MachineData/GetAlertLogAllCount", {
-          SiteId: "",
-          StartTime: "",
-          EndTime: ""
-        })
-        .then(res => {
-          console.log(res.data.Data);
-          this.total = res.data.Data;
-        });
+      if (this.jcvalue) {
+        this.$axios
+          .post("MachineData/GetAlarmLogPageList", {
+            PageSize: 10,
+            PageIndex: 1,
+            UserId: JSON.parse(localStorage.getItem("LoginData")).UserId,
+            YJType: this.jcvalue,
+            SiteName: this.SiteName,
+            StartTime: this.timevalue[0],
+            EndTime: this.timevalue[1]
+          })
+          .then(res => {
+            console.log(res.data.Data);
+            this.tableData = res.data.Data;
+          });
+      } else {
+        this.$axios
+          .post("MachineData/GetAlarmLogPageList", {
+            PageSize: 10,
+            PageIndex: 1,
+            UserId: JSON.parse(localStorage.getItem("LoginData")).UserId,
+            YJType: 0,
+            SiteName: this.SiteName,
+            StartTime: this.timevalue[0],
+            EndTime: this.timevalue[1]
+          })
+          .then(res => {
+            console.log(res.data.Data);
+            this.tableData = res.data.Data;
+          });
+      }
     },
     handleSizeChange(e) {
       console.log(e);
       this.$axios
         .post("MachineData/GetAlarmLogPageList", {
-          AlarmSize: 5,
+          PageSize: 10,
           PageIndex: e,
-          SiteName: "",
-          StartTime: "",
-          EndTime: ""
+          UserId: JSON.parse(localStorage.getItem("LoginData")).UserId,
+          YJType: 0,
+          SiteName: this.SiteName,
+          StartTime: this.timevalue[0],
+          EndTime: this.timevalue[1]
         })
         .then(res => {
-          // console.log(res.data.Data);
           this.table = res.data.Data;
         });
     },
     SiteSelect(e) {
       console.log(e);
-      this.siteId = e[3];
-      this.AreaId = e[2];
+      console.log(e[2], "地区");
+      this.SiteName = e[3];
+      console.log(this.SiteName, "站点名称");
     }
   },
   data() {
@@ -277,10 +362,9 @@ export default {
       options: [],
       selectedOptions2: [],
       jcvalue: "",
-      total: "" || 5,
-      siteId: "",
-      fourData: [],
-      AreaId: ""
+      total: "" || 10,
+      SiteName: "",
+      fourData: []
     };
   }
 };

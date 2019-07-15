@@ -77,7 +77,7 @@ export default {
 
           this.$axios
             .post("Login/Login", {
-              LoginName: this.registerUser.name,
+              UserId: this.registerUser.name,
               Password: this.registerUser.password
             })
             .then(res => {

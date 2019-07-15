@@ -6,17 +6,17 @@
       </div>-->
       <span class="tip">站点名称</span>
       <el-cascader
-        v-model="siteId"
+        v-model="Siteid"
         :options="fourData"
-        :props="{ expandTrigger: 'hover' }"
+        :props="{ expandTrigger: 'hover', emitPath:true,value:'children'}"
         @change="SiteSelect"
       ></el-cascader>
-      <div class="con">
+      <!-- <div class="con">
         <span class="tip" style="margin-left: 2em;">站点编号</span>
         <el-input style="width:auto" v-model="SiteId" placeholder="请输入内容"></el-input>
-      </div>
+      </div> -->
       <div class="con">
-        <span class="tip">设备编号</span>
+        <span class="tip" style="margin-left: 2em;">设备编号</span>
         <el-input style="width:auto" v-model="MachinaryId" placeholder="请输入内容"></el-input>
       </div>
       <el-button type="primary" round style="margin-left:20px" @click="query">查询</el-button>
@@ -36,7 +36,7 @@
                 v-model="InsertArea"
                 filterable
                 props.checkStrictly
-                :props="{ expandTrigger: 'hover'}"
+                :props="{ expandTrigger: 'hover',value:'label'}"
                 @change="addressChange"
               ></el-cascader>
             </el-form-item>
@@ -103,7 +103,7 @@ export default {
   data() {
     return {
       InsertSiteName: "",
-      SiteId: "",
+      Siteid: "",
       MachinaryId: "",
       MachinaryTYpes: "",
       Province: "",
@@ -116,7 +116,6 @@ export default {
       optionone: regionData,
       dialogVisible: false,
       MachinaryIdList: "",
-      siteId: "",
       fourData: [],
       threeData: [],
       AreaId: ""
@@ -164,12 +163,15 @@ export default {
       });
     },
     query() {
+      console.log(this.Siteid,'000')
+      console.log(this.SiteName,'000')
+      console.log(this.MachinaryId,'000')
       this.$axios
         .post("SiteManage/GetSiteManagerPagerList", {
           PageSize: 10,
           PageIndex: "1",
-          SiteId: this.SiteId,
-          SiteName: this.$store.state.sitename,
+          SiteId: this.Siteid,
+          SiteName: this.SiteName,
           MachinaryId: this.MachinaryId
         })
         .then(res => {
@@ -178,66 +180,57 @@ export default {
         });
     },
     sureForm() {
-      this.$axios
-        .post("SiteManage/SiteManageInsert", {
-          MachinaryId: this.MachinaryId,
-          SiteName: this.InsertSiteName,
-          Province: this.Province,
-          City: this.City,
-          Area: this.Area,
-          Address: this.Address
-        })
-        .then(res => {
-          console.log(res.data.Data, "新增");
-          if (res.data.Msg == "成功") {
-            this.$message({
-              message: "新增用户成功",
-              type: "success"
-            });
-            this.InsertForm = "";
-            this.query();
-          } else {
-            this.$message.error("新增用户失败");
-          }
-        });
-      this.dialogVisible = false;
+      console.log(this.MachinaryId,'333')
+      console.log(this.InsertSiteName,'333')
+      console.log(this.Province,'333')
+      console.log(this.City,'333')
+      console.log(this.Area,'333')
+      console.log(this.Address,'333')
+      // this.$axios
+      //   .post("SiteManage/SiteManageInsert", {
+      //     MachinaryId: this.MachinaryId,
+      //     SiteName: this.InsertSiteName,
+      //     Province: this.Province,
+      //     City: this.City,
+      //     Area: this.Area,
+      //     Address: this.Address
+      //   })
+      //   .then(res => {
+      //     console.log(res.data.Data, "新增");
+      //     if (res.data.Msg == "成功") {
+      //       this.$message({
+      //         message: "新增用户成功",
+      //         type: "success"
+      //       });
+      //       this.InsertForm = "";
+      //       this.query();
+      //     } else {
+      //       this.$message.error("新增用户失败");
+      //     }
+      //   });
+      // this.dialogVisible = false;
     },
     insert() {
       this.dialogVisible = true;
     },
     clear() {
       // this.$refs.threeselect.cleardata();
-      this.siteId = "";
-      this.SiteId = "";
+      this.Siteid = "";
       this.MachinaryId = "";
     },
-    // getDataNumber() {
-    //   this.$axios
-    //     .post("MachineData/GetAlertLogAllCount", {
-    //       SiteId: "",
-    //       StartTime: "",
-    //       EndTime: ""
-    //     })
-    //     .then(res => {
-    //       console.log(res.data.Data);
-    //       this.total = res.data.Data;
-    //     });
-    // },
     handleSizeChange(currentPage) {},
 
     rowclick(e) {
       console.log(e.id);
     },
-    addressChange(arr, label) {
-      console.log(arr, "地址");
-      console.log(this.InsertArea)
-      // console.log(label, "地址");
-      // console.log(
-      //   CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
-      // );
-      this.Province = arr[0];
-      this.City = arr[1];
-      this.Area = arr[2];
+    addressChange(e) {
+      console.log(e, "地址");
+      this.Province = e[0];
+      this.City = e[1];
+      this.Area = e[2];
+      console.log(this.Province,'111')
+      console.log(this.City,'111')
+      console.log(this.Area,'111')
     },
     Selectchange(e) {
       console.log(e, "点击");
@@ -251,14 +244,17 @@ export default {
     },
     SiteSelect(e) {
       console.log(e);
-      this.siteId = e[3];
-      this.AreaId = e[2];
+      this.Siteid = e[2][0].value;
+      this.SiteName = e[2][0].label;
+      console.log( this.Siteid,'111111')
+      console.log( this.SiteName,'111111')
+      // this.AreaId = e[2];
     }
   }
 };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 .singalwarn {
   width: 1600px;
   background-color: #ffffff;

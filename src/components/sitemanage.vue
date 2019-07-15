@@ -15,10 +15,10 @@
         <span class="tip" style="margin-left: 2em;">站点编号</span>
         <el-input style="width:auto" v-model="SiteId" placeholder="请输入内容"></el-input>
       </div>
-      <div class="con">
+      <!-- <div class="con">
         <span class="tip">设备编号</span>
         <el-input style="width:auto" v-model="MachinaryId" placeholder="请输入内容"></el-input>
-      </div>
+      </div> -->
       <el-button type="primary" round style="margin-left:20px" @click="query">查询</el-button>
       <el-button type="primary" round style="margin-left:20px" @click="clear">清空</el-button>
       <el-button type="primary" round style="margin-left:20px" @click="insert">添加</el-button>
@@ -50,7 +50,7 @@
             <el-form-item label="详细地址">
               <el-input style="width:217px" type="textarea" v-model="Address" placeholder="请输入内容"></el-input>
             </el-form-item>
-            <el-form-item label="所有设备">
+            <!-- <el-form-item label="所有设备">
               <el-select v-model="MachinaryId" placeholder="请选择" @change="Selectchange">
                 <el-option
                   v-for="item in MachinaryTYpes"
@@ -59,10 +59,10 @@
                   :value="item.value"
                 ></el-option>
               </el-select>
-            </el-form-item>
-            <el-form-item label="相关人员">
+            </el-form-item> -->
+            <!-- <el-form-item label="相关人员">
               <el-input style="width:217px" v-model="UserName" placeholder :disabled="true"></el-input>
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </span>
         <span slot="footer" class="dialog-footer">

@@ -4,9 +4,9 @@
       <!-- <sitethreeselect ref="threeselect"></sitethreeselect> -->
       <span class="tip">站点名称</span>
       <el-cascader
-        v-model="siteId"
+        v-model="SiteName"
         :options="fourData"
-        :props="{ expandTrigger: 'hover' }"
+        :props="{ expandTrigger: 'hover' ,emitPath:true,value:'label' }"
         @change="SiteSelect"
       ></el-cascader>
       <div class="con">
@@ -20,6 +20,7 @@
           ></el-option>
         </el-select>
       </div>
+
       <div class="con">
         <span class="tip">起止时间</span>
         <el-date-picker
@@ -34,28 +35,17 @@
           value-format="yyyy-MM-dd"
         ></el-date-picker>
       </div>
-      <!-- <div class="con">
-        <span class="tip">监测类型</span>
+      <div class="con" style="margin-top:30px">
+        <span class="tip">预警类型</span>
         <el-select v-model="jcvalue" placeholder="请选择" @change="selchange">
           <el-option
-            v-for="item in jcvalueList"
-            :key="item.JCTypeName"
-            :label="item.JCTypeName"
-            :value="item.Id"
-          ></el-option>
-        </el-select>
-      </div>
-      <div class="con">
-        <span class="tip">预警类型</span>
-        <el-select v-model="warmType" placeholder="请选择">
-          <el-option
-            v-for="item in warmTypeList"
+            v-for="item in options"
             :key="item.Id"
             :label="item.AlertType"
             :value="item.Id"
           ></el-option>
         </el-select>
-      </div> -->
+      </div>
       <el-button type="primary" round style="margin-left:30px" @click="search">搜索</el-button>
       <el-button type="primary" round style="margin-left:30px" @click="clearData">清空</el-button>
     </div>
@@ -79,24 +69,159 @@
       </span>
     </div>
     <el-divider></el-divider>
-    <div class="table">
-      <el-table :data="table" border style="width: 100%" header-cell-class-name="tablebg">
-        <el-table-column align="center" prop="Created_At" label="预警时间" width="200"></el-table-column>
-        <el-table-column align="center" label="母线电压">
-          <template scope="scope">
-            <span>{{scope.row.One_Bus_Voltage}}V</span>
-            <!-- <span v-if="scope.row.one=='22v'">{{scope.row.one}}+{{scope.$index}}</span>
-            <span v-else style="color: red">{{scope.row.one}}+{{scope.$index}}</span> -->
+    <div class="table" style="padding:0">
+      <el-table :data="tableData" border style="width: 100%" header-cell-class-name="tablebg">
+        <el-table-column align="center" label="时间">
+          <template slot-scope="scope">
+            <span>{{scope.row.Created_At}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="One_Positive_Voltage" label="正极电压"></el-table-column>
-        <el-table-column align="center" prop="One_Negative_Voltage" label="负极电压"></el-table-column>
-        <el-table-column align="center" prop="4" label="正负压差"></el-table-column>
-        <el-table-column align="center" prop="One_AC_Voltage" label="交流电压"></el-table-column>
-        <el-table-column align="center" prop="6" label="纹波电压"></el-table-column>
-        <el-table-column align="center" prop="Positive_Insulation" label="正极绝缘"></el-table-column>
-        <el-table-column align="center" prop="Negative_Insulation" label="负极绝缘"></el-table-column>
-        <el-table-column align="center" prop="9" label="母联绝缘"></el-table-column>
+        <el-table-column align="center" label="地区">
+          <template slot-scope="scope">
+            <span>{{scope.row.Province}}{{scope.row.City}}{{scope.row.Area}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" prop="Address" label="具体地点"></el-table-column>
+        <el-table-column align="center" prop="SiteName" label="站点"></el-table-column>
+        <el-table-column align="center" prop="MachinaryId" label="机器编号"></el-table-column>
+        <el-table-column align="center" label="I段母线总电压">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.I_VolState!==0,}]">{{scope.row.I_Bus_Voltage}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="I段母线正对地电压">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.I_Vol_OffsetState!==0,}]">{{scope.row.I_Position_Vol}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="I段母线负对地电压">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.I_Vol_OffsetState!==0,}]">{{scope.row.I_Negative_Vol}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="I段母线纹波">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.I_Bus_RippleState!==0,}]">{{scope.row.I_Bus_Ripple}}mV</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="I段母线交流电压">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.I_Bus_ACState!==0,}]">{{scope.row.I_Bus_AC_Vol}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="II段母线总电压">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.II_VolState!==0,}]">{{scope.row.II_Bus_Vol}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="II段母线正对地电压">
+          <template slot-scope="scope">
+            <span
+              :class="[{'red':scope.row.II_Vol_OffsetState!==0,}]"
+            >{{scope.row.II_Positive_Vol}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="II段母线负对地电压">
+          <template slot-scope="scope">
+            <span
+              :class="[{'red':scope.row.II_Vol_OffsetState!==0,}]"
+            >{{scope.row.II_Negative_Vol}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="II段母线纹波">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.II_Bus_RippleState!==0,}]">{{scope.row.II_Bus_Ripple}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="II段母线交流电压">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.II_Bus_ACState!==0,}]">{{scope.row.II_Bus_AC_Vol}}V</span>
+          </template>
+        </el-table-column>
+
+        <!-- 这里判断字段不清楚 ，接口字段文件里面有些。后续需要确定-->
+        <el-table-column align="center" label="I段母线正对地绝缘">
+          <template slot-scope="scope">
+            <span
+              :class="[{'red':scope.row.I_Bus_Ins_Abnormality!==0,}]"
+            >{{scope.row.I_Positive_Ins}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="I段母线负对地绝缘">
+          <template slot-scope="scope">
+            <span
+              :class="[{'red':scope.row.I_Bus_Ins_Abnormality!==0,}]"
+            >{{scope.row.I_Negative_Ins}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="I段蓄电池绝缘">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.I_Battery_Alarm!==0,}]">{{scope.row.I_Battery_Ins}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="I段蓄电接地点">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.I_Battery_Alarm!==0,}]">{{scope.row.I_Grounding_Point}}V</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="II段母线正对地绝缘">
+          <template slot-scope="scope">
+            <span
+              :class="[{'red':scope.row.II_Bus_Ins_Abnormality!==0,}]"
+            >{{scope.row.II_Positive_Ins}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="II段母线负对地绝缘">
+          <template slot-scope="scope">
+            <span
+              :class="[{'red':scope.row.II_Bus_Ins_Abnormality!==0,}]"
+            >{{scope.row.II_Negative_Ins}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="II段蓄电池绝缘">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.II_Battery_Alarm!==0,}]">{{scope.row.II_Battery_Ins}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="II段蓄电接地点">
+          <template slot-scope="scope">
+            <span
+              :class="[{'red':scope.row.II_Battery_Alarm!==0,}]"
+            >{{scope.row.II_Grounding_Point}}V</span>
+          </template>
+        </el-table-column>
+        <!-- 21312323333333333333333 -->
+        <el-table-column align="center" label="母联总绝缘">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.Bus_UnionStates!==0,}]">{{scope.row.Busbar_Total_Ins}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="支路号">
+          <template slot-scope="scope">
+            <span>{{scope.row.BranchNum}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="支路所在母线段">
+          <template slot-scope="scope">
+            <span>{{scope.row.Branch_BusSection}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="支路总绝缘">
+          <template slot-scope="scope">
+            <span>{{scope.row.Branch_Total_Ins}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="支路正绝缘">
+          <template slot-scope="scope">
+            <span>{{scope.row.Branch_Positive_Ins}}V</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="支路负绝缘">
+          <template slot-scope="scope">
+            <span>{{scope.row.Branch_Negative_Ins}}V</span>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="page">
         <el-pagination
@@ -159,29 +284,26 @@ export default {
       warmTypeList: [],
       warmType: "",
       total: "" || 10,
-      table: [],
-      selectId:"",
-      selectType:"",
-      selectAddress:"",
-      selectName:"",
-      siteId: "",
+      tableData: [],
+      selectId: "",
+      selectType: "",
+      selectAddress: "",
+      selectName: "",
+      SiteName: "",
       fourData: [],
-      AreaId: ""
+      AreaId: "",
+      options: ""
     };
   },
-  created() {
-  
-  },
+  created() {},
   mounted() {
     this.GetType();
   },
   methods: {
     GetType() {
-      this.$axios.get("Types/GetJCType").then(res => {
-        this.jcvalueList = res.data.Data;
-      });
       this.$axios.get("Types/GetYJType").then(res => {
-        this.warmTypeList = res.data.Data;
+        console.log(res.data.Data, "预警类型");
+        this.options = res.data.Data;
       });
       this.$axios.post("SiteManage/GetMachinaryIdList").then(res => {
         this.machineNumberList = res.data.Data;
@@ -190,90 +312,74 @@ export default {
         console.log(res.data.Data.Data, "4级联动");
         this.fourData = res.data.Data.Data;
       });
-      this.$axios
-        .post("MachineData/GetAlertLogByMachineIdAllCount", {
-          MachinaryId: "",
-          PageSize: "10",
-          PageIndex: "1"
-        })
-        .then(res => {
-          this.total = res.data.Data;
-        });
-      this.$axios
-        .post("MachineData/GetAlertLogByMachineId", {
-          PageSize: "10",
-          PageIndex: "1",
-          MachinaryId: "",
-          StartTime: "",
-          EndTime: ""
-        })
-        .then(res => {
-          this.table = res.data.Data;
-        });
     },
     selchange(e) {
       console.log(e);
     },
-    machineNumberchange(e){
-      console.log(e)   //MachinaryId  
-      // selectId:"",
-      // selectType:"",
-      // selectAddress:"",
-      // selectName:""
-      this.machineNumberList
-      for (let i = 0; i < this.machineNumberList.length; i++) {
-        const element = this.machineNumberList[i];
-        if (this.machineNumberList[i].MachinaryId==e) {
-          this.selectId=e
-          this.selectType=this.machineNumberList[i].EquipType,
-          this.selectAddress=this.machineNumberList[i].Province+this.machineNumberList[i].City+this.machineNumberList[i].Area,
-          this.selectName=this.machineNumberList[i].UserName
-        }
-        
-      }
+    machineNumberchange(e) {
+      console.log(e, "111111"); //MachinaryId
     },
     clearData(e) {
       // this.$refs.threeselect.cleardata()
-      this.timevalue = ""
-      this.jcvalue = ""
-      this.machineNumber=""
-      this.warmType=""
+      this.timevalue = "";
+      this.jcvalue = "";
+      this.SiteName = "";
+      this.machineNumber = "";
+      this.warmType = "";
     },
     search() {
+      console.log(this.SiteName, "111");
+      console.log(this.jcvalue, "222");
+      console.log(this.timevalue[0], "333");
+      console.log(this.timevalue[1], "444");
+     
+      // this.$axios
+      //   .post("MachineData/GetAlertLogByMachineId", {
+      //     PageSize: 10,
+      //     PageIndex: 1,
+      //     SiteName: this.SiteName,
+      //     MachinaryId: this.machineNumber,
+      //     YJType: this.jcvalue,
+      //     StartTime: this.timevalue[0],
+      //     EndTime: this.timevalue[1]
+      //   })
+      //   .then(res => {
+      //     console.log(res.data.Data);
+      //     this.tableData = res.data.Data;
+      //   });
       this.$axios
-        .post("MachineData/GetAlertLogByMachineId", {
-          PageSize: 10,
-          PageIndex: 1,
+        .post("MachineData/GetAlertLogByMachineIdAllCount", {
+          SiteName: this.SiteName,
           MachinaryId: this.machineNumber,
+          YJType: this.jcvalue,
           StartTime: this.timevalue[0],
-          EndTime: this.timevalue[1],
-          SiteName:this.siteId
+          EndTime: this.timevalue[1]
         })
         .then(res => {
-          console.log(res.data.Data);
-          this.table=res.data.Data
+          this.tableData = res.data.Data;
         });
     },
 
-    
     handleSizeChange(e) {
       console.log(e);
-      this.$axios
+       this.$axios
         .post("MachineData/GetAlertLogByMachineId", {
-          PageSize: 5,
-          PageIndex: e,
-          MachinaryId: "",
-          StartTime: "",
-          EndTime: ""
+          PageSize: 10,
+          PageIndex:e,
+          SiteName: this.SiteName,
+          MachinaryId: this.machineNumber,
+          YJType: this.jcvalue,
+          StartTime: this.timevalue[0],
+          EndTime: this.timevalue[1]
         })
         .then(res => {
-          // console.log(res.data.Data);
-          this.table = res.data.Data;
+          console.log(res.data.Data);
+          this.tableData = res.data.Data;
         });
     },
     SiteSelect(e) {
       console.log(e);
-      this.siteId = e[3];
+      this.SiteName = e[3];
       this.AreaId = e[2];
     }
   }
@@ -314,11 +420,6 @@ export default {
     }
   }
 
-  .table {
-    margin-top: 50px;
-    padding: 0 78px;
-  }
-
   .color {
     color: #3936de;
   }
@@ -342,5 +443,9 @@ export default {
     color: #ffffff;
     font-size: 18px;
   }
+}
+
+.table {
+  margin-top: 50px;
 }
 </style>
