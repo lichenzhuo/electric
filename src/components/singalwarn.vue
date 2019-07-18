@@ -305,12 +305,17 @@ export default {
         console.log(res.data.Data, "预警类型");
         this.options = res.data.Data;
       });
-      this.$axios.post("SiteManage/GetMachinaryIdList").then(res => {
-        this.machineNumberList = res.data.Data;
-      });
+      // this.$axios.post("SiteManage/GetMachinaryIdList").then(res => {
+      //   this.machineNumberList = res.data.Data;
+      // });
       this.$axios.post("SiteTree/GetFourLevel", {}).then(res => {
         console.log(res.data.Data.Data, "4级联动");
         this.fourData = res.data.Data.Data;
+      });
+
+      this.$axios.post("EquipmentInfo/GetMachinaryIdList").then(res => {
+        console.log(res.data.Data, "所有设备");
+        this.machineNumberList = res.data.Data;
       });
     },
     selchange(e) {
@@ -332,21 +337,30 @@ export default {
       console.log(this.jcvalue, "222");
       console.log(this.timevalue[0], "333");
       console.log(this.timevalue[1], "444");
-     
-      // this.$axios
-      //   .post("MachineData/GetAlertLogByMachineId", {
-      //     PageSize: 10,
-      //     PageIndex: 1,
-      //     SiteName: this.SiteName,
-      //     MachinaryId: this.machineNumber,
-      //     YJType: this.jcvalue,
-      //     StartTime: this.timevalue[0],
-      //     EndTime: this.timevalue[1]
-      //   })
-      //   .then(res => {
-      //     console.log(res.data.Data);
-      //     this.tableData = res.data.Data;
-      //   });
+      console.log(this.machineNumber, "5555");
+
+      this.$axios
+        .post("MachineData/GetAlertLogByMachineId", {
+          PageSize: 10,
+          PageIndex: 1,
+          SiteName: this.SiteName,
+          MachinaryId: this.machineNumber,
+          YJType: this.jcvalue,
+          StartTime: this.timevalue[0],
+          EndTime: this.timevalue[1]
+        })
+        .then(res => {
+          console.log(res.data.Data);
+          this.tableData = res.data.Data;
+          this.selectId = res.data.Data[0].MachinaryId;
+          this.selectType = res.data.Data[0].EquipType;
+          this.selectAddress =
+            res.data.Data[0].Province +
+            res.data.Data[0].City +
+            res.data.Data[0].Area +
+            res.data.Data[0].Address;
+          this.selectName = res.data.Data[0].UserName;
+        });
       this.$axios
         .post("MachineData/GetAlertLogByMachineIdAllCount", {
           SiteName: this.SiteName,
@@ -356,16 +370,16 @@ export default {
           EndTime: this.timevalue[1]
         })
         .then(res => {
-          this.tableData = res.data.Data;
+          this.total = res.data.Data;
         });
     },
 
     handleSizeChange(e) {
       console.log(e);
-       this.$axios
+      this.$axios
         .post("MachineData/GetAlertLogByMachineId", {
           PageSize: 10,
-          PageIndex:e,
+          PageIndex: e,
           SiteName: this.SiteName,
           MachinaryId: this.machineNumber,
           YJType: this.jcvalue,

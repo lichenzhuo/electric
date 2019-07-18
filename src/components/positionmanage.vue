@@ -45,9 +45,6 @@
           :model="formLabelAlign"
           style="padding-left:40px"
         >
-         <el-form-item label="职务编号">
-            <el-input style="width:217px" v-model="formLabelAlign.PositionId" placeholder="请输入内容"></el-input>
-          </el-form-item>
           <el-form-item label="职务名称">
             <el-select v-model="formLabelAlign.PositionName" placeholder="请选择">
               <el-option
@@ -125,8 +122,7 @@ export default {
       formLabelAlign: {
         Remarks: "",
         DepartmentId: "",
-        PositionName: "",
-        PositionId:"",
+        PositionName: ""
       }
     };
   },
@@ -181,23 +177,26 @@ export default {
     sureForm() {
       this.$axios
         .post("PositionManager/PositionInsert", {
-          PositionId: this.formLabelAlign.PositionId,
           PositionName: this.formLabelAlign.PositionName,
           DepartmentId: this.formLabelAlign.DepartmentId,
-          Remarks: this.formLabelAlign.Remarks,
+          Remarks: this.formLabelAlign.Remarks
         })
         .then(res => {
           console.log(res.data.Data, "新增");
-          // if (res.data.Msg == "成功") {
-          //   this.$message({
-          //     message: "新增用户成功",
-          //     type: "success"
-          //   });
-          //   this.formLabelAlign = "";
-          //   this.query();
-          // } else {
-          //   this.$message.error("新增用户失败");
-          // }
+          if (res.data.Msg == "成功") {
+            this.$message({
+              message: "新增用户成功",
+              type: "success"
+            });
+
+            this.formLabelAlign.PositionName = "";
+            this.formLabelAlign.DepartmentId = "";
+            this.formLabelAlign.Remarks = "";
+            this.query();
+            this.dialogVisible = false;
+          } else {
+            this.$message.error("新增用户失败");
+          }
         });
       // this.dialogVisible = false;
     },
@@ -212,7 +211,7 @@ export default {
           PageIndex: 1,
           PositionId: this.PositionId,
           PositionName: this.PositionName,
-          DepartmentId: this.DepartmentId,
+          DepartmentId: this.DepartmentId
         })
         .then(res => {
           console.log(res.data.Data, "查询");
@@ -235,8 +234,8 @@ export default {
       );
     },
     handleSizeChange(e) {
-      console.log(e)
-       this.$axios
+      console.log(e);
+      this.$axios
         .post("PositionManager/GetPositionPagerList", {
           PageSize: 10,
           PageIndex: e,

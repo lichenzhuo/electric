@@ -6,17 +6,18 @@
       </div>
       <el-divider></el-divider>
       <div class="header">
-        <span class="box">用户名：张三</span>
-        <span class="box">性别：男</span>
-        <span class="box">所属单位：浙江星炬电力科技有限公司</span>
-        <span class="box">部门：运行维护</span>
-        <span class="box">职务：一线维护</span>
+        <span class="box">用户名：{{UserName}}</span>
+        <span v-if="Sex=='1'" class="box">性别：男</span>
+        <span v-else class="box">性别：女</span>
+        <span class="box">所属单位：{{UnitName}}</span>
+        <span class="box">部门：{{DepartmentName}}</span>
+        <span class="box">职务：{{PositionName}}</span>
       </div>
       <el-divider></el-divider>
       <div class="header">
-        <span class="box">办公室电话：021-58885555</span>
-        <span class="box">手机号：13955558888</span>
-        <span class="box">微信号：13955558888</span>
+        <span class="box">办公室电话：{{UnitPhone}}</span>
+        <span class="box">手机号：{{Phone}}</span>
+        <span class="box">微信号：{{vX}}</span>
       </div>
       <el-divider></el-divider>
     </div>
@@ -28,7 +29,16 @@ export default {
   name: "personaldata",
 
   data() {
-    return {};
+    return {
+      UserName: "",
+      Sex: "",
+      UnitName: "",
+      DepartmentName: "",
+      PositionName: "",
+      UnitPhone: "",
+      Phone: "",
+      vX: ""
+    };
   },
   created() {},
   mounted() {
@@ -36,14 +46,22 @@ export default {
   },
   methods: {
     GetJCType() {
-      var UserId=JSON.parse(localStorage.getItem("LoginData")).UserId
-      
-      this.$axios.post("Login/GetUserInfoCJ",{
-        UserId:UserId
-      }).then(res => {
-        console.log(res.data.Data, "111");
-
-      });
+      var UserId = JSON.parse(localStorage.getItem("LoginData")).UserId;
+      this.$axios
+        .post("Login/GetUserInfoCJ", {
+          UserId: UserId
+        })
+        .then(res => {
+          console.log(res.data.Data.Data, "111");
+          this.UserName=res.data.Data.Data.UserName
+          this.Sex=res.data.Data.Data.Sex
+          this.UnitName=res.data.Data.Data.UnitName
+          this.DepartmentName=res.data.Data.Data.DepartmentName
+          this.PositionName=res.data.Data.Data.PositionName
+          this.UnitPhone=res.data.Data.Data.UnitPhone
+          this.Phone=res.data.Data.Data.Phone
+          this.vX=res.data.Data.Data.VX
+        });
     }
   }
 };

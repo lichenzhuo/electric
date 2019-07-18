@@ -16,15 +16,15 @@
         header-cell-class-name="tablebg"
       >
         <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
-        <el-table-column align="center" prop="Created_At" label="时间"></el-table-column>
+        <el-table-column align="center" prop="AlarmTime" label="时间"></el-table-column>
         <el-table-column align="center" label="地点">
           <template scope="scope">
-            <el-tag>{{scope.row.Province}}{{scope.row.City}}{{scope.row.Area}}{{scope.row.Address}}</el-tag>
+            <span>{{scope.row.Province}}{{scope.row.City}}{{scope.row.Area}}{{scope.row.Address}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" prop="SiteName" label="站点"></el-table-column>
         <el-table-column align="center" prop="MachinaryId" label="报警设备"></el-table-column>
-        <el-table-column align="center" prop="4" label="实际处理时间"></el-table-column>
+        <el-table-column align="center" prop="SolveTime" label="实际处理时间"></el-table-column>
         <el-table-column align="center" prop="UserName" label="工作人员">
           <template scope="scope">
             <el-tag>{{scope.row.UserName}}</el-tag>
@@ -32,9 +32,19 @@
         </el-table-column>
         <el-table-column align="center" prop="Phone" label="联系电话"></el-table-column>
         <el-table-column align="center" prop="CharacterName" label="角色"></el-table-column>
-        <el-table-column align="center" prop="8" label="检修状态"></el-table-column>
-        <el-table-column align="center" prop="9" label="检修结果"></el-table-column>
-        <el-table-column align="center" prop="10" label="备注"></el-table-column>
+        <el-table-column align="center" label="检修状态">
+           <template scope="scope">
+            <span v-if="scope.row.RepaireStatus==1">已检修</span>
+            <span v-if="scope.row.RepaireStatus==0">未检修</span>
+          </template>
+        </el-table-column>
+         <el-table-column align="center" label="检修结果">
+           <template scope="scope">
+            <span v-if="scope.row.Result==1">检修成功</span>
+            <span v-if="scope.row.Result==0">检修失败</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" prop="Remarks" label="备注"></el-table-column>
       </el-table>
     </div>
   </div>
@@ -59,7 +69,7 @@ export default {
       this.currentPage = currentPage;
     },
     getData() {
-      this.$axios.post("MachineData/GetNews").then(res => {
+      this.$axios.post("EquipStatus/GetNewFan").then(res => {
         console.log(res.data.Data);
         this.table=res.data.Data
         this.length=res.data.Data.length

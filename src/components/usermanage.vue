@@ -145,18 +145,11 @@
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="区域管理">
-            <!-- <el-cascader
-              :options="AreaList"
-              v-model="InsertForm.Area"
-              filterable
-              props.checkStrictly
-              @change="addressChange"
-            ></el-cascader>-->
             <el-cascader
               v-model="InsertForm.Area"
               :options="threeData"
-              :props="{ expandTrigger: 'hover' }"
-              @change="addressChange"
+              :props="{ expandTrigger: 'hover' ,value:'label'}"
+              @change="addressChangeInsert"
             ></el-cascader>
           </el-form-item>
         </el-form>
@@ -180,19 +173,11 @@
         </el-checkbox-group>
 
         <span class="tip" style>区域管理</span>
-        <!-- <el-cascader
-          :options="AreaList"
-          v-model="editquanxianArea"
-          filterable
-          props.checkStrictly
-          @change="addressChange"
-          style="margin-left:50px;margin-top:10px;display:block"
-        ></el-cascader> -->
         <el-cascader
           v-model="editquanxianArea"
           :options="threeData"
-          :props="{ expandTrigger: 'hover' }"
-          @change="addressChange"
+          :props="{ expandTrigger: 'hover',value:'label' }"
+          @change="addressChangeEdit"
           style="margin-left:50px;margin-top:10px;display:block"
         ></el-cascader>
       </span>
@@ -254,7 +239,7 @@ export default {
       UserNameQuery: "",
       PhoneQuery: "",
       SexQuery: "",
-      Sextype: [{ id: 0, sex: "男" }, { id: 1, sex: "女" }],
+      Sextype: [{ id: 1, sex: "男" }, { id: 2, sex: "女" }],
       UnitNameQuery: "",
       UnitNametype: "",
       DepartmentNameQuery: "",
@@ -306,7 +291,7 @@ export default {
         .post("UserInfos/GetUserInfosList", {
           PageSize: 10,
           PageIndex: "1",
-          Sex: "2"
+          Sex: "0"
         })
         .then(res => {
           // console.log(res.data.Data);
@@ -340,6 +325,14 @@ export default {
     },
     //条件查询
     query() {
+      console.log(this.UserIdQuery)
+      console.log(this.UserNameQuery)
+      console.log(this.PhoneQuery)
+      console.log(this.SexQuery)
+      console.log(this.UnitNameQuery)
+      console.log(this.DepartmentNameQuery)
+      console.log(this.PositionNameQuery)
+      console.log(this.CharacterNameQuery)
       this.$axios
         .post("UserInfos/GetUserInfosList", {
           PageSize: 10,
@@ -347,7 +340,7 @@ export default {
           UserId: this.UserIdQuery,
           UserName: this.UserNameQuery,
           Phone: this.PhoneQuery,
-          Sex: this.SexQuery || 2,
+          Sex: this.SexQuery || 0,
           UnitName: this.UnitNameQuery,
           DepartmentName: this.DepartmentNameQuery,
           PositionName: this.PositionNameQuery,
@@ -438,7 +431,7 @@ export default {
           UserName: "",
           UnitNumber: "",
           CharacterId: "",
-          Sex: 2,
+          Sex: 0,
           Phone: "",
           DepartmentId: "",
           PositionId: "",
@@ -484,15 +477,7 @@ export default {
     rowclick(e) {
       //   console.log(e.id);
     },
-    addressChange(arr) {
-      console.log(arr, "地址");
-      console.log(this.InsertForm.Area[0]);
-      console.log(this.InsertForm.Area[1]);
-      console.log(this.InsertForm.Area[2]);
-      // console.log(
-      //   CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
-      // );
-    },
+    
     positionEdit(row) {
       console.log(row);
       this.EditId = row.Id;
@@ -566,7 +551,15 @@ export default {
           }
         });
       this.positiondialog = false;
-    }
+    },
+    addressChangeInsert(e){
+      console.log(e)
+      this.Area=e
+    },
+    addressChangeEdit(e){
+      console.log(e)
+      this.editquanxianArea=e
+    },
   }
 };
 </script>

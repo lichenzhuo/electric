@@ -4,7 +4,7 @@
       <div class="thebox">
         <span class="title">
           待维修：
-          <span class="numbert">{{UnRepaired}}</span>
+          <span class="numbert">{{aNumber}}</span>
         </span>
       </div>
       <div class="thebox">
@@ -21,7 +21,7 @@ export default {
   name: "manufacturerindex",
   data() {
     return {
-      UnRepaired:"",
+      aNumber:"",
       SiteNews:"",
     };
   },
@@ -31,17 +31,17 @@ export default {
   },
   methods: {
     GetJCType() {
-      this.$axios.post("MachineData/GetUnRepaired").then(res => {
+      this.$axios.post("MachineData/GetNewCount").then(res => {
         console.log(res.data.Data, "111");
-        this.UnRepaired=res.data.Data
+        this.aNumber=res.data.Data
       });
-       this.$axios.post("SiteManage/GetSiteNews").then(res => {
+       this.$axios.post("MachineData/GetUnRepaired").then(res => {
          this.SiteNews=res.data.Data
         console.log(res.data.Data, "222");
       });
     },
     requireAuth(){
-      this.$store.state
+      // this.$store.state
     },
   }
 };

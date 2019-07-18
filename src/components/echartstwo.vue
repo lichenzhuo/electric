@@ -11,7 +11,7 @@
 //   },
 // }
 export default {
-  name: "echarts",
+  name: "echartstwo",
   data() {
     //标线
     // this.markLine = {
@@ -29,10 +29,10 @@ export default {
     this.chartSettings = {
       axisSite: {
         right: [
-          "I段母线正对地绝缘",
-          "I段母线负对地绝缘",
-          "I段蓄电池绝缘",
-          "I段蓄电接地点"
+          "II段母线正对地绝缘",
+          "II段母线负对地绝缘",
+          "II段蓄电池绝缘",
+          "II段蓄电接地点"
         ]
       },
       yAxisType: ["normal"],
@@ -43,30 +43,29 @@ export default {
       demoList: {
         columns: [
           "日期",
-          "I段母线总电压",
-          "I段母线正对地电压",
-          "I段母线负对地电压",
-          "I段母线纹波",
-          "I段母线交流电压",
-          "I段母线正对地绝缘",
-          "I段母线负对地绝缘",
-          "I段蓄电池绝缘",
-          "I段蓄电接地点"
+          "II段母线总电压",
+          "II段母线正对地电压",
+          "II段母线负对地电压",
+          "II段母线纹波",
+          "II段母线交流电压",
+          "II段母线正对地绝缘",
+          "II段母线负对地绝缘",
+          "II段蓄电池绝缘",
+          "II段蓄电接地点"
         ],
         rows: [
           {
             日期: "7-18",
-            I段母线总电压: "0",
-            I段母线正对地电压: "0",
-            I段母线负对地电压: "0",
-            I段母线纹波: "0",
-            I段母线交流电压: "0",
-            I段母线正对地绝缘: "0",
-            I段母线负对地绝缘: "0",
-            I段蓄电池绝缘: "0",
-            I段蓄电接地点: "0"
+            II段母线总电压: "0",
+            II段母线正对地电压: "0",
+            II段母线负对地电压: "0",
+            II段母线纹波: "0",
+            II段母线交流电压: "0",
+            II段母线正对地绝缘: "0",
+            II段母线负对地绝缘: "0",
+            II段蓄电池绝缘: "0",
+            II段蓄电接地点: "0"
           }
-         
         ]
       }
     };
@@ -80,7 +79,7 @@ export default {
       console.log("022222222");
       console.log(this.$store.state.EchartsData, "111");
       console.log(this.chartData, "222");
-      this.chartData = this.$store.state.EchartsData;
+      this.chartData = this.$store.state.EchartsDatatwo;
     },
     init() {
       this.chartData = this.demoList;

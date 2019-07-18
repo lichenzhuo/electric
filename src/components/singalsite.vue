@@ -21,7 +21,7 @@
       </div>
       <el-button type="primary" round style="margin-left:20px" @click="query">查询</el-button>
       <el-button type="primary" round style="margin-left:20px" @click="clear">清空</el-button>
-      <el-button type="primary" round style="margin-left:20px" @click="insert">添加</el-button>
+      <!-- <el-button type="primary" round style="margin-left:20px" @click="insert">添加</el-button> -->
       <el-dialog :visible.sync="dialogVisible" width="25%" :show-close="false" center>
         <div slot="title">新增站点</div>
         <span>
@@ -130,17 +130,17 @@ export default {
   // SiteManage/GetMachinaryIdList
   methods: {
     getTypeList() {
-      // this.$axios
-      //   .post("SiteManage/GetSiteManagerPagerList", {
-      //     PageSize: 10,
-      //     PageIndex: 1,
-      //     SiteId: "",
-      //     SiteName: "",
-      //     MachinaryId: ""
-      //   })
-      //   .then(res => {
-      //     this.table = res.data.Data;
-      //   });
+      this.$axios
+        .post("SiteManage/GetSiteManagerPagerList", {
+          PageSize: 10,
+          PageIndex: 1,
+          SiteId: "",
+          SiteName: "",
+          MachinaryId: ""
+        })
+        .then(res => {
+          this.table = res.data.Data;
+        });
       this.$axios.post("SiteTree/GetFourLevel", {}).then(res => {
         console.log(res.data.Data.Data, "4级联动");
         this.fourData = res.data.Data.Data;
@@ -149,7 +149,7 @@ export default {
         console.log(res.data.Data.Data, "3级联动");
         this.threeData = res.data.Data.Data;
       });
-      this.$axios.post("SiteManage/GetMachinaryIdList").then(res => {
+      this.$axios.post("EquipmentInfo/GetMachinaryIdList").then(res => {
         console.log(res.data.Data, "所有设备");
         this.MachinaryIdList = res.data.Data;
         var arr1 = [];

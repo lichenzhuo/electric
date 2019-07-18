@@ -6,19 +6,15 @@
       </div> -->
       <span class="tip">站点名称</span>
       <el-cascader
-        v-model="siteId"
+        v-model="SiteName"
         :options="fourData"
-        :props="{ expandTrigger: 'hover' }"
+        :props="{ expandTrigger: 'hover',value:'label' }"
         @change="SiteSelect"
       ></el-cascader>
       <div class="con">
         <span class="tip" style="margin-left: 2em;">站点编号</span>
         <el-input style="width:auto" v-model="SiteId" placeholder="请输入内容"></el-input>
       </div>
-      <!-- <div class="con">
-        <span class="tip">设备编号</span>
-        <el-input style="width:auto" v-model="MachinaryId" placeholder="请输入内容"></el-input>
-      </div> -->
       <el-button type="primary" round style="margin-left:20px" @click="query">查询</el-button>
       <el-button type="primary" round style="margin-left:20px" @click="clear">清空</el-button>
       <el-button type="primary" round style="margin-left:20px" @click="insert">添加</el-button>
@@ -29,40 +25,35 @@
             <el-form-item label="站点名称">
               <el-input style="width:217px" v-model="InsertSiteName" placeholder="请输入内容"></el-input>
             </el-form-item>
-
             <el-form-item label="站点所在区域">
-              <!-- <el-cascader
-                :options="optionone"
-                v-model="InsertArea"
-                filterable
-                props.checkStrictly
-                @change="addressChange"
-              ></el-cascader> -->
               <el-cascader
                 :options="threeData"
                 v-model="InsertArea"
                 filterable
                 props.checkStrictly
-                :props="{ expandTrigger: 'hover'}"
+                :props="{ expandTrigger: 'hover',value:'label'}"
                 @change="addressChange"
               ></el-cascader>
             </el-form-item>
             <el-form-item label="详细地址">
               <el-input style="width:217px" type="textarea" v-model="Address" placeholder="请输入内容"></el-input>
             </el-form-item>
-            <!-- <el-form-item label="所有设备">
-              <el-select v-model="MachinaryId" placeholder="请选择" @change="Selectchange">
-                <el-option
-                  v-for="item in MachinaryTYpes"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item> -->
-            <!-- <el-form-item label="相关人员">
-              <el-input style="width:217px" v-model="UserName" placeholder :disabled="true"></el-input>
-            </el-form-item> -->
+             <el-form-item label="管理人员名称">
+            <el-input
+              style="width:217px"
+              v-model="InsertUserName"
+              placeholder="请输入内容"
+              @blur="UserNameInput"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="设备人员编号">
+            <el-input
+              style="width:217px"
+              v-model="InsertUserId"
+              placeholder="请输入内容"
+              @blur="UserIdInput"
+            ></el-input>
+          </el-form-item>
           </el-form>
         </span>
         <span slot="footer" class="dialog-footer">
@@ -118,6 +109,8 @@ export default {
   },
   data() {
     return {
+      InsertUserName:"",
+      InsertUserId:"",
       InsertSiteName: "",
       SiteId: "",
       MachinaryId: "",
@@ -133,7 +126,7 @@ export default {
       dialogVisible: false,
       total: "" || 10,
       MachinaryIdList: "",
-       siteId: "",
+       SiteName: "",
       fourData: [],
       threeData: [],
       AreaId: ""
@@ -155,25 +148,11 @@ export default {
           PageIndex: 1,
           SiteId: "",
           SiteName: "",
-          MachinaryId: ""
         })
         .then(res => {
           // console.log(res.data.Data);
           this.table = res.data.Data;
         });
-      //单位名称
-      this.$axios.post("SiteManage/GetMachinaryIdList").then(res => {
-        console.log(res.data.Data, "所有设备");
-        this.MachinaryIdList = res.data.Data;
-        var arr1 = [];
-        for (let index = 0; index < res.data.Data.length; index++) {
-          arr1.push({
-            value: res.data.Data[index].MachinaryId,
-            label: res.data.Data[index].MachinaryId
-          });
-        }
-        this.MachinaryTYpes = arr1;
-      });
       //4级联动
       this.$axios.post("SiteTree/GetFourLevel", {}).then(res => {
         console.log(res.data.Data.Data, "4级联动");
@@ -185,41 +164,43 @@ export default {
         this.threeData = res.data.Data.Data;
       });
     },
+    // 搜索
     query() {
       this.$axios
         .post("SiteManage/GetSiteManagerPagerList", {
           PageSize: 10,
           PageIndex: "1",
           SiteId: this.SiteId,
-          SiteName: this.siteId,
-          MachinaryId: this.MachinaryId
+          SiteName: this.SiteName,
         })
         .then(res => {
           console.log(res.data.Data, "查询");
           this.table = res.data.Data;
         });
     },
+    // 新增
     sureForm() {
       this.$axios
         .post("SiteManage/SiteManageInsert", {
-          MachinaryId: this.MachinaryId,
           SiteName: this.InsertSiteName,
           Province: this.Province,
           City: this.City,
           Area: this.Area,
-          Address: this.Address
+          AreaId:"",
+          Address: this.Address,
+          UserId:this.InsertUserId
         })
         .then(res => {
           console.log(res.data.Data, "新增");
           if (res.data.Msg == "成功") {
             this.$message({
-              message: "新增用户成功",
+              message: "新增站点成功",
               type: "success"
             });
             this.InsertForm = "";
             this.query();
           } else {
-            this.$message.error("新增用户失败");
+            this.$message.error("新增站点失败");
           }
         });
       this.dialogVisible = false;
@@ -229,43 +210,43 @@ export default {
     },
     clear() {
       // this.$refs.threeselect.cleardata();
-      this.siteId = "";
+      this.SiteName = "";
       this.SiteId = "";
       this.MachinaryId = "";
     },
     getDataNumber() {
-      this.$axios
-        .post("MachineData/GetAlertLogAllCount", {
+      this.$axios    
+        .post("SiteManage/GetSiteManagerALLCount", {
           SiteId: "",
-          StartTime: "",
-          EndTime: ""
+          SiteName: "",
         })
         .then(res => {
-          console.log(res.data.Data);
+          console.log(res.data.Data,'78978798798');
           this.total = res.data.Data;
         });
     },
-    handleSizeChange(currentPage) {},
+    handleSizeChange(e) {
+      console.log(e)
+       this.$axios
+        .post("SiteManage/GetSiteManagerPagerList", {
+          PageSize: 10,
+          PageIndex: e,
+          SiteId: "",
+          SiteName: "",
+        })
+        .then(res => {
+          // console.log(res.data.Data);
+          this.table = res.data.Data;
+        });
+    },
 
     rowclick(e) {
       console.log(e.id);
     },
-    // addressChange(arr) {
-    //   console.log(arr, "地址");
-    //   console.log(
-    //     CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
-    //   );
-    //   this.Province=CodeToText[arr[0]]
-    //   this.City=CodeToText[arr[1]]
-    //   this.Area=CodeToText[arr[2]]
-    // },
     addressChange(arr, label) {
-      console.log(arr, "地址");
+      console.log(arr, "地址111");
+      console.log(label, "地址222222");
       console.log(this.InsertArea)
-      // console.log(label, "地址");
-      // console.log(
-      //   CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
-      // );
       this.Province = arr[0];
       this.City = arr[1];
       this.Area = arr[2];
@@ -283,8 +264,32 @@ export default {
     },
      SiteSelect(e) {
       console.log(e);
-      this.siteId = e[3];
+      this.SiteName = e[3];
       this.AreaId = e[2];
+    },
+    UserNameInput() {
+      this.$axios
+        .post("UserInfos/GetUserIdByUserName", {
+          UserName: this.InsertUserName,
+          UserId: ""
+        })
+        .then(res => {
+          console.log(res.data.Data, "66666");
+          this.InsertUserId = res.data.Data[0].UserId;
+          console.log(res.data.Data[0].UserId);
+        });
+    },
+    UserIdInput(e) {
+      this.$axios
+        .post("UserInfos/GetUserNameByUserId", {
+          UserName: "",
+          UserId: this.InsertUserId
+        })
+        .then(res => {
+          console.log(res.data.Data, "77777");
+          this.InsertUserName = res.data.Data.UserName;
+          console.log(res.data.Data.UserName);
+        });
     }
   }
 };

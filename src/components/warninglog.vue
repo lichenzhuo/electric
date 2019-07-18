@@ -232,7 +232,7 @@ export default {
       // 表格数据
       this.$axios
         .post("MachineData/GetAlarmLogPageList", {
-          PageSize: 10,
+          AlarmSize: 10,
           PageIndex: 1,
           UserId: JSON.parse(localStorage.getItem("LoginData")).UserId,
           YJType: 0

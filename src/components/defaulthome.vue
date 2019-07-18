@@ -53,7 +53,7 @@
           <template slot-scope="scope">
             <span
               :class="[{'red':scope.row.II_Vol_OffsetState!==0,}]"
-            >{{scope.row.II_Positive_Vol}}V</span>
+            >{{scope.row.II_Vol_OffsetState}}V</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="II段母线负对地电压">
@@ -195,21 +195,21 @@ export default {
   },
   beforeCreate() {},
   created() {
-    // this.Auther();
+    this.Auther();
   },
   mounted() {
     // this.readymap();
     // this.getlocation();
   },
   methods: {
-    // Auther() {
-    //   var CharacterId = localStorage.getItem("CharacterId");
-    //   if (CharacterId) {
-    //     this.getdata();
-    //   } else {
-    //     this.$router.push({ path: "/login" });
-    //   }
-    // },
+    Auther() {
+      var CharacterId = localStorage.getItem("CharacterId");
+      if (CharacterId) {
+        this.getdata();
+      } else {
+        this.$router.push({ path: "/login" });
+      }
+    },
     getdata() {
       // 首页数据
       this.$axios

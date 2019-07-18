@@ -355,10 +355,11 @@ export default {
     sureForm() {
       console.log(this.InsertForm, "新加表格");
       this.$axios
-        .post("EquipmentInfo/PositionInsert", {
+        .post("EquipmentInfo/EquipmentInsert", {
           MachinaryId: this.InsertForm.InsertMachinaryId,
           EquipTypeId: this.InsertForm.InsertEquipTypeId,
-          UserId: this.InsertForm.UserId
+          UserId: this.InsertForm.UserId,
+          SiteId: this.InsertForm.SiteId
         })
         .then(res => {
           console.log(res.data.Data, "新增");
@@ -369,11 +370,11 @@ export default {
             });
             this.InsertForm = "";
             this.query();
+            this.dialogVisible = false;
           } else {
             this.$message.error("新增用户失败");
           }
         });
-      this.dialogVisible = false;
     },
     //总条数
     getAllCount() {
@@ -438,51 +439,6 @@ export default {
           this.table = res.data.Data;
         });
     },
-    addressChangeone(arr) {
-      console.log(arr, "地址");
-      console.log(
-        CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
-      );
-      this.$axios
-        .post("SiteManage/GetSiteName", { Area: CodeToText[arr[2]] })
-        .then(res => {
-          console.log(res.data.Data, "这是站点列表");
-          var arr1 = res.data.Data; //选中的站点
-          var arr2 = [];
-          for (let i = 0; i < arr1.length; i++) {
-            arr2.push({ value: arr1[i].SiteName, label: arr1[i].SiteName });
-          }
-          this.SiteNameList = arr2; //处理后的站点选择框
-          this.SiteList = arr1; //所有站点详细信息列表
-        });
-    },
-    addressChangetwo(arr) {
-      console.log(arr[0], "地址");
-      for (let j = 0; j < this.SiteList.length; j++) {
-        if (this.SiteList[j].SiteName == arr[0]) {
-          this.InsertForm.address =
-            this.SiteList[j].Province +
-            this.SiteList[j].City +
-            this.SiteList[j].Area +
-            this.SiteList[j].Address;
-        }
-      }
-      this.$axios
-        .post("SiteManage/GetUserId", { SiteName: arr[0] })
-        .then(res => {
-          console.log(res.data.Data, "得到的"); //获取到userId
-          this.InsertForm.UserId = res.data.Data.UserId;
-          this.InsertForm.UserName = res.data.Data.UserName;
-        });
-    },
-    // addressChange(arr) {
-    //   console.log(arr, "111111111");
-    //   this.$axios.post("SiteManage/GetUserId", { Area: arr[3] }).then(res => {
-    //     console.log(res.data.Data, "得到的"); //获取到userId
-    //     this.InsertForm.UserId = res.data.Data.UserId;
-    //     this.InsertForm.UserName = res.data.Data.UserName;
-    //   });
-    // },
     SiteSelect(e) {
       console.log(e);
       this.siteName = e[3];
@@ -526,18 +482,28 @@ export default {
       console.log(this.InsertForm.SiteId, "99999999999");
     },
     UserNameInput() {
-      console.log(this.InsertForm.UserName);
       this.$axios
-        .post("EquipmentInfo/GetUserInfoModelByUserId", {
+        .post("UserInfos/GetUserIdByUserName", {
           UserName: this.InsertForm.UserName,
           UserId: ""
         })
         .then(res => {
           console.log(res.data.Data, "66666");
+          this.InsertForm.UserId = res.data.Data[0].UserId;
+          console.log(res.data.Data[0].UserId);
         });
     },
     UserIdInput(e) {
-      console.log(e);
+      this.$axios
+        .post("UserInfos/GetUserNameByUserId", {
+          UserName: "",
+          UserId: this.InsertForm.UserId
+        })
+        .then(res => {
+          console.log(res.data.Data, "77777");
+          this.InsertForm.UserName = res.data.Data.UserName;
+          console.log(res.data.Data.UserName);
+        });
     }
   }
 };

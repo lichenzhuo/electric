@@ -1,16 +1,13 @@
 <template>
   <div class="singalwarn">
     <div class="top">
-      <!-- <div>
-        <sitethreeselect ref="threeselect"></sitethreeselect>
-      </div> -->
-       <span class="tip">站点名称</span>
+      <!-- <span class="tip">站点名称</span>
       <el-cascader
-        v-model="siteId"
+        v-model="Sitename"
         :options="fourData"
-        :props="{ expandTrigger: 'hover' }"
+        :props="{ expandTrigger: 'hover',value:'label' }"
         @change="SiteSelect"
-      ></el-cascader>
+      ></el-cascader> -->
       <div class="con">
         <span class="tip" style="margin-left: 2em;">单位编号</span>
         <el-input style="width:auto" v-model="UnitNumber" placeholder="请输入内容"></el-input>
@@ -19,60 +16,85 @@
       <el-button type="primary" round style="margin-left:20px" @click="clear">清空</el-button>
       <el-button type="primary" round style="margin-left:20px" @click="insert">添加</el-button>
       <el-dialog :visible.sync="dialogVisible" width="25%" :show-close="false" center>
-        <div slot="title">新增站点</div>
+        <div slot="title">新增单位</div>
         <span>
           <el-form label-position="right" label-width="100px" style="padding-left:40px">
             <el-form-item label="单位编号">
               <el-input style="width:217px" v-model="InsertUnitNumber" placeholder="请输入内容"></el-input>
             </el-form-item>
             <el-form-item label="单位类别">
-              <el-select v-model="UnitTypeId" placeholder="请选择" @change="Selectchange">
+              <el-select v-model="UnitTypeId" placeholder="请选择" @change="Unitchange">
                 <el-option
                   v-for="item in UnitTypeIdList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.Id"
+                  :label="item.UnitTypeName"
+                  :value="item.Id"
                 ></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="单位名称">
-              <el-select v-model="UnitName" placeholder="请选择" @change="Selectchangetwo">
+              <el-input style="width:217px" v-model="UnitName" placeholder="请输入内容"></el-input>
+              <!-- <el-select v-model="UnitName" placeholder="请选择" @change="UnitNamechange">
                 <el-option
                   v-for="item in UnitNameList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.UnitNumber"
+                  :label="item.UnitName"
+                  :value="item.UnitName"
                 ></el-option>
-              </el-select>
+              </el-select> -->
             </el-form-item>
+            <el-form-item label="单位电话">
+              <el-input style="width:217px" v-model="InsertUnitPhone" placeholder="请输入内容"></el-input>
+            </el-form-item>
+            <!-- <el-form-item label="手机号码">
+              <el-input style="width:217px" v-model="InsertPhone" placeholder="请输入内容"></el-input>
+            </el-form-item>
+             <el-form-item label="微信">
+              <el-input style="width:217px" v-model="InsertVX" placeholder="请输入内容"></el-input>
+            </el-form-item> -->
             <el-form-item label="站点所在区域">
-              <!-- <el-cascader
-                :options="optionone"
-                v-model="InsertArea"
-                filterable
-                props.checkStrictly
-                @change="addressChange"
-              ></el-cascader> -->
               <el-cascader
                 :options="threeData"
                 v-model="InsertArea"
                 filterable
                 props.checkStrictly
-                :props="{ expandTrigger: 'hover'}"
+                :props="{ expandTrigger: 'hover',value:'label'}"
                 @change="addressChange"
               ></el-cascader>
             </el-form-item>
             <el-form-item label="详细地址">
               <el-input style="width:217px" type="textarea" v-model="Address" placeholder="请输入内容"></el-input>
             </el-form-item>
-
+            <!-- <el-form-item label="联系人">
+              <el-input style="width:217px" v-model="UserName" placeholder="请输入内容"></el-input>
+            </el-form-item>-->
+            <!-- <el-form-item label="部门">
+              <el-select v-model="DepartmentId" placeholder="请选择" @change="Departmentchange">
+                <el-option
+                  v-for="item in DepartmentNameList"
+                  :key="item.Id"
+                  :label="item.DepartmentName"
+                  :value="item.Id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="职位">
+              <el-select v-model="PositionId" placeholder="请选择" @change="Positionchange">
+                <el-option
+                  v-for="item in PositionNameList"
+                  :key="item.PositionId"
+                  :label="item.PositionName"
+                  :value="item.PositionId"
+                ></el-option>
+              </el-select>
+            </el-form-item> -->
             <el-form-item label="相关站点">
               <el-select v-model="SiteId" placeholder="请选择" @change="Selectchange">
                 <el-option
                   v-for="item in SiteIdList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.SiteId"
+                  :label="item.SiteName"
+                  :value="item.SiteId"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -101,17 +123,17 @@
           >{{scope.row.Province}}{{scope.row.City}}{{scope.row.Area}}{{scope.row.Address}}</template>
         </el-table-column>
         <el-table-column align="center" prop="UnitTypeName" label="类别"></el-table-column>
-        <el-table-column align="center" label="联系人">
+        <el-table-column align="center" prop="UnitPhone" label="单位电话"></el-table-column>
+        <!-- <el-table-column align="center" label="联系人">
           <template slot-scope="scope">
             <el-tag>{{scope.row.UserName}}</el-tag>
-            <!-- <span>{{scope.row.one}}</span> -->
           </template>
         </el-table-column>
         <el-table-column align="center" prop="DepartmentName" label="部门"></el-table-column>
         <el-table-column align="center" prop="PositionName" label="职位"></el-table-column>
         <el-table-column align="center" prop="Phone" label="联系电话"></el-table-column>
         <el-table-column align="center" prop="VX" label="微信"></el-table-column>
-        <el-table-column align="center" prop="SiteName" label="相关站点"></el-table-column>
+        <el-table-column align="center" prop="SiteName" label="相关站点"></el-table-column> -->
       </el-table>
       <div class="page">
         <el-pagination
@@ -127,15 +149,13 @@
 </template>
 
 <script>
-import sitethreeselect from "./sitethreeselect";
-import { regionData, CodeToText } from "element-china-area-data";
 export default {
   name: "sitemanage",
-  components: {
-    sitethreeselect
-  },
   data() {
     return {
+      InsertUnitPhone:"",
+      InsertVX:"",
+      InsertPhone:"",
       UnitNumber: "",
       InsertUnitNumber: "",
       MachinaryTYpes: "",
@@ -144,21 +164,24 @@ export default {
       Area: "",
       Address: "",
       InsertArea: [],
-      UserName: "" || "请选择",
+      UserName: "",
       table: [],
-      optionone: regionData,
       dialogVisible: false,
       total: "" || 10,
       SiteId: "",
       SiteIdList: [],
-      UnitTypeId:"",
-      UnitTypeIdList:[],
-      UnitName:"",
-      UnitNameList:[],
-      siteId: "",
+      UnitTypeId: "",
+      UnitTypeIdList: [],
+      UnitName: "",
+      UnitNameList: [],
+      Sitename: "",
       fourData: [],
       threeData: [],
-      AreaId: ""
+      AreaId: "",
+      DepartmentId: "",
+      PositionId: "",
+      DepartmentNameList: "",
+      PositionNameList: ""
     };
   },
   created() {
@@ -173,7 +196,7 @@ export default {
       //用户列表
       this.$axios
         .post("UnitInfo/GetUnitInfoPageList", {
-          PageSize: 5,
+          PageSize: 10,
           PageIndex: 1,
           SiteName: "",
           UnitNumber: ""
@@ -184,34 +207,26 @@ export default {
         });
       this.$axios.post("SiteManage/GetAllSiteName").then(res => {
         console.log(res.data.Data, "222");
-        // this.table = res.data.Data.Data;
-        for (let i = 0; i < res.data.Data.length; i++) {
-          this.SiteIdList.push({
-            value: res.data.Data[i].SiteId,
-            label: res.data.Data[i].SiteName
-          });
-        }
+        this.SiteIdList = res.data.Data;
       });
-      
+
       this.$axios.get("Types/GetUnitTypeNameList").then(res => {
         console.log(res.data.Data, "33333");
-        // this.table = res.data.Data.Data;
-        for (let i = 0; i < res.data.Data.length; i++) {
-          this.UnitTypeIdList.push({
-            value: res.data.Data[i].Id,
-            label: res.data.Data[i].UnitTypeName
-          });
-        }
+        this.UnitTypeIdList = res.data.Data;
       });
       this.$axios.get("UserInfos/GetUnitNameList").then(res => {
         console.log(res.data.Data, "444");
-        // this.table = res.data.Data.Data;
-        for (let i = 0; i < res.data.Data.length; i++) {
-          this.UnitNameList.push({
-            value: res.data.Data[i].UnitNumber,
-            label: res.data.Data[i].UnitName
-          });
-        }
+        this.UnitNameList = res.data.Data;
+      });
+
+      this.$axios.get("Types/GetDepartmentType").then(res => {
+        console.log(res.data.Data, "5555");
+        this.DepartmentNameList = res.data.Data;
+      });
+
+      this.$axios.get("PositionManager/GetPositionNameList").then(res => {
+        console.log(res.data.Data, "666");
+        this.PositionNameList = res.data.Data;
       });
       //4级联动
       this.$axios.post("SiteTree/GetFourLevel", {}).then(res => {
@@ -229,7 +244,7 @@ export default {
         .post("UnitInfo/GetUnitInfoPageList", {
           PageSize: 5,
           PageIndex: 1,
-          SiteName: this.siteId,
+          // SiteName: this.Sitename,
           UnitNumber: this.UnitNumber
         })
         .then(res => {
@@ -247,13 +262,19 @@ export default {
           City: this.City,
           Area: this.Area,
           Address: this.Address,
+          UnitPhone:this.InsertUnitPhone,
+          // Contact: "",
+          // DepartmentId: this.DepartmentId,
+          // PositionId: this.PositionId,
+          // Phone: this.InsertPhone,
+          // WX: this.InsertVX,
           SiteId: this.SiteId
         })
         .then(res => {
           console.log(res.data.Data, "新增11111");
-          if (res.data.Data == true) {
+          if (res.data.Msg == '成功') {
             this.$message({
-              message: "新增用户成功",
+              message: "新增单位成功",
               type: "success"
             });
             this.InsertUnitNumber = "";
@@ -264,11 +285,11 @@ export default {
             this.Area = "";
             this.Address = "";
             this.SiteId = "";
-            InsertArea="";
-            this.query();
+            InsertArea = "";
+            (this.DepartmentId = ""), (this.PositionId = ""), this.query();
             this.clear();
           } else {
-            this.$message.error("新增用户失败");
+            this.$message.error("新增单位失败");
           }
         });
       this.dialogVisible = false;
@@ -278,19 +299,18 @@ export default {
     },
     clear() {
       // this.$refs.threeselect.cleardata();
-      this.siteId="";
+      this.Sitename = "";
       this.UnitNumber = "";
     },
     getDataNumber() {
       this.$axios
-        .post("MachineData/GetAlertLogAllCount", {
-          SiteId: "",
-          StartTime: "",
-          EndTime: ""
+        .post("UnitInfo/GetUnitInfoALLCount", {
+          SiteName: "",
+          UnitNumber: ""
         })
         .then(res => {
-          console.log(res.data.Data);
-          this.total = res.data.Data;
+          console.log(res.data.Data, "总条数");
+          // this.total = res.data.Data;
         });
     },
     handleSizeChange(currentPage) {},
@@ -300,14 +320,23 @@ export default {
     },
     addressChange(arr) {
       console.log(arr, "地址");
-      console.log(
-        CodeToText[arr[0]] + "/" + CodeToText[arr[1]] + "/" + CodeToText[arr[2]]
-      );
-      this.Province = CodeToText[arr[0]];
-      this.City = CodeToText[arr[1]];
-      this.Area = CodeToText[arr[2]];
+      this.Province = arr[0];
+      this.City = arr[1];
+      this.Area = arr[2];
     },
     Selectchange(e) {
+      console.log(e, "点击");
+    },
+    Unitchange(e) {
+      console.log(e, "点击");
+    },
+    UnitNamechange(e) {
+      console.log(e, "点击");
+    },
+    Departmentchange(e) {
+      console.log(e, "点击");
+    },
+    Positionchange(e) {
       console.log(e, "点击");
     },
     Selectchangeone(e) {
@@ -318,7 +347,7 @@ export default {
     },
     SiteSelect(e) {
       console.log(e);
-      this.siteId = e[3];
+      this.Sitename = e[3];
       this.AreaId = e[2];
     }
   }

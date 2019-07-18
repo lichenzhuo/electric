@@ -6,16 +6,17 @@
       </div>
       <el-divider></el-divider>
       <div class="header">
-        <span class="box">用户名：张三</span>
-        <span class="box">性别：男</span>
-        <span class="box">所属单位：浙江星炬电力科技有限公司</span>
+        <span class="box">用户名：{{UserName}}</span>
+        <span v-if="Sex=='1'" class="box">性别：男</span>
+        <span v-else class="box">性别：女</span>
+        <span class="box">所属单位：{{UnitName}}</span>
         <!-- <span class="box">部门：运行维护</span>
         <span class="box">职务：一线维护</span>-->
       </div>
       <el-divider></el-divider>
       <div>
         <span class="name">手机号</span>
-        <el-input class="put" v-model="phone"></el-input>
+        <el-input class="put" v-model="Phone"></el-input>
         <el-input class="put" v-model="UpdatePhone" placeholder="请输入内容"></el-input>
         <el-button type="primary" round style="margin-left:50px" @click="surechange">确认修改</el-button>
       </div>
@@ -36,9 +37,12 @@ export default {
   name: "infocomplete",
   data() {
     return {
-      phone: "",
+      UserName: "",
+      Sex: "",
+      UnitName: "",
+      Phone: "",
       UpdatePhone: "",
-      Id:""
+      UserId: ""
     };
   },
   created() {
@@ -49,17 +53,40 @@ export default {
   },
   methods: {
     GetJCType() {
-      this.phone = JSON.parse(localStorage.getItem("LoginData")).Phone;
-      this.Id = JSON.parse(localStorage.getItem("LoginData")).Id;
+      this.UserId = JSON.parse(localStorage.getItem("LoginData")).UserId;
+
+      this.$axios
+        .post("Login/GetUserInfoCJ", {
+          UserId: this.UserId
+        })
+        .then(res => {
+          console.log(res.data.Data.Data, "111");
+          this.UserName = res.data.Data.Data.UserName;
+          this.Sex = res.data.Data.Data.Sex;
+          this.UnitName = res.data.Data.Data.UnitName;
+          this.Phone = res.data.Data.Data.Phone;
+        });
     },
     surechange() {
       this.$axios
         .post("Login/UpdatePhone", {
-          Phone: this.UpdatePhone,
-          Id:this.Id
+          newPhone: this.UpdatePhone,
+          UserId: this.UserId
         })
         .then(res => {
-          console.log(res.data.Data, "111");
+          console.log(res.data.Msg, "111");
+
+          if (res.data.Msg == "手机号修改成功") {
+            this.$message({
+              type: "success",
+              message: "手机号修改成功!"
+            });
+          } else {
+            this.$message({
+              type: "info",
+              message: "失败"
+            });
+          }
         });
     }
   }

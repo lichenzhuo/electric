@@ -11,7 +11,7 @@
       </div>
       <div class="row">
         <span class="title">再次输入新密码</span>
-        <el-input class="put" placeholder="请输入内容"></el-input>
+        <el-input class="put" v-model="renewpassword" placeholder="请输入内容"></el-input>
       </div>
       <div class="row">
         <el-button type="primary" round style="margin-left:220px" @click="surechange">确认修改</el-button>
@@ -28,7 +28,8 @@ export default {
       originalpassword: "",
       newpassword: "",
       nowpassword: "",
-      Id:"",
+      UserId: "",
+      renewpassword: ""
     };
   },
   created() {},
@@ -38,22 +39,27 @@ export default {
   methods: {
     GetJCType() {
       this.nowpassword = JSON.parse(localStorage.getItem("LoginData")).Password;
-      this.Id = JSON.parse(localStorage.getItem("LoginData")).Id;
+      this.UserId = JSON.parse(localStorage.getItem("LoginData")).UserId;
     },
     surechange() {
       this.$axios
         .post("Login/UpdatePassword", {
-          Password: this.newpassword,
-          Id:this.Id
+          oldPassword: this.originalpassword,
+          newPassword: this.newpassword,
+          UserId: this.UserId
         })
         .then(res => {
           console.log(res.data.Data, "111");
-          if (res.data.Msg=="成功") {
-              console.log('成功')
-              localStorage.clear()
-              this.$router.push({ path: "/login" });
-          }else{
-              console.log('失败')
+          if (res.data.Msg == "密码修改成功") {
+            console.log("成功");
+            localStorage.clear();
+            this.$router.push({ path: "/login" });
+          } else if (res.data.Msg == "原密码不正确") {
+            console.log("失败");
+            this.$message({
+              type: "info",
+              message: "原密码不正确"
+            });
           }
         });
     }

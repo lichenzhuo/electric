@@ -14,7 +14,7 @@
         <el-select v-model="machineNumber" placeholder="请选择" @change="machineNumberchange">
           <el-option
             v-for="item in machineNumberList"
-            :key="item.MachinaryId"
+            :key="item.index"
             :label="item.MachinaryId"
             :value="item.MachinaryId"
           ></el-option>
@@ -40,7 +40,7 @@
         <el-select v-model="jcvalue" placeholder="请选择" @change="selchange">
           <el-option
             v-for="item in options"
-            :key="item.Id"
+            :key="item.index"
             :label="item.AlertType"
             :value="item.Id"
           ></el-option>
@@ -305,7 +305,7 @@ export default {
         console.log(res.data.Data, "预警类型");
         this.options = res.data.Data;
       });
-      this.$axios.post("SiteManage/GetMachinaryIdList").then(res => {
+      this.$axios.post("EquipmentInfo/GetMachinaryIdList").then(res => {
         this.machineNumberList = res.data.Data;
       });
       this.$axios.post("SiteTree/GetFourLevel", {}).then(res => {
@@ -332,21 +332,21 @@ export default {
       console.log(this.jcvalue, "222");
       console.log(this.timevalue[0], "333");
       console.log(this.timevalue[1], "444");
-     
-      // this.$axios
-      //   .post("MachineData/GetAlarmLogByMachineId", {
-      //     PageSize: 10,
-      //     PageIndex: 1,
-      //     SiteName: this.SiteName,
-      //     MachinaryId: this.machineNumber,
-      //     YJType: this.jcvalue,
-      //     StartTime: this.timevalue[0],
-      //     EndTime: this.timevalue[1]
-      //   })
-      //   .then(res => {
-      //     console.log(res.data.Data);
-      //     this.tableData = res.data.Data;
-      //   });
+      console.log(this.machineNumber, "5555");
+      this.$axios
+        .post("MachineData/GetAlarmLogByMachineId", {
+          PageSize: 10,
+          PageIndex: 1,
+          SiteName: this.SiteName,
+          MachinaryId: this.machineNumber,
+          YJType: this.jcvalue,
+          StartTime: this.timevalue[0],
+          EndTime: this.timevalue[1]
+        })
+        .then(res => {
+          console.log(res.data.Data);
+          this.tableData = res.data.Data;
+        });
       this.$axios
         .post("MachineData/GetAlarmLogByMachineIdAllCount", {
           SiteName: this.SiteName,

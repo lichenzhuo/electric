@@ -81,21 +81,21 @@ export default {
               Password: this.registerUser.password
             })
             .then(res => {
-              console.log(res.data.Data, "登录");
-              if (res.data.Data.Data == null) {
-                //账号密码错误
-                console.log("null");
-              } else {
+              console.log(res.data.Data.Data, "登录");
+              if (res.data.Msg == "登录成功") {
                 localStorage.setItem(
                   "CharacterId",
-                  res.data.Data.Data.CharacterId
+                  JSON.stringify(res.data.Data.Data.CharacterId)
                 );
                 localStorage.setItem(
                   "LoginData",
                   JSON.stringify(res.data.Data.Data)
                 );
-                console.log(JSON.parse(localStorage.getItem("LoginData")));
-                
+                console.log(
+                  JSON.parse(localStorage.getItem("LoginData")),
+                  "111111111"
+                );
+
                 if (
                   res.data.Data.Data.CharacterId == 1 ||
                   res.data.Data.Data.CharacterId == 2 ||
@@ -107,6 +107,9 @@ export default {
                   console.log("444");
                   this.$router.push({ path: "/manufacturerindex" });
                 }
+              } else {
+                //账号密码错误
+                console.log("失败");
               }
             });
           // console.log("000");

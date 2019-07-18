@@ -152,20 +152,20 @@ export default {
       console.log(index, "222");
       this.$router.push({ path: index });
     },
-    // showMenu() {
-    //   var Id = localStorage.getItem("CharacterId");
-    //   if (Id == 1 || Id == 2 || Id == 3) {
-    //     console.log(Id, "正常列表");
-    //     this.show = true;
-    //     this.orshow = false;
-    //   } else if(Id == 4) {
-    //     console.log(Id, "厂家");
-    //     this.show = false;
-    //     this.orshow = true;
-    //   }else{
-    //     this.$router.push({ path: "/login" });
-    //   }
-    // }
+    showMenu() {
+      var Id = localStorage.getItem("CharacterId");
+      if (Id == 1 || Id == 2 || Id == 3) {
+        console.log(Id, "正常列表");
+        this.show = true;
+        this.orshow = false;
+      } else if(Id == 4) {
+        console.log(Id, "厂家");
+        this.show = false;
+        this.orshow = true;
+      }else{
+        this.$router.push({ path: "/login" });
+      }
+    }
   }
 };
 </script>
