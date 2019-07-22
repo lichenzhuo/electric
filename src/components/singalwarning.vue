@@ -71,11 +71,7 @@
     <el-divider></el-divider>
     <div class="table" style="padding:0">
       <el-table :data="tableData" border style="width: 100%" header-cell-class-name="tablebg">
-        <el-table-column align="center" label="时间">
-          <template slot-scope="scope">
-            <span>{{scope.row.Created_At}}</span>
-          </template>
-        </el-table-column>
+        <el-table-column align="center" prop="Created_AtStr" label="时间" width="90px"></el-table-column>
         <el-table-column align="center" label="地区">
           <template slot-scope="scope">
             <span>{{scope.row.Province}}{{scope.row.City}}{{scope.row.Area}}</span>

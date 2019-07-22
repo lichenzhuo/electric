@@ -8,7 +8,7 @@
     <div class="table">
       <el-table :data="table" border style="width: 100%" header-cell-class-name="tablebg">
         <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
-        <el-table-column align="center" prop="Created_At" label="时间"></el-table-column>
+        <el-table-column align="center" prop="Created_AtStr" label="时间"></el-table-column>
         <el-table-column align="center" label="地区">
           <template slot-scope="scope">
             <span>{{scope.row.Province}}{{scope.row.City}}{{scope.row.Area}}{{scope.row.Address}}</span>

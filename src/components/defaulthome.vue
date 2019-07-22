@@ -16,6 +16,7 @@
             <span>{{scope.row.Province}}{{scope.row.City}}{{scope.row.Area}}</span>
           </template>
         </el-table-column>
+        <el-table-column align="center" prop="Created_AtStr" label="时间" width="90px"></el-table-column>
         <el-table-column align="center" prop="Address" label="具体地点"></el-table-column>
         <el-table-column align="center" prop="SiteName" label="站点"></el-table-column>
         <el-table-column align="center" prop="MachinaryId" label="机器编号"></el-table-column>

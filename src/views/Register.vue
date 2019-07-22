@@ -12,9 +12,9 @@
         label-width="80px"
         v-if="showregisterone"
       >
-        <el-form-item label="登录账号" prop="LoginName">
+        <!-- <el-form-item label="登录账号" prop="LoginName">
           <el-input v-model="registerUser.LoginName" placeholder="请输入账号"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="用户姓名" prop="UserName">
           <el-input v-model="registerUser.UserName" placeholder="请输入用户名"></el-input>
         </el-form-item>
@@ -236,7 +236,7 @@ export default {
             console.log(this.registerUser.CharacterId);
             this.$axios
               .post("Login/LoginInsert", {
-                LoginName: this.registerUser.LoginName,
+                // LoginName: this.registerUser.LoginName,
                 UserName: this.registerUser.UserName,
                 Password: this.registerUser.Password,
                 Sex: this.registerUser.Sex,
