@@ -24,6 +24,7 @@ import personaldata from "./components/personaldata";
 import changepassword from "./components/changepassword";
 import infocomplete from "./components/infocomplete";
 import manufacturermachine from "./components/manufacturermachine";
+import edit from "./components/edit";
 // const Vue = () => import('vue')
 // const Router = () => import('vue-router')
 // const Index = () => import('./views/index.vue')
@@ -79,6 +80,7 @@ export default new Router({
         { path: '/changepassword', name: 'changepassword', component: changepassword },
         { path: '/infocomplete', name: 'infocomplete', component: infocomplete },
         { path: '/manufacturermachine', name: 'manufacturermachine', component: manufacturermachine },
+        { path: '/edit', name: 'edit', component: edit },
       ]
        
     },

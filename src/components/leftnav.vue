@@ -52,7 +52,7 @@
             <i class="el-icon-s-tools"></i>
             <span>设备管理</span>
           </template>
-          <el-submenu index="/sitemanage">
+          <!-- <el-submenu index="/sitemanage">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>站点管理</span>
@@ -63,7 +63,7 @@
                 <span>单位信息</span>
               </template>
             </el-menu-item>
-          </el-submenu>
+          </el-submenu>-->
           <el-menu-item index="/machineinfo">
             <template slot="title">
               <i class="el-icon-monitor"></i>
@@ -71,6 +71,22 @@
             </template>
           </el-menu-item>
         </el-submenu>
+        <!-- <el-submenu index="/sitemanage">
+          <template slot="title">
+            <i class="el-icon-location"></i>
+            <span>站点管理</span>
+          </template>
+          <el-menu-item index="/companyinfo">
+            <template slot="title">
+              <i class="el-icon-info"></i>
+              <span>单位信息</span>
+            </template>
+          </el-menu-item>
+        </el-submenu> -->
+        <el-menu-item index="/sitemanage">
+          <i class="el-icon-location"></i>
+          <span slot="title">站点管理</span>
+        </el-menu-item>
         <el-menu-item index="/usermanage">
           <i class="el-icon-user-solid"></i>
           <span slot="title">用户管理</span>
@@ -82,6 +98,10 @@
         <el-menu-item index="/message">
           <i class="el-icon-s-comment"></i>
           <span slot="title">消息反馈</span>
+        </el-menu-item>
+        <el-menu-item index="/edit">
+          <i class="el-icon-s-grid"></i>
+          <span slot="title">编辑</span>
         </el-menu-item>
         <el-menu-item index="/morefunction">
           <i class="el-icon-s-grid"></i>
@@ -158,11 +178,11 @@ export default {
         console.log(Id, "正常列表");
         this.show = true;
         this.orshow = false;
-      } else if(Id == 4) {
+      } else if (Id == 4) {
         console.log(Id, "厂家");
         this.show = false;
         this.orshow = true;
-      }else{
+      } else {
         this.$router.push({ path: "/login" });
       }
     }

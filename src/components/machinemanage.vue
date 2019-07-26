@@ -365,7 +365,7 @@ export default {
           console.log(res.data.Data, "新增");
           if (res.data.Msg == "成功") {
             this.$message({
-              message: "新增用户成功",
+              message: "新增设备成功",
               type: "success"
             });
             this.InsertForm = "";

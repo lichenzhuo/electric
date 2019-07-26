@@ -3,7 +3,7 @@
     <div class="top">
       <!-- <div>
         <sitethreeselect ref="threeselect"></sitethreeselect>
-      </div> -->
+      </div>-->
       <span class="tip">站点名称</span>
       <el-cascader
         v-model="SiteName"
@@ -25,6 +25,24 @@
             <el-form-item label="站点名称">
               <el-input style="width:217px" v-model="InsertSiteName" placeholder="请输入内容"></el-input>
             </el-form-item>
+            <el-form-item label="单位名称">
+              <el-input style="width:217px" v-model="UnitName" placeholder="请输入内容"></el-input>
+            </el-form-item>
+            <el-form-item label="站点电话">
+              <el-input style="width:217px" v-model="SitePhone" placeholder="请输入内容"></el-input>
+            </el-form-item>
+
+            <el-form-item label="站点级别">
+              <el-select v-model="level" placeholder="请选择" @change="levelchange">
+                <el-option
+                  v-for="item in optionsoooo"
+                  :key="item.Id"
+                  :label="item.LevelName"
+                  :value="item.Id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+
             <el-form-item label="站点所在区域">
               <el-cascader
                 :options="threeData"
@@ -38,22 +56,23 @@
             <el-form-item label="详细地址">
               <el-input style="width:217px" type="textarea" v-model="Address" placeholder="请输入内容"></el-input>
             </el-form-item>
-             <el-form-item label="管理人员名称">
-            <el-input
-              style="width:217px"
-              v-model="InsertUserName"
-              placeholder="请输入内容"
-              @blur="UserNameInput"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="设备人员编号">
-            <el-input
-              style="width:217px"
-              v-model="InsertUserId"
-              placeholder="请输入内容"
-              @blur="UserIdInput"
-            ></el-input>
-          </el-form-item>
+
+            <el-form-item label="管理人员名称">
+              <el-input
+                style="width:217px"
+                v-model="InsertUserName"
+                placeholder="请输入内容"
+                @blur="UserNameInput"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="设备人员编号">
+              <el-input
+                style="width:217px"
+                v-model="InsertUserId"
+                placeholder="请输入内容"
+                @blur="UserIdInput"
+              ></el-input>
+            </el-form-item>
           </el-form>
         </span>
         <span slot="footer" class="dialog-footer">
@@ -72,13 +91,16 @@
         header-cell-class-name="tablebg"
       >
         <el-table-column align="center" prop="SiteId" label="站点编号"></el-table-column>
+        <el-table-column align="center" prop="UnitName" label="单位名称"></el-table-column>
         <el-table-column align="center" prop="SiteName" label="站点名称"></el-table-column>
         <el-table-column align="center" label="详细地址">
           <template
             slot-scope="scope"
           >{{scope.row.Province}}{{scope.row.City}}{{scope.row.Area}}{{scope.row.Address}}</template>
         </el-table-column>
-        <el-table-column align="center" prop="MachinaryId" label="所有设备"></el-table-column>
+        <el-table-column align="center" prop="LevelName" label="站点级别"></el-table-column>
+        <el-table-column align="center" prop="SitePhone" label="站点电话"></el-table-column>
+        <!-- <el-table-column align="center" prop="MachinaryId" label="所有设备"></el-table-column> -->
         <el-table-column align="center" label="相关人员">
           <template slot-scope="scope">
             <el-tag>{{scope.row.UserName}}</el-tag>
@@ -109,8 +131,8 @@ export default {
   },
   data() {
     return {
-      InsertUserName:"",
-      InsertUserId:"",
+      InsertUserName: "",
+      InsertUserId: "",
       InsertSiteName: "",
       SiteId: "",
       MachinaryId: "",
@@ -126,10 +148,15 @@ export default {
       dialogVisible: false,
       total: "" || 10,
       MachinaryIdList: "",
-       SiteName: "",
+      SiteName: "",
       fourData: [],
       threeData: [],
-      AreaId: ""
+      AreaId: "",
+      InsertAreaId: "",
+      UnitName: "",
+      SitePhone: "",
+      optionsoooo: [],
+      level: ""
     };
   },
   created() {
@@ -147,7 +174,7 @@ export default {
           PageSize: 10,
           PageIndex: 1,
           SiteId: "",
-          SiteName: "",
+          SiteName: ""
         })
         .then(res => {
           // console.log(res.data.Data);
@@ -157,11 +184,17 @@ export default {
       this.$axios.post("SiteTree/GetFourLevel", {}).then(res => {
         console.log(res.data.Data.Data, "4级联动");
         this.fourData = res.data.Data.Data;
+        
       });
       //3级联动
       this.$axios.post("SiteTree/GetThreeLevel", {}).then(res => {
         console.log(res.data.Data.Data, "3级联动");
         this.threeData = res.data.Data.Data;
+      });
+      // 获取站点级别
+      this.$axios.get("UserInfos/GetSiteLevelList", {}).then(res => {
+        console.log(res.data.Data, " 站点级别");
+        this.optionsoooo = res.data.Data;
       });
     },
     // 搜索
@@ -171,7 +204,7 @@ export default {
           PageSize: 10,
           PageIndex: "1",
           SiteId: this.SiteId,
-          SiteName: this.SiteName,
+          SiteName: this.SiteName
         })
         .then(res => {
           console.log(res.data.Data, "查询");
@@ -180,15 +213,21 @@ export default {
     },
     // 新增
     sureForm() {
+      console.log(this.UnitName, "111");
+      console.log(this.SitePhone, "111");
+      console.log(this.level, "111");
       this.$axios
         .post("SiteManage/SiteManageInsert", {
           SiteName: this.InsertSiteName,
           Province: this.Province,
           City: this.City,
           Area: this.Area,
-          AreaId:"",
+          AreaId: this.InsertAreaId,
           Address: this.Address,
-          UserId:this.InsertUserId
+          UserId: this.InsertUserId,
+          UnitName: this.UnitName,
+          SitePhone: this.SitePhone,
+          SiteLevelId: this.level
         })
         .then(res => {
           console.log(res.data.Data, "新增");
@@ -215,24 +254,24 @@ export default {
       this.MachinaryId = "";
     },
     getDataNumber() {
-      this.$axios    
+      this.$axios
         .post("SiteManage/GetSiteManagerALLCount", {
           SiteId: "",
-          SiteName: "",
+          SiteName: ""
         })
         .then(res => {
-          console.log(res.data.Data,'78978798798');
+          console.log(res.data.Data, "78978798798");
           this.total = res.data.Data;
         });
     },
     handleSizeChange(e) {
-      console.log(e)
-       this.$axios
+      console.log(e);
+      this.$axios
         .post("SiteManage/GetSiteManagerPagerList", {
           PageSize: 10,
           PageIndex: e,
           SiteId: "",
-          SiteName: "",
+          SiteName: ""
         })
         .then(res => {
           // console.log(res.data.Data);
@@ -245,11 +284,32 @@ export default {
     },
     addressChange(arr, label) {
       console.log(arr, "地址111");
-      console.log(label, "地址222222");
-      console.log(this.InsertArea)
+      // console.log(label, "地址222222");
+      console.log(this.InsertArea);
       this.Province = arr[0];
       this.City = arr[1];
       this.Area = arr[2];
+      for (let i = 0; i <this.threeData.length; i++) {
+          console.log("1");
+          if (this.threeData[i].label == arr[0]) {
+            console.log(this.threeData[i],'1级');
+            console.log(i,'i');
+            console.log(this.threeData[i].children.length,'i');
+            for (let j = 0; j <this.threeData[i].children.length; j++) {
+              if (this.threeData[i].children[j].label == arr[1]) {
+                console.log(this.threeData[i].children[j],'2级');
+                console.log(j,'j');
+                for (let k = 0; k <this.threeData[i].children[j].children.length; k++) {
+                  //  console.log(res.data.Data.Data[i].children[j].children[k],'3级');
+                   if (this.threeData[i].children[j].children[k].label==arr[2]) {
+                     console.log(this.threeData[i].children[j].children[k].value,'3级ID')
+                     this.InsertAreaId=this.threeData[i].children[j].children[k].value
+                   }
+                }
+              }
+            }
+          }
+        }
     },
     Selectchange(e) {
       console.log(e, "点击");
@@ -260,9 +320,9 @@ export default {
           this.UserName = this.MachinaryIdList[i].UserName;
         }
       }
-      console.log(this.UserName )
+      console.log(this.UserName);
     },
-     SiteSelect(e) {
+    SiteSelect(e) {
       console.log(e);
       this.SiteName = e[3];
       this.AreaId = e[2];
@@ -290,6 +350,9 @@ export default {
           this.InsertUserName = res.data.Data.UserName;
           console.log(res.data.Data.UserName);
         });
+    },
+    levelchange(e) {
+      console.log(e);
     }
   }
 };

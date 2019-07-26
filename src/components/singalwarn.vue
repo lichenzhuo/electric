@@ -105,6 +105,32 @@
             <span :class="[{'red':scope.row.I_Bus_ACState!==0,}]">{{scope.row.I_Bus_AC_Vol}}V</span>
           </template>
         </el-table-column>
+                <!-- 这里判断字段不清楚 ，接口字段文件里面有些。后续需要确定-->
+        <el-table-column align="center" label="I段母线正对地绝缘">
+          <template slot-scope="scope">
+            <span
+              :class="[{'red':scope.row.I_Bus_Ins_Abnormality!==0,}]"
+            >{{scope.row.I_Positive_Ins}}K</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="I段母线负对地绝缘">
+          <template slot-scope="scope">
+            <span
+              :class="[{'red':scope.row.I_Bus_Ins_Abnormality!==0,}]"
+            >{{scope.row.I_Negative_Ins}}K</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="I段蓄电池绝缘">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.I_Battery_Alarm!==0,}]">{{scope.row.I_Battery_Ins}}K</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="I段蓄电接地点">
+          <template slot-scope="scope">
+            <span :class="[{'red':scope.row.I_Battery_Alarm!==0,}]">{{scope.row.I_Grounding_Point}}</span>
+          </template>
+        </el-table-column>
+
         <el-table-column align="center" label="II段母线总电压">
           <template slot-scope="scope">
             <span :class="[{'red':scope.row.II_VolState!==0,}]">{{scope.row.II_Bus_Vol}}V</span>
@@ -126,7 +152,7 @@
         </el-table-column>
         <el-table-column align="center" label="II段母线纹波">
           <template slot-scope="scope">
-            <span :class="[{'red':scope.row.II_Bus_RippleState!==0,}]">{{scope.row.II_Bus_Ripple}}V</span>
+            <span :class="[{'red':scope.row.II_Bus_RippleState!==0,}]">{{scope.row.II_Bus_Ripple}}mV</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="II段母线交流电压">
@@ -135,87 +161,62 @@
           </template>
         </el-table-column>
 
-        <!-- 这里判断字段不清楚 ，接口字段文件里面有些。后续需要确定-->
-        <el-table-column align="center" label="I段母线正对地绝缘">
-          <template slot-scope="scope">
-            <span
-              :class="[{'red':scope.row.I_Bus_Ins_Abnormality!==0,}]"
-            >{{scope.row.I_Positive_Ins}}V</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="I段母线负对地绝缘">
-          <template slot-scope="scope">
-            <span
-              :class="[{'red':scope.row.I_Bus_Ins_Abnormality!==0,}]"
-            >{{scope.row.I_Negative_Ins}}V</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="I段蓄电池绝缘">
-          <template slot-scope="scope">
-            <span :class="[{'red':scope.I_Battery_Alarm!==0,}]">{{scope.row.I_Battery_Ins}}V</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="I段蓄电接地点">
-          <template slot-scope="scope">
-            <span :class="[{'red':scope.row.I_Battery_Alarm!==0,}]">{{scope.row.I_Grounding_Point}}V</span>
-          </template>
-        </el-table-column>
 
         <el-table-column align="center" label="II段母线正对地绝缘">
           <template slot-scope="scope">
             <span
               :class="[{'red':scope.row.II_Bus_Ins_Abnormality!==0,}]"
-            >{{scope.row.II_Positive_Ins}}V</span>
+            >{{scope.row.II_Positive_Ins}}K</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="II段母线负对地绝缘">
           <template slot-scope="scope">
             <span
               :class="[{'red':scope.row.II_Bus_Ins_Abnormality!==0,}]"
-            >{{scope.row.II_Negative_Ins}}V</span>
+            >{{scope.row.II_Negative_Ins}}K</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="II段蓄电池绝缘">
           <template slot-scope="scope">
-            <span :class="[{'red':scope.row.II_Battery_Alarm!==0,}]">{{scope.row.II_Battery_Ins}}V</span>
+            <span :class="[{'red':scope.row.II_Battery_Alarm!==0,}]">{{scope.row.II_Battery_Ins}}K</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="II段蓄电接地点">
           <template slot-scope="scope">
             <span
               :class="[{'red':scope.row.II_Battery_Alarm!==0,}]"
-            >{{scope.row.II_Grounding_Point}}V</span>
+            >{{scope.row.II_Grounding_Point}}</span>
           </template>
         </el-table-column>
         <!-- 21312323333333333333333 -->
         <el-table-column align="center" label="母联总绝缘">
           <template slot-scope="scope">
-            <span :class="[{'red':scope.row.Bus_UnionStates!==0,}]">{{scope.row.Busbar_Total_Ins}}V</span>
+            <span :class="[{'red':scope.row.Bus_UnionStates!==0,}]">{{scope.row.Busbar_Total_Ins}}K</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="支路号">
           <template slot-scope="scope">
-            <span>{{scope.row.BranchNum}}V</span>
+            <span>{{scope.row.BranchNum}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="支路所在母线段">
           <template slot-scope="scope">
-            <span>{{scope.row.Branch_BusSection}}V</span>
+            <span>{{scope.row.Branch_BusSection}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="支路总绝缘">
           <template slot-scope="scope">
-            <span>{{scope.row.Branch_Total_Ins}}V</span>
+            <span>{{scope.row.Branch_Total_Ins}}K</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="支路正绝缘">
           <template slot-scope="scope">
-            <span>{{scope.row.Branch_Positive_Ins}}V</span>
+            <span>{{scope.row.Branch_Positive_Ins}}K</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="支路负绝缘">
           <template slot-scope="scope">
-            <span>{{scope.row.Branch_Negative_Ins}}V</span>
+            <span>{{scope.row.Branch_Negative_Ins}}K</span>
           </template>
         </el-table-column>
       </el-table>

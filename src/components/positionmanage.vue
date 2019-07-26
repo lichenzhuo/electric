@@ -46,14 +46,15 @@
           style="padding-left:40px"
         >
           <el-form-item label="职务名称">
-            <el-select v-model="formLabelAlign.PositionName" placeholder="请选择">
+            <el-input style="width:217px" v-model="formLabelAlign.PositionName" placeholder="请输入内容"></el-input>
+            <!-- <el-select v-model="formLabelAlign.PositionName" placeholder="请选择">
               <el-option
                 v-for="item in PositionNametype"
                 :key="item.PositionId"
                 :label="item.PositionName"
                 :value="item.PositionName"
               ></el-option>
-            </el-select>
+            </el-select> -->
           </el-form-item>
           <el-form-item label="部门">
             <el-select v-model="formLabelAlign.DepartmentId" placeholder="请选择">
