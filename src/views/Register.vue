@@ -14,7 +14,7 @@
       >
         <!-- <el-form-item label="登录账号" prop="LoginName">
           <el-input v-model="registerUser.LoginName" placeholder="请输入账号"></el-input>
-        </el-form-item> -->
+        </el-form-item>-->
         <el-form-item label="用户姓名" prop="UserName">
           <el-input v-model="registerUser.UserName" placeholder="请输入用户名"></el-input>
         </el-form-item>
@@ -62,15 +62,16 @@
         <!-- <el-form-item label="邮箱" prop="email">
                     <el-input v-model="registerUser.email" placeholder="请输入邮箱"></el-input>
         </el-form-item>-->
-        <el-form-item label="选择单位" prop="UnitNumber">
-          <el-select v-model="registerUser.UnitNumber" placeholder="请选择单位">
+        <el-form-item label="单位名称" prop="UnitName">
+          <el-input v-model="registerUser.UnitName" placeholder="请输入单位名称"></el-input>
+          <!-- <el-select v-model="registerUser.UnitNumber" placeholder="请选择单位">
             <el-option
               v-for="item in UnitNameList"
               :key="item.UnitNumber"
               :label="item.UnitName"
               :value="item.UnitNumber"
             ></el-option>
-          </el-select>
+          </el-select>-->
         </el-form-item>
         <el-form-item label="选择部门" prop="DepartmentId">
           <el-select v-model="registerUser.DepartmentId" placeholder="请选择部门">
@@ -152,7 +153,7 @@ export default {
         Sex: "",
         Phone: "",
         VX: "",
-        UnitNumber: "",
+        UnitName: "",
         DepartmentId: "",
         PositionId: "",
         CharacterId: ""
@@ -188,10 +189,10 @@ export default {
           },
           { validator: validatePass2, trigger: "blur" } //validator是自定义校验规则，定义的validatePass2在上面写出来了
         ],
-        Sex: [{ required: true, message: "职务不能为空", trigger: "blur" }],
+        Sex: [{ required: true, message: "性别不能为空", trigger: "blur" }],
         Phone: [{ required: true, trigger: "blur", validator: checkPhone }],
         VX: [{ required: true, message: "微信号码不能为空", trigger: "blur" }],
-        UnitNumber: [
+        UnitName: [
           { required: true, message: "单位不能为空", trigger: "blur" }
         ],
         DepartmentId: [
@@ -242,7 +243,7 @@ export default {
                 Sex: this.registerUser.Sex,
                 Phone: this.registerUser.Phone,
                 VX: this.registerUser.VX,
-                UnitNumber: this.registerUser.UnitNumber,
+               UnitName: this.registerUser.UnitName,
                 DepartmentId: this.registerUser.DepartmentId,
                 PositionId: this.registerUser.PositionId,
                 CharacterId: this.registerUser.CharacterId
@@ -254,14 +255,14 @@ export default {
                     message: "恭喜你，注册成功",
                     type: "success"
                   });
-                  var that=this
+                  var that = this;
                   // this.$router.push({ path: "/login" });
                   setTimeout(function() {
                     that.$router.push({ path: "/login" });
-                    console.log('2000')
-                  }, 2000);
-                }else{
-                  this.$message.error('注册失败');
+                    console.log("2000");
+                  }, 1000);
+                } else {
+                  this.$message.error("注册失败");
                 }
               });
           }

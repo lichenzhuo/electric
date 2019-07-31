@@ -195,7 +195,8 @@ export default {
         address: "",
         UserId: "",
         UserName: "",
-        SiteId: ""
+        SiteId: "",
+        SiteName:"",
       },
       total: "" || 10,
       currentPage: 1,
@@ -354,12 +355,14 @@ export default {
     //新增用户表单确认
     sureForm() {
       console.log(this.InsertForm, "新加表格");
-      this.$axios
+      if ( this.InsertForm.InsertMachinaryId||this.InsertForm.InsertEquipTypeId|| this.InsertForm.UserId||this.InsertForm.SiteId||this.InsertForm.SiteName) {
+        this.$axios
         .post("EquipmentInfo/EquipmentInsert", {
           MachinaryId: this.InsertForm.InsertMachinaryId,
           EquipTypeId: this.InsertForm.InsertEquipTypeId,
           UserId: this.InsertForm.UserId,
-          SiteId: this.InsertForm.SiteId
+          SiteId: this.InsertForm.SiteId,
+          SiteName: this.InsertForm.SiteName,
         })
         .then(res => {
           console.log(res.data.Data, "新增");
@@ -372,9 +375,13 @@ export default {
             this.query();
             this.dialogVisible = false;
           } else {
-            this.$message.error("新增用户失败");
+            this.$message.error("新增设备失败");
           }
         });
+      }else{
+        this.$message.error("信息填写不完整");
+      }
+      
     },
     //总条数
     getAllCount() {
@@ -457,9 +464,11 @@ export default {
         this.AllSiteName[i].SiteName;
         if (e == this.AllSiteName[i].SiteName) {
           this.InsertForm.SiteId = this.AllSiteName[i].SiteId;
+          this.InsertForm.SiteName = this.AllSiteName[i].SiteName;
         }
       }
       console.log(this.InsertForm.SiteId, "99999999999");
+      console.log(this.InsertForm.SiteName, "00000999999");
       this.$axios
         .post("SiteManage/GetAddressBySiteName", { SiteName: e })
         .then(res => {

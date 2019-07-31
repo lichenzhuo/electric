@@ -26,20 +26,20 @@
         <el-button type="primary" round style="margin-left:20px" @click="query">查询</el-button>
         <el-button type="primary" round style="margin-left:20px" @click="clear">清空</el-button>
       </div>
-
       <div class="conone">
         <span class="tip">单位名称</span>
-        <el-select v-model="UnitNameQuery" placeholder="请选择">
+        <el-input style="width:auto" v-model="UnitNameQuery" placeholder="请输入内容"></el-input>
+        <!-- <el-select v-model="UnitNameQuery" placeholder="请选择">
           <el-option
             v-for="item in UnitNametype"
             :key="item.UnitNumber"
             :label="item.UnitName"
             :value="item.UnitName"
           ></el-option>
-        </el-select>
+        </el-select>-->
       </div>
       <div class="block conone">
-        <span class="tip">部门</span>
+        <span class="tip" style="margin-left:1em">部门</span>
         <el-select v-model="DepartmentNameQuery" placeholder="请选择">
           <el-option
             v-for="item in DepartmentNametype"
@@ -89,7 +89,7 @@
           <el-form-item label="用户名称">
             <el-input style="width:217px" v-model="InsertForm.UserName" placeholder="请输入内容"></el-input>
           </el-form-item>
-          <el-form-item label="单位名称">
+          <!-- <el-form-item label="单位名称">
             <el-select v-model="InsertForm.UnitName" placeholder="请选择">
               <el-option
                 v-for="item in UnitNametype"
@@ -98,6 +98,9 @@
                 :value="item.UnitNumber"
               ></el-option>
             </el-select>
+          </el-form-item>-->
+          <el-form-item label="单位名称">
+            <el-input style="width:217px" v-model="InsertForm.UnitName" placeholder="请输入内容"></el-input>
           </el-form-item>
           <el-form-item label="角色">
             <el-select v-model="InsertForm.CharacterName" placeholder="请选择">
@@ -152,6 +155,9 @@
               @change="addressChangeInsert"
             ></el-cascader>
           </el-form-item>
+          <el-form-item label="详细地址">
+            <el-input style="width:217px" v-model="InsertForm.Address" placeholder="请输入内容"></el-input>
+          </el-form-item>
         </el-form>
       </span>
       <span slot="footer" class="dialog-footer">
@@ -180,6 +186,12 @@
           @change="addressChangeEdit"
           style="margin-left:50px;margin-top:10px;display:block"
         ></el-cascader>
+        <span class="tip" style>详细地址</span>
+        <el-input
+          style="margin-left:50px;margin-top:10px;display:block;width:280px"
+          v-model="editquanxianAddress"
+          placeholder="请输入内容"
+        ></el-input>
       </span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="positiondialog = false">取 消</el-button>
@@ -251,6 +263,7 @@ export default {
       quanxiantype: [],
       editquanxiantype: [],
       editquanxianArea: "",
+      editquanxianAddress: "",
       AreaList: regionData,
       dialogVisible: false,
       positiondialog: false,
@@ -264,6 +277,7 @@ export default {
         PositionName: "",
         CharacterName: "",
         Area: "",
+        Address: "",
         quanxiantype: []
       },
       AlertLogIdInsert: "",
@@ -325,14 +339,14 @@ export default {
     },
     //条件查询
     query() {
-      console.log(this.UserIdQuery)
-      console.log(this.UserNameQuery)
-      console.log(this.PhoneQuery)
-      console.log(this.SexQuery)
-      console.log(this.UnitNameQuery)
-      console.log(this.DepartmentNameQuery)
-      console.log(this.PositionNameQuery)
-      console.log(this.CharacterNameQuery)
+      console.log(this.UserIdQuery);
+      console.log(this.UserNameQuery);
+      console.log(this.PhoneQuery);
+      console.log(this.SexQuery);
+      console.log(this.UnitNameQuery);
+      console.log(this.DepartmentNameQuery);
+      console.log(this.PositionNameQuery);
+      console.log(this.CharacterNameQuery);
       this.$axios
         .post("UserInfos/GetUserInfosList", {
           PageSize: 10,
@@ -365,63 +379,80 @@ export default {
     //新增用户表单确认
     sureForm() {
       console.log(this.InsertForm, "新加表格");
-      var oldarr = this.InsertForm.quanxiantype;
-      for (let i = 0; i < oldarr.length; i++) {
-        if (oldarr[i] == "预警日志查看") {
-          this.AlertLogIdInsert = "1";
-        } else if (oldarr[i] == "报警日志查看") {
-          this.AlarmLogIdInsert = "1";
-        } else if (oldarr[i] == "报警解除") {
-          this.ReAlarmIdInsert = "1";
-        } else {
-        }
-      }
-      if (this.AlertLogIdInsert && this.AlertLogIdInsert == "1") {
+      if (
+        this.InsertForm.UserId == "" ||
+        this.InsertForm.UserName == "" ||
+        this.InsertForm.UnitName == "" ||
+        this.InsertForm.CharacterName == "" ||
+        this.InsertForm.Sex == "" ||
+        this.InsertForm.Phone == "" ||
+        this.InsertForm.DepartmentName == "" ||
+        this.InsertForm.PositionName == "" ||
+        this.InsertForm.quanxiantype == "" ||
+        this.InsertForm.Area == "" ||
+        this.InsertForm.Address == ""
+      ) {
+        this.$message.error("信息填写不完整");
       } else {
-        this.AlertLogIdInsert = "0";
-      }
-      if (this.AlarmLogIdInsert && this.AlarmLogIdInsert == "1") {
-      } else {
-        this.AlarmLogIdInsert = "0";
-      }
-      if (this.ReAlarmIdInsert && this.ReAlarmIdInsert == "1") {
-      } else {
-        this.ReAlarmIdInsert = "0";
-      }
-      console.log(this.AlertLogIdInsert, "预警日志");
-      console.log(this.AlarmLogIdInsert, "报警日志");
-      console.log(this.ReAlarmIdInsert, "报警解除");
-      this.$axios
-        .post("UserInfos/UserInfosInsert", {
-          UserId: this.InsertForm.UserId,
-          UserName: this.InsertForm.UserName,
-          UnitNumber: this.InsertForm.UnitName,
-          CharacterId: this.InsertForm.CharacterName,
-          Sex: this.InsertForm.Sex,
-          Phone: this.InsertForm.Phone,
-          DepartmentId: this.InsertForm.DepartmentName,
-          PositionId: this.InsertForm.PositionName,
-          AlertLogId: this.AlertLogIdInsert,
-          AlarmLogId: this.AlarmLogIdInsert,
-          ReAlarmId: this.ReAlarmIdInsert,
-          Province: this.InsertForm.Area[0],
-          City: this.InsertForm.Area[1],
-          Area: this.InsertForm.Area[2]
-        })
-        .then(res => {
-          console.log(res.data.Data, "新增");
-          if (res.data.Msg == "成功") {
-            this.$message({
-              message: "新增用户成功",
-              type: "success"
-            });
-            this.InsertForm = "";
-            this.query();
+        var oldarr = this.InsertForm.quanxiantype;
+        for (let i = 0; i < oldarr.length; i++) {
+          if (oldarr[i] == "预警日志查看") {
+            this.AlertLogIdInsert = "1";
+          } else if (oldarr[i] == "报警日志查看") {
+            this.AlarmLogIdInsert = "1";
+          } else if (oldarr[i] == "报警解除") {
+            this.ReAlarmIdInsert = "1";
           } else {
-            this.$message.error("新增用户失败");
           }
-        });
-      this.dialogVisible = false;
+        }
+        if (this.AlertLogIdInsert && this.AlertLogIdInsert == "1") {
+        } else {
+          this.AlertLogIdInsert = "0";
+        }
+        if (this.AlarmLogIdInsert && this.AlarmLogIdInsert == "1") {
+        } else {
+          this.AlarmLogIdInsert = "0";
+        }
+        if (this.ReAlarmIdInsert && this.ReAlarmIdInsert == "1") {
+        } else {
+          this.ReAlarmIdInsert = "0";
+        }
+        console.log(this.AlertLogIdInsert, "预警日志");
+        console.log(this.AlarmLogIdInsert, "报警日志");
+        console.log(this.ReAlarmIdInsert, "报警解除");
+        this.$axios
+          .post("UserInfos/UserInfosInsert", {
+            UserId: this.InsertForm.UserId,
+            UserName: this.InsertForm.UserName,
+            UnitName: this.InsertForm.UnitName,
+            CharacterId: this.InsertForm.CharacterName,
+            Sex: this.InsertForm.Sex,
+            Phone: this.InsertForm.Phone,
+            DepartmentId: this.InsertForm.DepartmentName,
+            PositionId: this.InsertForm.PositionName,
+            AlertLogId: this.AlertLogIdInsert,
+            AlarmLogId: this.AlarmLogIdInsert,
+            ReAlarmId: this.ReAlarmIdInsert,
+            Province: this.InsertForm.Area[0],
+            City: this.InsertForm.Area[1],
+            Area: this.InsertForm.Area[2],
+            Address: this.InsertForm.Address
+          })
+          .then(res => {
+            console.log(res.data.Msg, "新增");
+            if (res.data.Msg == "成功") {
+              this.$message({
+                message: "新增用户成功",
+                type: "success"
+              });
+              this.InsertForm = "";
+              this.query();
+              this.dialogVisible = false;
+            } else {
+              this.$message.error(res.data.Msg);
+            }
+          });
+      }
     },
     //总条数
     getAllCount() {
@@ -477,7 +508,7 @@ export default {
     rowclick(e) {
       //   console.log(e.id);
     },
-    
+
     positionEdit(row) {
       console.log(row);
       this.EditId = row.Id;
@@ -501,65 +532,81 @@ export default {
     surePosition() {
       // console.log(this.editquanxiantype);
       // console.log(this.editquanxianArea);
-      var thisarr = this.editquanxiantype;
-      for (let i = 0; i < thisarr.length; i++) {
-        if (thisarr[i] == "预警日志查看") {
-          this.EditAlertLogIdInsert = "1";
-        } else if (thisarr[i] == "报警日志查看") {
-          this.EditAlarmLogIdInsert = "1";
-        } else if (thisarr[i] == "报警解除") {
-          this.EditReAlarmIdInsert = "1";
-        } else {
-        }
-      }
-      if (this.EditAlertLogIdInsert && this.EditAlertLogIdInsert == "1") {
+      if (
+        this.editquanxiantype == "" ||
+        this.editquanxianArea == "" ||
+        this.editquanxianAddress == ""
+      ) {
+        this.$message.error("信息填写不完整");
       } else {
-        this.EditAlertLogIdInsert = "0";
-      }
-      if (this.EditAlarmLogIdInsert && this.EditAlarmLogIdInsert == "1") {
-      } else {
-        this.EditAlarmLogIdInsert = "0";
-      }
-      if (this.EditReAlarmIdInsert && this.EditReAlarmIdInsert == "1") {
-      } else {
-        this.EditReAlarmIdInsert = "0";
-      }
-      console.log(this.EditAlertLogIdInsert, "预警日志");
-      console.log(this.EditAlarmLogIdInsert, "报警日志");
-      console.log(this.EditReAlarmIdInsert, "报警解除");
-      console.log(this.editquanxianArea);
-      this.$axios
-        .post("UserInfos/Jurisdiction", {
-          Id: this.EditId,
-          AlertLogId: this.EditAlertLogIdInsert,
-          AlarmLogId: this.EditAlarmLogIdInsert,
-          ReAlarmId: this.EditReAlarmIdInsert,
-          Province:this.editquanxianArea[0],
-          City: this.editquanxianArea[1],
-          Area: this.editquanxianArea[2]
-        })
-        .then(res => {
-          console.log(res.data.Msg, "更改");
-          if (res.data.Msg == "成功") {
-            this.$message({
-              message: "用户权限更改成功",
-              type: "success"
-            });
-            this.query();
+        console.log(this.editquanxiantype);
+        console.log(this.editquanxianArea);
+        console.log(this.editquanxianAddress);
+        var thisarr = this.editquanxiantype;
+        for (let i = 0; i < thisarr.length; i++) {
+          if (thisarr[i] == "预警日志查看") {
+            this.EditAlertLogIdInsert = "1";
+          } else if (thisarr[i] == "报警日志查看") {
+            this.EditAlarmLogIdInsert = "1";
+          } else if (thisarr[i] == "报警解除") {
+            this.EditReAlarmIdInsert = "1";
           } else {
-            this.$message.error("用户权限更改失败");
           }
-        });
-      this.positiondialog = false;
+        }
+        if (this.EditAlertLogIdInsert && this.EditAlertLogIdInsert == "1") {
+        } else {
+          this.EditAlertLogIdInsert = "0";
+        }
+        if (this.EditAlarmLogIdInsert && this.EditAlarmLogIdInsert == "1") {
+        } else {
+          this.EditAlarmLogIdInsert = "0";
+        }
+        if (this.EditReAlarmIdInsert && this.EditReAlarmIdInsert == "1") {
+        } else {
+          this.EditReAlarmIdInsert = "0";
+        }
+        console.log(this.EditAlertLogIdInsert, "预警日志");
+        console.log(this.EditAlarmLogIdInsert, "报警日志");
+        console.log(this.EditReAlarmIdInsert, "报警解除");
+        console.log(this.editquanxianArea);
+        this.$axios
+          .post("UserInfos/Jurisdiction", {
+            Id: this.EditId,
+            AlertLogId: this.EditAlertLogIdInsert,
+            AlarmLogId: this.EditAlarmLogIdInsert,
+            ReAlarmId: this.EditReAlarmIdInsert,
+            Province: this.editquanxianArea[0],
+            City: this.editquanxianArea[1],
+            Area: this.editquanxianArea[2],
+            Address: this.editquanxianAddress
+          })
+          .then(res => {
+            console.log(res.data.Msg, "更改");
+            if (res.data.Msg == "成功") {
+              this.$message({
+                message: "用户权限更改成功",
+                type: "success"
+              });
+              this.query();
+              this.positiondialog = false;
+              this.editquanxianArea = "";
+              this.editquanxianAddress = "";
+            } else {
+              this.$message.error(res.data.Msg);
+              this.editquanxianArea = "";
+              this.editquanxianAddress = "";
+            }
+          });
+      }
     },
-    addressChangeInsert(e){
-      console.log(e)
-      this.Area=e
+    addressChangeInsert(e) {
+      console.log(e);
+      this.Area = e;
     },
-    addressChangeEdit(e){
-      console.log(e)
-      this.editquanxianArea=e
-    },
+    addressChangeEdit(e) {
+      console.log(e);
+      this.editquanxianArea = e;
+    }
   }
 };
 </script>
