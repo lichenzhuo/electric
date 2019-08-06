@@ -169,5 +169,6 @@ export default {
 
 .number {
   margin: 5px 5px 20px 5px;
+  cursor:pointer;
 }
 </style>
