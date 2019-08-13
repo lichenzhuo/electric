@@ -379,7 +379,7 @@ export default {
   },
   data() {
     return {
-      activeName: "first",
+      activeName: "one",
       text: "",
       resdata: "",
       resdataone: "",

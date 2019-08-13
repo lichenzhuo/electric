@@ -3,8 +3,8 @@ import qs from 'qs'
 
 axios.defaults.timeout = 5000; //响应时间
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'; //配置请求头
-// axios.defaults.baseURL = 'http://liuyuedeyu.iask.in:1003/api'; 
-axios.defaults.baseURL = 'http://192.168.1.102:1003/api';
+axios.defaults.baseURL = 'http://liuyuedeyu.iask.in:1003/api'; 
+// axios.defaults.baseURL = 'http://192.168.1.102:1003/api';
 
 
 //POST传参序列化(添加请求拦截器)
