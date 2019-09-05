@@ -5,7 +5,7 @@
     <div class="user">
       <el-dropdown @command="handleCommand">
         <span class="el-dropdown-link">
-          欢迎你：{{UserName}}/{{CharacterName}}
+          欢迎你：{{UserName}}
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">

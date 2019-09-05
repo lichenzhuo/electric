@@ -59,7 +59,19 @@ export default {
       }
     };
   },
+  created(){
+    this.watchKey()
+  },
   methods: {
+    watchKey(){
+      document.onkeydown=e=>{
+        let _key=window.event.keyCode;
+        if (_key===13) {
+          console.log('adsadsad')
+          this.submitForm('registerForm')
+        }
+      }
+    },
     submitForm(formName) {
       // console.log(this.registerUser, "111111");
       this.$refs[formName].validate(valid => {
@@ -81,8 +93,12 @@ export default {
               Password: this.registerUser.password
             })
             .then(res => {
-              console.log(res.data.Data.Data, "登录");
-              if (res.data.Msg == "登录成功") {
+              console.log(res.data, "登录");
+              if (res.data.Data.Msg == "登录成功") {
+                // this.$message({
+                //   message: "登陆成功",
+                //   type: "success"
+                // });
                 localStorage.setItem(
                   "CharacterId",
                   JSON.stringify(res.data.Data.Data.CharacterId)
@@ -110,6 +126,9 @@ export default {
               } else {
                 //账号密码错误
                 console.log("失败");
+                alert("账号或密码错误");
+                this.registerUser.name = "";
+                this.registerUser.password = "";
               }
             });
           // console.log("000");

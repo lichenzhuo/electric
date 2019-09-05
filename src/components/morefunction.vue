@@ -14,4 +14,10 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped></style>
+<style lang="stylus" scoped>
+.morefunction {
+  text-align: center;
+  font-size: 24px;
+  margin-top: 70px;
+}
+</style>

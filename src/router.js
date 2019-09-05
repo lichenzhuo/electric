@@ -17,7 +17,7 @@ import companyinfo from "./components/companyinfo";
 import machineinfo from "./components/machineinfo";
 import message from "./components/message";
 import morefunction from "./components/morefunction";
-import usermanage  from "./components/usermanage";
+import usermanage from "./components/usermanage";
 import positionmanage from "./components/positionmanage";
 import manufacturerindex from "./components/manufacturerindex";
 import personaldata from "./components/personaldata";
@@ -48,9 +48,8 @@ import edit from "./components/edit";
 // const positionmanage = () => import('./components/positionmanage')
 Vue.use(Router)
 export default new Router({
-  mode:'hash',
-  routes: [
-    {
+  mode: 'hash',
+  routes: [{
       path: '/',
       redirect: '/index',
     },
@@ -58,31 +57,177 @@ export default new Router({
       path: '/index',
       // name: 'index',
       component: Index,
-      children:[
-        { path: '', component: defaulthome },
-        { path: '/defaulthome', name: 'defaulthome', component: defaulthome },
-        { path: '/singalwarn', name: 'singalwarn', component: singalwarn },
-        { path: '/singalwarning', name: 'singalwarning', component: singalwarning },
-        { path: '/singalsite', name: 'singalsite', component: singalsite },
-        { path: '/personinfo', name: 'personinfo', component: personinfo },
-        { path: '/warnlog', name: 'warnlog', component: warnlog },
-        { path: '/warninglog', name: 'warninglog', component: warninglog },
-        { path: '/machinemanage', name: 'machinemanage', component: machinemanage },
-        { path: '/sitemanage', name: 'sitemanage', component: sitemanage },
-        { path: '/companyinfo', name: 'companyinfo', component: companyinfo },
-        { path: '/machineinfo', name: 'machineinfo', component: machineinfo },
-        { path: '/message', name: 'message', component: message },
-        { path: '/morefunction', name: 'morefunction', component: morefunction },
-        { path: '/usermanage', name: 'usermanage', component: usermanage },
-        { path: '/positionmanage', name: 'positionmanage', component: positionmanage },
-        { path: '/manufacturerindex', name: 'manufacturerindex', component: manufacturerindex },
-        { path: '/personaldata', name: 'personaldata', component: personaldata },
-        { path: '/changepassword', name: 'changepassword', component: changepassword },
-        { path: '/infocomplete', name: 'infocomplete', component: infocomplete },
-        { path: '/manufacturermachine', name: 'manufacturermachine', component: manufacturermachine },
-        { path: '/edit', name: 'edit', component: edit },
+      children: [{
+          path: '',
+          component: defaulthome,
+          meta: {
+            title: "首页"
+          }
+        },
+        {
+          path: '/defaulthome',
+          name: 'defaulthome',
+          component: defaulthome,
+          meta: {
+            title: "首页"
+          }
+        },
+        {
+          path: '/singalwarn',
+          name: 'singalwarn',
+          component: singalwarn,
+          meta: {
+            title: "单个预警"
+          }
+        },
+        {
+          path: '/singalwarning',
+          name: 'singalwarning',
+          component: singalwarning,
+          meta: {
+            title: "单个报警"
+          }
+        },
+        {
+          path: '/singalsite',
+          name: 'singalsite',
+          component: singalsite,
+          meta: {
+            title: "单个站点"
+          }
+        },
+        {
+          path: '/personinfo',
+          name: 'personinfo',
+          component: personinfo,
+          meta: {
+            title: "相关人员资料"
+          }
+        },
+        {
+          path: '/warnlog',
+          name: 'warnlog',
+          component: warnlog,
+          meta: {
+            title: "预警日志"
+          }
+        },
+        {
+          path: '/warninglog',
+          name: 'warninglog',
+          component: warninglog,
+          meta: {
+            title: "报警日志"
+          }
+        },
+        {
+          path: '/machinemanage',
+          name: 'machinemanage',
+          component: machinemanage,
+          meta: {
+            title: "设备管理"
+          }
+        },
+        {
+          path: '/sitemanage',
+          name: 'sitemanage',
+          component: sitemanage,
+          meta: {
+            title: "站点管理"
+          }
+        },
+        {
+          path: '/companyinfo',
+          name: 'companyinfo',
+          component: companyinfo,
+          meta: {
+            title: "单位信息"
+          }
+        },
+        {
+          path: '/machineinfo',
+          name: 'machineinfo',
+          component: machineinfo,
+          meta: {
+            title: "设备查看"
+          }
+        },
+        {
+          path: '/message',
+          name: 'message',
+          component: message,
+          meta: {
+            title: "消息反馈"
+          }
+        },
+        {
+          path: '/morefunction',
+          name: 'morefunction',
+          component: morefunction,
+          meta: {
+            title: "更多功能"
+          }
+        },
+        {
+          path: '/usermanage',
+          name: 'usermanage',
+          component: usermanage,
+          meta: {
+            title: "用户管理"
+          }
+        },
+        {
+          path: '/positionmanage',
+          name: 'positionmanage',
+          component: positionmanage,
+          meta: {
+            title: "职务管理"
+          }
+        },
+        {
+          path: '/manufacturerindex',
+          name: 'manufacturerindex',
+          component: manufacturerindex,
+          meta: {
+            title: "首页"
+          }
+        },
+        {
+          path: '/personaldata',
+          name: 'personaldata',
+          component: personaldata,
+          meta: {
+            title: "个人信息"
+          }
+        },
+        {
+          path: '/changepassword',
+          name: 'changepassword',
+          component: changepassword,
+
+        },
+        {
+          path: '/infocomplete',
+          name: 'infocomplete',
+          component: infocomplete,
+
+        },
+        {
+          path: '/manufacturermachine',
+          name: 'manufacturermachine',
+          component: manufacturermachine,
+
+        },
+        {
+          path: '/edit',
+          name: 'edit',
+          component: edit,
+          meta: {
+            title: "编辑"
+          }
+        },
       ]
-       
+
     },
     {
       path: '/register',
@@ -101,4 +246,3 @@ export default new Router({
     },
   ]
 })
- 

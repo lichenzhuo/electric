@@ -52,18 +52,6 @@
             <i class="el-icon-s-tools"></i>
             <span>设备管理</span>
           </template>
-          <!-- <el-submenu index="/sitemanage">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>站点管理</span>
-            </template>
-            <el-menu-item index="/companyinfo">
-              <template slot="title">
-                <i class="el-icon-info"></i>
-                <span>单位信息</span>
-              </template>
-            </el-menu-item>
-          </el-submenu>-->
           <el-menu-item index="/machineinfo">
             <template slot="title">
               <i class="el-icon-monitor"></i>
@@ -71,18 +59,6 @@
             </template>
           </el-menu-item>
         </el-submenu>
-        <!-- <el-submenu index="/sitemanage">
-          <template slot="title">
-            <i class="el-icon-location"></i>
-            <span>站点管理</span>
-          </template>
-          <el-menu-item index="/companyinfo">
-            <template slot="title">
-              <i class="el-icon-info"></i>
-              <span>单位信息</span>
-            </template>
-          </el-menu-item>
-        </el-submenu> -->
         <el-menu-item index="/sitemanage">
           <i class="el-icon-location"></i>
           <span slot="title">站点管理</span>
