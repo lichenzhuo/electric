@@ -1,5 +1,8 @@
 <template>
-  <div class="morefunction">功能待开发</div>
+  <div class="morefunction">
+    功能待开发
+    <div class="aaa">{{a}}</div>
+  </div>
 </template>
 
 <script>
@@ -7,9 +10,14 @@ export default {
   name: "morefunction",
 
   data() {
-    return {};
+    return {
+      a:'1'
+    };
   },
   mounted() {},
+  // watch:{
+  
+  // },
   methods: {}
 };
 </script>
